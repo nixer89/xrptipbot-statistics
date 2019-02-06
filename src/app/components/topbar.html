@@ -1,0 +1,17 @@
+<mat-toolbar id="primarybar" color="primary" class="mat-elevation-z6">
+    <span class="topbar-middle">XRPTipBot Statistics Page</span>
+    <div class="floatright tipbotheader">
+        <a amount="0.5" size="275" to="nixerFFM" network="twitter" href="https://www.xrptipbot.com" label="Tip nixer:" labelpt="Thank you!" target="_blank"></a>
+    </div>
+</mat-toolbar>
+<mat-toolbar id="secondarybar" color="secondary" class="mat-elevation-z6">
+    <button mat-button [routerLink]="['/']" matTooltip="Home">
+        <i class="material-icons topbar-menu-icon">home</i> Home
+    </button>
+    <button mat-button [routerLink]="['/overallstatistics']" matTooltip="Overall Statistics">
+        <i class="material-icons topbar-menu-icon">public</i> Overall Statistics
+    </button>
+    <button mat-button [routerLink]="['/userstatistics']" matTooltip="User Statistics">
+        <i class="material-icons topbar-menu-icon">show_chart</i> User Statistics
+    </button>
+</mat-toolbar>

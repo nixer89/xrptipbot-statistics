@@ -1,0 +1,26 @@
+<div class="ui-g ui-fluid">
+    <div class="floatleft" style="width: 480px; margin-left: 2em;" >
+            <p-card header="Choose your user and options">
+                <div class="ui-g-12">
+                    <div class="floatleft">
+                        <span class="ui-float-label" style="padding-top: 0.2em">
+                            <input id="float-input" type="text" size="20" [(ngModel)]="selectedUser" (input)="refreshWithTimeout()" pInputText> 
+                            <label for="float-input">User handle</label>
+                        </span>
+                    </div>
+                    <div class="floatcenter" style="padding-left: 1em;">
+                        <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refresh()"></p-dropdown>
+                    </div>
+                    <div class="floatcenter" style="padding-left: 1em;">
+                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshWithTimeout()" (onChange)="refreshWithTimeout()"></p-spinner>
+                    </div>
+                    <div class="floatright">
+                        <p-progressSpinner *ngIf="processing" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+    <div class="ui-g-12 center-screen" style="margin: 0 auto">
+        <p-chart type="bar" [data]="chartData" [options]="options" width="95vw" height="50vh"></p-chart>
+    </div>
+</div>
