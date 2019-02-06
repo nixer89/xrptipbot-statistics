@@ -129,6 +129,8 @@ export class UserStatisticsService {
             let queryParams2 = "to_id="+userId[0].user_id+"&result_fields=user_id xrp";
             let receivedTipsOverall = userId = await this.callTipBotApi(queryParams2);
 
+            console.log("receivedTipsOverall" + JSON.stringify(receivedTipsOverall));
+
             for(let tip in receivedTipsOverall) {
 
             }
@@ -143,7 +145,7 @@ export class UserStatisticsService {
         try {
             console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
             console.time("apiRequestTime");
-            let tipbotFeed = await this.app.get("http://localhost:4000/feed?"+queryParams);
+            let tipbotFeed = await this.app.get("https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams);
             console.timeEnd("apiRequestTime");
             console.log("feed length: " + tipbotFeed.feed.length);
             receivedTips = tipbotFeed.feed;

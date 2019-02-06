@@ -59,7 +59,8 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async ngOnInit() {
-        this.refresh();
+        await this.refresh();
+        this.userStatistics.getTopTipperReceived("nixerFFM");
       }
 
     async getReceivedTips(): Promise<any[]> {

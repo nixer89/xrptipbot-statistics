@@ -12,7 +12,7 @@ export class OverallStatisticsService {
         try {
             console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed")
             console.time("apiRequestTime");
-            let tipbotFeed = await this.app.get("http://localhost:4000/feed"+ (queryparams?"?"+queryparams:""));
+            let tipbotFeed = await this.app.get("https://xrptipbot-api.siedentopf.xyz/feed"+ (queryparams?"?"+queryparams:""));
             console.timeEnd("apiRequestTime");
             receivedTips = tipbotFeed.feed;
         } catch {
