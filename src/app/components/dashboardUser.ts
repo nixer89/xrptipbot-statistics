@@ -7,15 +7,25 @@ import { UserStatisticsService } from '../services/userstatistics.service';
 })
 export class DashboardUserComponent implements OnInit {
 
+    //All for User
+    executionTimeoutAll;
+    processingAll = false;
+
+    //chart
     chartData: any;
     options:any;
     daysToReceive = 10;
     selectedDayOrWeek;
     daysOrWeeksDropDown;
     selectedUser: string;
-    processing = false;
+    processingChart = false;
+    executionTimeoutChart;
 
-    executionTimeout;
+    //stats
+    receivedTips:number = 0;
+    sentTips:number = 0;
+    deposits:number = 0;
+    withdraws:number = 0;
 
     constructor(public userStatistics: UserStatisticsService) {
         let currentDate = new Date();
@@ -59,7 +69,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async ngOnInit() {
-        await this.refresh();
+        await this.refreshChart();
         this.userStatistics.getTopTipperReceived("nixerFFM");
       }
 
@@ -69,23 +79,48 @@ export class DashboardUserComponent implements OnInit {
         return [dataReceived[0].reverse(), dataReceived[1].reverse(), dataReceived[2].reverse()];
     }
 
-    refreshWithTimeout() {
+    refreshAllWithTimeout() {
         if(Number.isInteger(this.daysToReceive)) {
-            if(this.executionTimeout) clearTimeout(this.executionTimeout);
+            if(this.executionTimeoutAll) clearTimeout(this.executionTimeoutAll);
             
-            this.executionTimeout = setTimeout(()=> this.refresh(),500);
+            this.executionTimeoutAll = setTimeout(()=> this.refreshAll(),500);
         }
     }
 
-    async refresh() {
+    refreshChartWithTimeout() {
+        if(Number.isInteger(this.daysToReceive)) {
+            if(this.executionTimeoutChart) clearTimeout(this.executionTimeoutChart);
+            
+            this.executionTimeoutChart = setTimeout(()=> this.refreshChart(),300);
+        }
+    }
+
+    async refreshAll() {
+        this.processingAll = true;
+        await this.refreshStats();
+        await this.refreshChart();
+        this.processingAll = false;
+    }
+
+    async refreshStats() {
+        let stats:number[] = await this.userStatistics.getUserStats(this.selectedUser);
+
+        console.log("user stats result in dashboard: " + JSON.stringify(stats));
+        this.receivedTips = stats && stats[0] ? stats[0] : 0;
+        this.sentTips = stats && stats[1] ? stats[1] : 0;
+        this.deposits = stats && stats[2] ? stats[2] : 0;
+        this.withdraws = stats && stats[3] ? stats[3] : 0;
+    }
+
+    async refreshChart() {
         if(this.selectedUser && this.selectedUser.trim().length>0) {
-            this.processing=true;
+            this.processingChart=true;
             console.log("selectedUser: " + this.selectedUser)
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
             let dataSet = await this.getReceivedTips();
             //console.log("dataSet received:" + JSON.stringify(dataSet));
-            dataSet[0].push(0); //hidden value of 0 to always force the chart to start at 0 on y axis
-            dataSet[1].push(0); //hidden value of 0 to always force the chart to start at 0 on y axis
+            dataSet[0].push(100); //hidden value of 0 to always force the chart to start at 0 on y axis
+            dataSet[1].push(100); //hidden value of 0 to always force the chart to start at 0 on y axis
             
             let labelsX = [];
 
@@ -127,7 +162,7 @@ export class DashboardUserComponent implements OnInit {
                     position: 'top'
                 }
             };
-            this.processing=false;
+            this.processingChart=false;
         }
     }
 }

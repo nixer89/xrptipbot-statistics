@@ -1,25 +1,50 @@
 <div class="ui-g ui-fluid">
-    <div class="floatleft" style="width: 480px; margin-left: 2em;" >
-            <p-card header="Choose your user and options">
-                <div class="ui-g-12">
+    <div class="ui-g-12" style="margin-left: 1.5em;">
+        <div class="floatleft"  style="width:350px;">
+            <p-card header="Choose user:">
+                <span class="ui-float-label" style="padding-top: 0.2em">
                     <div class="floatleft">
-                        <span class="ui-float-label" style="padding-top: 0.2em">
-                            <input id="float-input" type="text" size="20" [(ngModel)]="selectedUser" (input)="refreshWithTimeout()" pInputText> 
-                            <label for="float-input">User handle</label>
-                        </span>
-                    </div>
-                    <div class="floatcenter" style="padding-left: 1em;">
-                        <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refresh()"></p-dropdown>
-                    </div>
-                    <div class="floatcenter" style="padding-left: 1em;">
-                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshWithTimeout()" (onChange)="refreshWithTimeout()"></p-spinner>
+                        <input id="userHandle" type="text" size="20" [(ngModel)]="selectedUser" (input)="refreshAllWithTimeout()" pInputText> 
+                        <label for="userHandle">User handle</label>
                     </div>
                     <div class="floatright">
-                        <p-progressSpinner *ngIf="processing" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                        <p-progressSpinner *ngIf="processingAll" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
                     </div>
+                </span>
+                <div style="margin-top: 1em;">
+                    <label><b>Tips received: </b></label>
+                    <label>{{receivedTips}}</label>
+                </div>
+                <div>
+                    <label><b>Tips sent: </b></label>
+                    <label>{{sentTips}}</label>
+                </div>
+                <div>
+                    <label><b>Deposits: </b></label>
+                    <label>{{deposits}}</label>
+                </div>
+                <div>
+                    <label><b>Withdrawals: </b></label>
+                    <label>{{withdraws}}</label>
                 </div>
             </p-card>
         </div>
+    </div>
+    <div class="floatleft" style="width: 300px; margin-left: 2em;" >
+        <p-card header="User Chart">
+            <div class="ui-g-12">
+                <div class="floatleft">
+                    <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refreshChartWithTimeout()"></p-dropdown>
+                </div>
+                <div class="floatcenter" style="padding-left: 1em;">
+                    <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
+                </div>
+                <div class="floatright">
+                    <p-progressSpinner *ngIf="!processingAll && processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                </div>
+            </div>
+        </p-card>
+    </div>
     <div class="ui-g-12 center-screen" style="margin: 0 auto">
         <p-chart type="bar" [data]="chartData" [options]="options" width="95vw" height="50vh"></p-chart>
     </div>
