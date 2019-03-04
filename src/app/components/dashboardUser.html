@@ -2,15 +2,17 @@
     <div class="ui-g-12" style="margin-left: 1.5em;">
         <div class="floatleft"  style="width:350px;">
             <p-card header="Choose user:">
-                <span class="ui-float-label" style="padding-top: 0.2em">
+                <div style="padding-top: 0.5em;">
                     <div class="floatleft">
-                        <input id="userHandle" type="text" size="20" [(ngModel)]="selectedUser" (input)="refreshAllWithTimeout()" pInputText> 
-                        <label for="userHandle">User handle</label>
+                        <span class="ui-float-label" style="padding-top: 0.2em">
+                            <input id="userHandle" type="text" size="20" [(ngModel)]="selectedUser" (input)="refreshAllWithTimeout()" pInputText> 
+                            <label for="userHandle">User handle</label>
+                        </span>
                     </div>
                     <div class="floatright">
                         <p-progressSpinner *ngIf="processingAll" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
                     </div>
-                </span>
+                </div>
                 <div style="margin-top: 1em;">
                     <label><b>Tips received: </b></label>
                     <label>{{receivedTips}}</label>
@@ -41,6 +43,11 @@
                 </div>
                 <div class="floatright">
                     <p-progressSpinner *ngIf="!processingAll && processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                </div>
+            </div>
+            <div class="ui-g-12">
+                <div class="floatleft">
+                    <p-checkbox binary="true" label="Include direct Deposits" [(ngModel)]="includeDeposits" (onChange)="refreshChartWithTimeout()"></p-checkbox>
                 </div>
             </div>
         </p-card>

@@ -10,6 +10,7 @@ export class DashboardUserComponent implements OnInit {
     //All for User
     executionTimeoutAll;
     processingAll = false;
+    user_id:string;
 
     //chart
     chartData: any;
@@ -20,6 +21,7 @@ export class DashboardUserComponent implements OnInit {
     selectedUser: string;
     processingChart = false;
     executionTimeoutChart;
+    includeDeposits: boolean = false;
 
     //stats
     receivedTips:number = 0;
@@ -73,10 +75,16 @@ export class DashboardUserComponent implements OnInit {
         this.userStatistics.getTopTipperReceived("nixerFFM");
       }
 
-    async getReceivedTips(): Promise<any[]> {
-        let receivedTips = await this.userStatistics.getReceivedTipsOfLastDaysForUser(this.daysToReceive*this.selectedDayOrWeek, this.selectedUser);
-        let dataReceived = await this.userStatistics.aggregateNumbersForXRP(receivedTips, this.daysToReceive, this.selectedDayOrWeek);
-        return [dataReceived[0].reverse(), dataReceived[1].reverse(), dataReceived[2].reverse()];
+    async getSentAndReceivedTips(): Promise<any[]> {
+        let promises:any[] = [];
+        promises.push(this.userStatistics.getReceivedTipsOfLastDaysForUser(this.daysToReceive*this.selectedDayOrWeek, this.user_id, this.includeDeposits));
+        promises.push(this.userStatistics.getSentTipsOfLastDaysForUser(this.daysToReceive*this.selectedDayOrWeek, this.user_id));
+        let restult = await Promise.all(promises);
+        
+        let dataReceived = this.userStatistics.aggregateNumbersForXRP(restult[0], this.daysToReceive, this.selectedDayOrWeek);
+        let dataSent = this.userStatistics.aggregateNumbersForXRP(restult[1], this.daysToReceive, this.selectedDayOrWeek);
+
+        return [dataReceived[0].reverse(), dataSent[0].reverse(), dataReceived[1].reverse()];
     }
 
     refreshAllWithTimeout() {
@@ -97,13 +105,14 @@ export class DashboardUserComponent implements OnInit {
 
     async refreshAll() {
         this.processingAll = true;
-        await this.refreshStats();
-        await this.refreshChart();
+        this.user_id = await this.userStatistics.getUserId(this.selectedUser);
+        let promises:any[] = [this.refreshStats(), this.refreshChart()]
+        await Promise.all(promises);
         this.processingAll = false;
     }
 
     async refreshStats() {
-        let stats:number[] = await this.userStatistics.getUserStats(this.selectedUser);
+        let stats:number[] = await this.userStatistics.getUserStats(this.user_id);
 
         console.log("user stats result in dashboard: " + JSON.stringify(stats));
         this.receivedTips = stats && stats[0] ? stats[0] : 0;
@@ -115,12 +124,13 @@ export class DashboardUserComponent implements OnInit {
     async refreshChart() {
         if(this.selectedUser && this.selectedUser.trim().length>0) {
             this.processingChart=true;
+            console.log("include deposits? " + this.includeDeposits);
             console.log("selectedUser: " + this.selectedUser)
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
-            let dataSet = await this.getReceivedTips();
+            let dataSet = await this.getSentAndReceivedTips();
             //console.log("dataSet received:" + JSON.stringify(dataSet));
-            dataSet[0].push(100); //hidden value of 0 to always force the chart to start at 0 on y axis
-            dataSet[1].push(100); //hidden value of 0 to always force the chart to start at 0 on y axis
+            dataSet[0].push(0); //hidden value of 0 to always force the chart to start at 0 on y axis
+            dataSet[1].push(0); //hidden value of 0 to always force the chart to start at 0 on y axis
             
             let labelsX = [];
 
@@ -128,7 +138,7 @@ export class DashboardUserComponent implements OnInit {
                 let from = new Date(jsonDate.from);
                 let to = new Date(jsonDate.to);
 
-                if(from.toLocaleDateString() === to.toLocaleDateString())
+                if(this.selectedDayOrWeek==1)
                     labelsX.push(to.toLocaleDateString());
                 else
                     labelsX.push(from.toLocaleDateString() + " - \n" + to.toLocaleDateString());
@@ -144,7 +154,7 @@ export class DashboardUserComponent implements OnInit {
                     borderColor: '#1E88E5',
                 },
                 {
-                    label: 'Received Tips',
+                    label: 'Sent XRP',
                     data: dataSet[1].length > 1 ? dataSet[1] : [0,0,0,0,0,0,0,0,0,0,100],
                     backgroundColor: '#9CCC65',
                     borderColor: '#7CB342',

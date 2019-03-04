@@ -19,31 +19,57 @@ export class UserStatisticsService {
         }
     }
 
-    async getReceivedTipsOfLastDaysForUser(days:number, userHandle: string): Promise<any[]> {
-        let receivedTips:any[] = [];
+    async getSentTipsOfLastDaysForUser(days:number, userId: string): Promise<any[]> {
+        let sentTips:any[] = [];
         let checkUntilDate = new Date();
-        checkUntilDate.setDate(checkUntilDate.getDate()-days);
-        checkUntilDate = this.getZeroTimeDate(checkUntilDate);
+        checkUntilDate.setDate(checkUntilDate.getDate()-days-7);
+        checkUntilDate = this.setZeroTime(checkUntilDate);
 
-        console.log("#### staring new getReceivedTipsOfLastDaysForUser request");
-        let queryParams = "to="+userHandle+"&from_date="+checkUntilDate.toUTCString();
-        receivedTips = await this.callTipBotFeedApi(queryParams);
+        let queryParamsTips = "user_id="+userId+"&type=tip&from_date="+checkUntilDate.toUTCString();
+        sentTips = await this.callTipBotFeedApi(queryParamsTips);
 
+        console.log("sentTips: " + JSON.stringify(sentTips));
+        return sentTips;
+    }
+
+    async getReceivedTipsOfLastDaysForUser(days:number, userId: string, includeDeposits:boolean): Promise<any[]> {
+        let receivedTips:any[] = [];
+        let receivedDeposits:any[] = [];
+        let checkUntilDate = new Date();
+        checkUntilDate.setDate(checkUntilDate.getDate()-days-7);
+        checkUntilDate = this.setZeroTime(checkUntilDate);
+
+        let queryParamsTips = "to_id="+userId+"&from_date="+checkUntilDate.toUTCString();
+        receivedTips = await this.callTipBotFeedApi(queryParamsTips);
+
+        if(includeDeposits) {
+            let queryParamsDeposit= "user_id="+userId+"&type=deposit&from_date="+checkUntilDate.toUTCString();
+            receivedDeposits = await this.callTipBotFeedApi(queryParamsDeposit);
+
+            receivedTips = receivedTips.concat(receivedDeposits).sort((a,b) => {
+                let momentA = new Date(a.momentAsDate);
+                let momentB = new Date(b.momentAsDate);
+
+                if(momentA < momentB) return 1;
+                else return -1;
+            
+            });
+        }
+
+        console.log("receivedTips: " + JSON.stringify(receivedTips));
         return receivedTips;
     }
 
     aggregateNumbersForXRP(receivedTips: any[], days: number, multiplier: number) : any[] {
         console.log("days: " + days + " and multiplier: " + multiplier);
-        //console.log("received tips first: " + receivedTips[0].moment);
-        //console.log("received tips last: " + receivedTips[receivedTips.length-1].moment);
         
         let upperDate = new Date();
         let nextLowDate = new Date();
-        //next low day should be last sunday if we calculate weeks
+        //next low day should be last monday if we calculate weeks
         if(multiplier==7)
-            nextLowDate.setDate(nextLowDate.getDate() - nextLowDate.getDay()+1);
+            nextLowDate.setDate(nextLowDate.getDate() - (nextLowDate.getDay()==0 ? 7 : nextLowDate.getDay())+1);
 
-        nextLowDate = this.getZeroTimeDate(nextLowDate);
+        nextLowDate = this.setZeroTime(nextLowDate);
 
         let lowestDate = new Date();
         if(multiplier==7) {
@@ -52,17 +78,15 @@ export class UserStatisticsService {
         } else {
             lowestDate.setDate(lowestDate.getDate() - days*multiplier+1);
         }
-        lowestDate = this.getZeroTimeDate(lowestDate);
+        lowestDate = this.setZeroTime(lowestDate);
 
         let timesDateLowered = 0;
 
         let dataXRP:number[] = [];
-        let dataTips:number[] = [];
         let dataTimes:any[]=[];
 
         //init arrays:
-        dataXRP.push(0)
-        dataTips.push(0);
+        dataXRP.push(0);
         dataTimes.push({from: nextLowDate.toDateString(), to: upperDate.toDateString()})
 
         receivedTips.forEach(tip => {
@@ -72,10 +96,13 @@ export class UserStatisticsService {
                 //add empty entries when tipdate smaller than nextLowDate!
                 while(tipDate < nextLowDate) {
                     //no entry yet -> add an empty one!
-                    upperDate.setDate(nextLowDate.getDate()-1)
+                    upperDate = new Date(nextLowDate);
+                    upperDate.setDate(upperDate.getDate()-2)
+                    upperDate = this.setHigherTime(upperDate);
                     nextLowDate.setDate(nextLowDate.getDate()-multiplier);
+                    nextLowDate = this.setZeroTime(nextLowDate);
+
                     dataXRP.push(0)
-                    dataTips.push(0);
                     dataTimes.push({from: nextLowDate.toDateString(), to: upperDate.toDateString()})
                     timesDateLowered++;
                 }
@@ -84,7 +111,6 @@ export class UserStatisticsService {
                 if(tipDate > nextLowDate) {
                     if(dataXRP.length<=days) {
                         dataXRP[timesDateLowered]+=tip.xrp*1000000;
-                        dataTips[timesDateLowered]+=1;
                     }
                 }
             } else {
@@ -98,7 +124,6 @@ export class UserStatisticsService {
 
         while(dataXRP.length<days) {
             dataXRP.push(0)
-            dataTips.push(0);
             dataTimes.push({from: nextLowDate.toDateString(), to: upperDate.toDateString()})
             
             upperDate = nextLowDate;
@@ -112,9 +137,8 @@ export class UserStatisticsService {
             dataXRP[i] = dataXRP[i]/1000000;
 
         console.log("returning dataXRP: " + JSON.stringify(dataXRP));
-        console.log("returning dataTips: " + JSON.stringify(dataTips));
         console.log("returning dataTimes: " + JSON.stringify(dataTimes));
-        return [dataXRP,dataTips,dataTimes];
+        return [dataXRP,dataTimes];
     }
 
     async getTopTipperReceived(userHandle: string): Promise<any[]> {
@@ -138,26 +162,23 @@ export class UserStatisticsService {
         return null;
     }
 
-    async getUserStats(userHandle:string): Promise<number[]> {
+    async getUserStats(userId:string): Promise<number[]> {
         let result:number[];
         console.log("getting")
         try {
             //get userid first!
-            let userId = await this.getUserId(userHandle);
             if(userId && userId.trim().length>0) {
-                let result:number[] = [];
+                let promises:any[] = [];
                 //received tips
-                result.push(await this.callTipBotCountApi("to_id="+userId+"&type=tip"));
+                promises.push(this.callTipBotCountApi("to_id="+userId+"&type=tip"));
                 //sent tips
-                result.push(await this.callTipBotCountApi("user_id="+userId+"&type=tip"));
+                promises.push(this.callTipBotCountApi("user_id="+userId+"&type=tip"));
                 //deposits
-                result.push(await this.callTipBotCountApi("user_id="+userId+"&type=deposit"));
+                promises.push(this.callTipBotCountApi("user_id="+userId+"&type=deposit"));
                 //withdraw
-                result.push(await this.callTipBotCountApi("user_id="+userId+"&type=withdraw"));
+                promises.push(this.callTipBotCountApi("user_id="+userId+"&type=withdraw"));
 
-                console.log("user stats result: " + JSON.stringify(result));
-                return result;
-
+                return Promise.all(promises);
             }
         } catch(err) {
             console.log(err);
@@ -180,7 +201,7 @@ export class UserStatisticsService {
         return count;
     }
 
-    private async getUserId(userHandle:string): Promise<string> {
+    async getUserId(userHandle:string): Promise<string> {
         let userIdResult:any[];
         try {
             userIdResult = await this.callTipBotFeedApi("user="+userHandle+"&limit=1&result_fields=user_id");
@@ -213,11 +234,20 @@ export class UserStatisticsService {
         return receivedTips;
     }
 
-    private getZeroTimeDate(dateToModify: Date): Date {
+    private setZeroTime(dateToModify: Date): Date {
         dateToModify.setHours(0);
         dateToModify.setMinutes(0);
         dateToModify.setSeconds(0);
         dateToModify.setMilliseconds(0);
+
+        return dateToModify;
+    }
+    
+    private setHigherTime(dateToModify: Date): Date {
+        dateToModify.setHours(23);
+        dateToModify.setMinutes(59);
+        dateToModify.setSeconds(59);
+        dateToModify.setMilliseconds(999999);
 
         return dateToModify;
     }
