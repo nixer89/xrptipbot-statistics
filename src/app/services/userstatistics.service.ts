@@ -171,12 +171,20 @@ export class UserStatisticsService {
                 let promises:any[] = [];
                 //received tips
                 promises.push(this.callTipBotCountApi("to_id="+userId+"&type=tip"));
+                //received tips XRP
+                promises.push(this.callTipBotAggregateApi("to_id="+userId+"&type=tip"));
                 //sent tips
                 promises.push(this.callTipBotCountApi("user_id="+userId+"&type=tip"));
+                //sent tips XRP
+                promises.push(this.callTipBotAggregateApi("user_id="+userId+"&type=tip"));
                 //deposits
                 promises.push(this.callTipBotCountApi("user_id="+userId+"&type=deposit"));
+                //deposits XRP
+                promises.push(this.callTipBotAggregateApi("user_id="+userId+"&type=deposit"));
                 //withdraw
                 promises.push(this.callTipBotCountApi("user_id="+userId+"&type=withdraw"));
+                //withdraw XRP
+                promises.push(this.callTipBotAggregateApi("user_id="+userId+"&type=withdraw"));
 
                 return Promise.all(promises);
             }
@@ -199,6 +207,19 @@ export class UserStatisticsService {
         }
 
         return count;
+    }
+
+    private async callTipBotAggregateApi(queryParams: string): Promise<number> {
+        let xrp: number
+        try {
+            console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/aggregateXRP?"+queryParams)
+            let aggregateResult = await this.app.get("https://xrptipbot-api.siedentopf.xyz/aggregateXRP?"+queryParams);
+            xrp = aggregateResult.xrp;
+        } catch {
+            xrp = 0;
+        }
+
+        return xrp;
     }
 
     async getUserId(userHandle:string): Promise<string> {

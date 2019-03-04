@@ -25,9 +25,13 @@ export class DashboardUserComponent implements OnInit {
 
     //stats
     receivedTips:number = 0;
+    receivedTipsXRP:number = 0;
     sentTips:number = 0;
+    sentTipsXRP:number = 0;
     deposits:number = 0;
+    depositsXRP:number = 0;
     withdraws:number = 0;
+    withdrawsXRP:number = 0;
 
     constructor(public userStatistics: UserStatisticsService) {
         let currentDate = new Date();
@@ -116,9 +120,13 @@ export class DashboardUserComponent implements OnInit {
 
         console.log("user stats result in dashboard: " + JSON.stringify(stats));
         this.receivedTips = stats && stats[0] ? stats[0] : 0;
-        this.sentTips = stats && stats[1] ? stats[1] : 0;
-        this.deposits = stats && stats[2] ? stats[2] : 0;
-        this.withdraws = stats && stats[3] ? stats[3] : 0;
+        this.receivedTipsXRP = stats && stats[1] ? stats[1] : 0;
+        this.sentTips = stats && stats[2] ? stats[2] : 0;
+        this.sentTipsXRP = stats && stats[3] ? stats[3] : 0;
+        this.deposits = stats && stats[4] ? stats[4] : 0;
+        this.depositsXRP = stats && stats[5] ? stats[5] : 0;
+        this.withdraws = stats && stats[6] ? stats[6] : 0;
+        this.withdrawsXRP = stats && stats[7] ? stats[7] : 0;
     }
 
     async refreshChart() {

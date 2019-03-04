@@ -13,21 +13,34 @@
                         <p-progressSpinner *ngIf="processingAll" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
                     </div>
                 </div>
-                <div style="margin-top: 1em;">
-                    <label><b>Tips received: </b></label>
-                    <label>{{receivedTips}}</label>
-                </div>
-                <div>
-                    <label><b>Tips sent: </b></label>
-                    <label>{{sentTips}}</label>
-                </div>
-                <div>
-                    <label><b>Deposits: </b></label>
-                    <label>{{deposits}}</label>
-                </div>
-                <div>
-                    <label><b>Withdrawals: </b></label>
-                    <label>{{withdraws}}</label>
+                <div class="ui-g-12 center">
+                    <table style="margin: 5px; border: 1px solid gray;">
+                        <tr>
+                            <th></th>
+                            <th>Count</th>
+                            <th>XRP</th>
+                        </tr>
+                        <tr>
+                            <td>Received Tips</td>
+                            <td>{{receivedTips}}</td>
+                            <td>{{receivedTipsXRP}}</td>
+                        </tr>
+                        <tr>
+                            <td>Sent Tips</td>
+                            <td>{{sentTips}}</td>
+                            <td>{{sentTipsXRP}}</td>
+                        </tr>
+                        <tr>
+                            <td>Deposits</td>
+                            <td>{{deposits}}</td>
+                            <td>{{depositsXRP}}</td>
+                        </tr>
+                        <tr>
+                            <td>Withdrawals</td>
+                            <td>{{withdraws}}</td>
+                            <td>{{withdrawsXRP}}</td>
+                        </tr>
+                    </table>
                 </div>
             </p-card>
         </div>
