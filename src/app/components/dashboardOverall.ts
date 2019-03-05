@@ -14,7 +14,7 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     async ngOnInit() {
-        this.topLists = await this.overallStatistics.getOverallStatistics();
-        console.log("top lists: " + JSON.stringify(this.topLists));
+        //this.topLists = await this.overallStatistics.getOverallStatistics();
+        //console.log("top lists: " + JSON.stringify(this.topLists));
     }
 }

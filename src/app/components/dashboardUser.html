@@ -1,71 +1,144 @@
 <div class="ui-g ui-fluid">
-    <div class="ui-g-12" style="margin-left: 1.5em;">
-        <div class="floatleft"  style="width:350px;">
-            <p-card header="Choose user:">
-                <div style="padding-top: 0.5em;">
-                    <div class="floatleft">
-                        <span class="ui-float-label" style="padding-top: 0.2em">
-                            <input id="userHandle" type="text" size="20" [(ngModel)]="selectedUser" (input)="refreshAllWithTimeout()" pInputText> 
-                            <label for="userHandle">User handle</label>
-                        </span>
-                    </div>
-                    <div class="floatright">
-                        <p-progressSpinner *ngIf="processingAll" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
-                    </div>
-                </div>
-                <div class="ui-g-12 center">
-                    <table style="margin: 5px; border: 1px solid gray;">
-                        <tr>
-                            <th></th>
-                            <th>Count</th>
-                            <th>XRP</th>
-                        </tr>
-                        <tr>
-                            <td>Received Tips</td>
-                            <td>{{receivedTips}}</td>
-                            <td>{{receivedTipsXRP}}</td>
-                        </tr>
-                        <tr>
-                            <td>Sent Tips</td>
-                            <td>{{sentTips}}</td>
-                            <td>{{sentTipsXRP}}</td>
-                        </tr>
-                        <tr>
-                            <td>Deposits</td>
-                            <td>{{deposits}}</td>
-                            <td>{{depositsXRP}}</td>
-                        </tr>
-                        <tr>
-                            <td>Withdrawals</td>
-                            <td>{{withdraws}}</td>
-                            <td>{{withdrawsXRP}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </p-card>
-        </div>
-    </div>
-    <div class="floatleft" style="width: 300px; margin-left: 2em;" >
-        <p-card header="User Chart">
+    <div>
+        <p-card>
             <div class="ui-g-12">
-                <div class="floatleft">
-                    <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refreshChartWithTimeout()"></p-dropdown>
+                <div class="floatleft" style="width:20%">
+                    <div>
+                        <p-card header="Choose user:">
+                            <div style="padding-top: 0.5em;">
+                                <div class="floatleft">
+                                    <span class="ui-float-label" style="padding-top: 0.2em">
+                                        <input id="userHandle" type="text" size="20" [(ngModel)]="selectedUser" (input)="refreshAllWithTimeout()" pInputText> 
+                                        <label for="userHandle">User handle</label>
+                                    </span>
+                                </div>
+                                <div class="floatright">
+                                    <p-progressSpinner *ngIf="processingAll" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                                </div>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div style="padding-top: 1em;">
+                        <p-card header="User Stats">
+                            <p-table [value]="userStats" [style]="{'width':'100%'}">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 40%"></th>
+                                        <th style="width: 20%">Count</th>
+                                        <th style="width: 40%">XRP</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-userStats>
+                                    <tr>
+                                        <td><b>{{userStats['label']}}</b></td>
+                                        <td style="text-align: center">{{userStats['count']}}</td>
+                                        <td style="text-align: center">{{userStats['xrp']}}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </p-card>
+                    </div>
                 </div>
-                <div class="floatcenter" style="padding-left: 1em;">
-                    <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
-                </div>
-                <div class="floatright">
-                    <p-progressSpinner *ngIf="!processingAll && processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
-                </div>
-            </div>
-            <div class="ui-g-12">
-                <div class="floatleft">
-                    <p-checkbox binary="true" label="Include direct Deposits" [(ngModel)]="includeDeposits" (onChange)="refreshChartWithTimeout()"></p-checkbox>
+                <div class="floatright" style="width: 80%;padding-left: 1em;">
+                    <p-card header="Top Activities">
+                        <div class="ui-g-12">
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Received Tips from</h3>
+                                <p-table [value]="topReceivedTips" [style]="{'width':'95%'}">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width: 65%">User</th>
+                                            <th style="width: 35%">Tips</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-topReceivedTips>
+                                        <tr>
+                                            <td style="text-align: center">{{topReceivedTips['_id']}}</td>
+                                            <td style="text-align: center">{{topReceivedTips['count']}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Received XRP from Tips</h3>
+                                <p-table [value]="topReceivedXRP" [style]="{'width':'95%'}">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width: 65%">User</th>
+                                            <th style="width: 35%">XRP</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-topReceivedXRP>
+                                        <tr>
+                                            <td style="text-align: center">{{topReceivedXRP['_id']}}</td>
+                                            <td style="text-align: center">{{topReceivedXRP['xrp']}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Sent Tips to</h3>
+                                <p-table [value]="topSentTips" [style]="{'width':'95%'}">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width: 65%">User</th>
+                                            <th style="width: 35%">Tips</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-topSentTips>
+                                        <tr>
+                                            <td style="text-align: center">{{topSentTips['_id']}}</td>
+                                            <td style="text-align: center">{{topSentTips['count']}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Sent XRP via tips</h3>
+                                <p-table [value]="topSentXRP" [style]="{'width':'95%'}">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width: 65%">User</th>
+                                            <th style="width: 35%">XRP</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-topSentXRP>
+                                        <tr>
+                                            <td style="text-align: center">{{topSentXRP['_id']}}</td>
+                                            <td style="text-align: center">{{topSentXRP['xrp']}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </div>
+                    </p-card>
                 </div>
             </div>
         </p-card>
     </div>
-    <div class="ui-g-12 center-screen" style="margin: 0 auto">
-        <p-chart type="bar" [data]="chartData" [options]="options" width="95vw" height="50vh"></p-chart>
+    <div style="padding-top: 2em;">
+        <div class="ui-g-12 floatleft" style="width: 20%;">
+            <p-card header="User Chart">
+                <div class="ui-g-12">
+                    <div class="floatleft">
+                        <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refreshChartWithTimeout()"></p-dropdown>
+                    </div>
+                    <div class="floatcenter" style="padding-left: 1em;">
+                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
+                    </div>
+                    <div class="floatright">
+                        <p-progressSpinner *ngIf="!processingAll && processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                    </div>
+                </div>
+                <div class="ui-g-12">
+                    <div class="floatleft">
+                        <p-checkbox binary="true" label="Include direct Deposits" [(ngModel)]="includeDeposits" (onChange)="refreshChartWithTimeout()"></p-checkbox>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+        <div class="ui-g-12 center-screen" style="margin: 0 auto">
+            <p-chart type="bar" [data]="chartData" [options]="options" width="95vw" height="50vh"></p-chart>
+        </div>
     </div>
 </div>

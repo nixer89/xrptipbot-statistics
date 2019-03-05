@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AppService } from './app.service';
+import { ApiService } from './api.service';
 
 @Injectable()
 export class UserStatisticsService {
 
-    constructor(private app: AppService) {}
+    constructor(private api: ApiService) {}
 
     async calculateBalances(charity:string): Promise<any[]> {
         try {
-            let tipbotFeed = await this.app.get('https://www.xrptipbot.com/u:'+charity+'/n:twitter/f:json');
+            let tipbotFeed = await this.api.callTipBotPublicPage(charity);
             let stats = tipbotFeed.stats;
             let xprcharitiesRaised = stats.tips.received.amount + stats.donations.deposits.amount + stats.donations.ilpDeposits.amount;
             xprcharitiesRaised = new Number(xprcharitiesRaised.toFixed(6));
@@ -26,9 +26,9 @@ export class UserStatisticsService {
         checkUntilDate = this.setZeroTime(checkUntilDate);
 
         let queryParamsTips = "user_id="+userId+"&type=tip&from_date="+checkUntilDate.toUTCString();
-        sentTips = await this.callTipBotFeedApi(queryParamsTips);
+        sentTips = await this.api.callTipBotFeedApi(queryParamsTips);
 
-        console.log("sentTips: " + JSON.stringify(sentTips));
+        //console.log("sentTips: " + JSON.stringify(sentTips));
         return sentTips;
     }
 
@@ -40,11 +40,11 @@ export class UserStatisticsService {
         checkUntilDate = this.setZeroTime(checkUntilDate);
 
         let queryParamsTips = "to_id="+userId+"&from_date="+checkUntilDate.toUTCString();
-        receivedTips = await this.callTipBotFeedApi(queryParamsTips);
+        receivedTips = await this.api.callTipBotFeedApi(queryParamsTips);
 
         if(includeDeposits) {
             let queryParamsDeposit= "user_id="+userId+"&type=deposit&from_date="+checkUntilDate.toUTCString();
-            receivedDeposits = await this.callTipBotFeedApi(queryParamsDeposit);
+            receivedDeposits = await this.api.callTipBotFeedApi(queryParamsDeposit);
 
             receivedTips = receivedTips.concat(receivedDeposits).sort((a,b) => {
                 let momentA = new Date(a.momentAsDate);
@@ -56,12 +56,12 @@ export class UserStatisticsService {
             });
         }
 
-        console.log("receivedTips: " + JSON.stringify(receivedTips));
+        //console.log("receivedTips: " + JSON.stringify(receivedTips));
         return receivedTips;
     }
 
     aggregateNumbersForXRP(receivedTips: any[], days: number, multiplier: number) : any[] {
-        console.log("days: " + days + " and multiplier: " + multiplier);
+        //console.log("days: " + days + " and multiplier: " + multiplier);
         
         let upperDate = new Date();
         let nextLowDate = new Date();
@@ -136,24 +136,24 @@ export class UserStatisticsService {
         for(let i = 0; i < dataXRP.length;i++)
             dataXRP[i] = dataXRP[i]/1000000;
 
-        console.log("returning dataXRP: " + JSON.stringify(dataXRP));
-        console.log("returning dataTimes: " + JSON.stringify(dataTimes));
+        //console.log("returning dataXRP: " + JSON.stringify(dataXRP));
+        //console.log("returning dataTimes: " + JSON.stringify(dataTimes));
         return [dataXRP,dataTimes];
     }
 
     async getTopTipperReceived(userHandle: string): Promise<any[]> {
         let userId:any[]= [];
-        console.log("#### staring new getReceivedTipsOfLastDaysForUser request");
+        //console.log("#### staring new getReceivedTipsOfLastDaysForUser request");
         let queryParams = "to="+userHandle+"&limit=1";
-        userId = await this.callTipBotFeedApi(queryParams);
+        userId = await this.api.callTipBotFeedApi(queryParams);
 
         if(userId && userId.length >1) {
-            console.log("userId array: " + JSON.stringify(userId));
+            //console.log("userId array: " + JSON.stringify(userId));
             //query api for tips sent to user and only select where tips came from (user_id) and how much (xrp)
             let queryParams2 = "to_id="+userId[0].user_id+"&result_fields=user_id xrp";
-            let receivedTipsOverall = userId = await this.callTipBotFeedApi(queryParams2);
+            let receivedTipsOverall = userId = await this.api.callTipBotFeedApi(queryParams2);
 
-            console.log("receivedTipsOverall" + JSON.stringify(receivedTipsOverall));
+            //console.log("receivedTipsOverall" + JSON.stringify(receivedTipsOverall));
 
             for(let tip in receivedTipsOverall) {
 
@@ -163,96 +163,88 @@ export class UserStatisticsService {
     }
 
     async getUserStats(userId:string): Promise<number[]> {
-        let result:number[];
-        console.log("getting")
+        let emptyResult:number[];
+        //console.log("getUserStats")
         try {
-            //get userid first!
             if(userId && userId.trim().length>0) {
                 let promises:any[] = [];
                 //received tips
-                promises.push(this.callTipBotCountApi("to_id="+userId+"&type=tip"));
+                promises.push(this.api.getCount("to_id="+userId+"&type=tip"));
                 //received tips XRP
-                promises.push(this.callTipBotAggregateApi("to_id="+userId+"&type=tip"));
+                promises.push(this.api.getAggregatedXRP("to_id="+userId+"&type=tip"));
                 //sent tips
-                promises.push(this.callTipBotCountApi("user_id="+userId+"&type=tip"));
+                promises.push(this.api.getCount("user_id="+userId+"&type=tip"));
                 //sent tips XRP
-                promises.push(this.callTipBotAggregateApi("user_id="+userId+"&type=tip"));
+                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=tip"));
                 //deposits
-                promises.push(this.callTipBotCountApi("user_id="+userId+"&type=deposit"));
+                promises.push(this.api.getCount("user_id="+userId+"&type=deposit"));
                 //deposits XRP
-                promises.push(this.callTipBotAggregateApi("user_id="+userId+"&type=deposit"));
+                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=deposit"));
                 //withdraw
-                promises.push(this.callTipBotCountApi("user_id="+userId+"&type=withdraw"));
+                promises.push(this.api.getCount("user_id="+userId+"&type=withdraw"));
                 //withdraw XRP
-                promises.push(this.callTipBotAggregateApi("user_id="+userId+"&type=withdraw"));
+                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=withdraw"));
 
                 return Promise.all(promises);
             }
         } catch(err) {
             console.log(err);
-            return result;
+            return emptyResult;
         }
 
-        return result;
+        return emptyResult;
     }
 
-    private async callTipBotCountApi(queryParams: string): Promise<number> {
-        let count: number
+    async getTopTipper(userId:string): Promise<any[]> {
+        let emptyResult:number[];
+        //console.log("getTopTipper")
         try {
-            console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/count?"+queryParams)
-            let countResult = await this.app.get("https://xrptipbot-api.siedentopf.xyz/count?"+queryParams);
-            count = countResult.count;
-        } catch {
-            count = 0;
-        }
+            //get userid first!
+            if(userId && userId.trim().length>0) {
+                let promises:any[] = [];
+                //received tips
+                promises.push(this.api.getCountResult("/mostReceivedFrom","to_id="+userId+"&type=tip&limit=10"));
+                //sent tips
+                promises.push(this.api.getCountResult("/mostSentTo","user_id="+userId+"&type=tip&limit=10"));
+                //received tips XRP
+                promises.push(this.api.getAggregatedResult("/xrp/mostReceivedFrom","to_id="+userId+"&type=tip&limit=10"));
+                //sent tips XRP
+                promises.push(this.api.getAggregatedResult("/xrp/mostSentTo","user_id="+userId+"&type=tip&limit=10"));
 
-        return count;
-    }
+                let promiseResult = await Promise.all(promises);
+                //console.log("promiseResult: " + JSON.stringify(promiseResult));
 
-    private async callTipBotAggregateApi(queryParams: string): Promise<number> {
-        let xrp: number
-        try {
-            console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/aggregateXRP?"+queryParams)
-            let aggregateResult = await this.app.get("https://xrptipbot-api.siedentopf.xyz/aggregateXRP?"+queryParams);
-            xrp = aggregateResult.xrp;
-        } catch {
-            xrp = 0;
-        }
+                let resolveUserNamesPromiseAll:any[] = [];
 
-        return xrp;
-    }
+                for(let i = 0; i < promiseResult.length; i++) {
+                    let singleResult:any[] = promiseResult[i];
+                    //console.log("singleResult: " + JSON.stringify(singleResult));
+                    let promises2: any[] = [];
+                    for(let j = 0; j < singleResult.length; j++)
+                        promises2.push(this.api.getUserName(singleResult[j]['_id']));
 
-    async getUserId(userHandle:string): Promise<string> {
-        let userIdResult:any[];
-        try {
-            userIdResult = await this.callTipBotFeedApi("user="+userHandle+"&limit=1&result_fields=user_id");
-            if(userIdResult && userIdResult.length>0)
-                return userIdResult[0].user_id;
-            else {
-                userIdResult = await this.callTipBotFeedApi("to="+userHandle+"&limit=1&result_fields=to_id");
-                if(userIdResult && userIdResult.length>0)
-                    return userIdResult[0].to_id;
-                else return ""
+                        resolveUserNamesPromiseAll.push(Promise.all(promises2));
+                }
+
+                let resolveUserNamesPromiseAllResult = await Promise.all(resolveUserNamesPromiseAll);
+
+                for(let i = 0; i < resolveUserNamesPromiseAllResult.length; i++) {
+                    let singleResult:any[] = resolveUserNamesPromiseAllResult[i];
+                    for(let k = 0; k < singleResult.length; k++) {
+                        promiseResult[i][k]['_id']=singleResult[k];
+                        if(promiseResult[i][k]['xrp'])
+                            promiseResult[i][k]['xrp']=promiseResult[i][k]['xrp'].toFixed(6);
+                    }   
+                }
+
+                return promiseResult;
             }
         } catch(err) {
             console.log(err);
-            return "";
-        }
-    }
-
-    private async callTipBotFeedApi(queryParams: string): Promise<any[]> {
-        let receivedTips: any[]
-
-        try {
-            console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
-            let tipbotFeed = await this.app.get("https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams);
-            console.log("feed length: " + tipbotFeed.feed.length);
-            receivedTips = tipbotFeed.feed;
-        } catch {
-            receivedTips = [];
+            return emptyResult;
         }
 
-        return receivedTips;
+        return emptyResult;
     }
 
     private setZeroTime(dateToModify: Date): Date {

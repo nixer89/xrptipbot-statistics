@@ -58,6 +58,7 @@ import {OverallStatisticsComponent} from './pages/overallstatistics';
 
 //my services
 import { AppService } from './services/app.service';
+import { ApiService } from './services/api.service';
 import { UserStatisticsService } from './services/userstatistics.service';
 import { OverallStatisticsService } from './services/overallstatistics.service';
 
@@ -116,7 +117,7 @@ import { OverallStatisticsService } from './services/overallstatistics.service';
     ChartModule,
     DropdownModule
   ],
-  providers: [AppService,UserStatisticsService,OverallStatisticsService],
+  providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
