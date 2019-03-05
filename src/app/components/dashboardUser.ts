@@ -186,6 +186,11 @@ export class DashboardUserComponent implements OnInit {
             {label: "Withdrawals", count: 0, xrp:0},
         ];
 
+        this.topReceivedTips = [];
+        this.topSentTips = [];
+        this.topReceivedXRP = [];
+        this.topSentXRP = [];
+
         this.chartData = {
         labels: [],
         datasets: [
