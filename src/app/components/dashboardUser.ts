@@ -11,6 +11,7 @@ export class DashboardUserComponent implements OnInit {
     //All for User
     executionTimeoutAll;
     processingAll = false;
+    selectedUser: string;
     user_id:string;
 
     //chart
@@ -19,18 +20,23 @@ export class DashboardUserComponent implements OnInit {
     daysToReceive = 10;
     selectedDayOrWeek;
     daysOrWeeksDropDown;
-    selectedUser: string;
     processingChart = false;
     executionTimeoutChart;
     includeDeposits: boolean = false;
 
     //stats
+    executionTimeoutStats;
+    processingStats = false;
     userStats:any[]=[
         {label: "Received Tips", count: 0, xrp:0},
         {label: "Sent Tips", count: 0, xrp:0},
         {label: "Deposits", count: 0, xrp:0},
         {label: "Withdrawals", count: 0, xrp:0},
     ];
+    useDateRange:boolean = false;
+    fromDate:Date;
+    toDate:Date;
+
     topReceivedTips:any[] = [];
     topSentTips:any[] = [];
     topReceivedXRP:any[] = [];
@@ -68,8 +74,14 @@ export class DashboardUserComponent implements OnInit {
         if(Number.isInteger(this.daysToReceive)) {
             if(this.executionTimeoutAll) clearTimeout(this.executionTimeoutAll);
             
-            this.executionTimeoutAll = setTimeout(()=> this.refreshAll(),500);
+            this.executionTimeoutAll = setTimeout(()=> this.refreshAll(),800);
         }
+    }
+
+    refreshStatsWithTimeout() {
+        if(this.executionTimeoutStats) clearTimeout(this.executionTimeoutStats);
+        
+        this.executionTimeoutStats = setTimeout(()=> this.refreshStats(),800);
     }
 
     refreshChartWithTimeout() {
@@ -81,44 +93,51 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async refreshAll() {
-        this.processingAll = true;
-        this.user_id = await this.api.getUserId(this.selectedUser.trim());
-        console.log("selectedUser: " + this.selectedUser)
-        console.log("userId for user " + this.selectedUser + " is: " + this.user_id);
-        //check if user was found
-        if(this.user_id && this.user_id.trim().length>0) {
-            //user found, continue!
-            let promises:any[] = [this.refreshStats(), this.refreshChart()]
-            await Promise.all(promises);    
-        } else {
-            this.initWithZeroValues();
+        if(this.selectedUser) {
+            this.processingAll = true;
+            this.user_id = await this.api.getUserId(this.selectedUser.trim());
+            console.log("selectedUser: " + this.selectedUser)
+            console.log("userId for user " + this.selectedUser + " is: " + this.user_id);
+            //check if user was found
+            if(this.user_id && this.user_id.trim().length>0) {
+                //user found, continue!
+                let promises:any[] = [this.refreshStats(), this.refreshChart()]
+                await Promise.all(promises);    
+            } else {
+                this.initWithZeroValues();
+            }
+            
+            this.processingAll = false;
         }
-        
-        this.processingAll = false;
     }
 
     async refreshStats() {
-        let stats:number[] = await this.userStatistics.getUserStats(this.user_id);
-        let topTipper:any = await this.userStatistics.getTopTipper(this.user_id);
+        if(this.selectedUser && this.selectedUser.trim().length>0 &&
+            (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
+                this.processingStats = true;
+                let stats:number[] = await this.userStatistics.getUserStats(this.user_id, this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
+                let topTipper:any = await this.userStatistics.getTopTipper(this.user_id,  this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
 
-        //console.log("user stats result in dashboard: " + JSON.stringify(stats));
-        if(stats) {
-            this.userStats[0].count = stats[0] ? stats[0] : 0;
-            this.userStats[0].xrp = stats[1] ? stats[1].toFixed(6) : 0;
-            this.userStats[1].count = stats[2] ? stats[2] : 0;
-            this.userStats[1].xrp = stats[3] ? stats[3].toFixed(6) : 0;
-            this.userStats[2].count = stats[4] ? stats[4] : 0;
-            this.userStats[2].xrp = stats[5] ? stats[5].toFixed(6) : 0;
-            this.userStats[3].count = stats[6] ? stats[6] : 0;
-            this.userStats[3].xrp = stats[7] ? stats[7].toFixed(6) : 0;
-        }
+                //console.log("user stats result in dashboard: " + JSON.stringify(stats));
+                if(stats) {
+                    this.userStats[0].count = stats[0] ? stats[0] : 0;
+                    this.userStats[0].xrp = stats[1] ? stats[1].toFixed(6) : 0;
+                    this.userStats[1].count = stats[2] ? stats[2] : 0;
+                    this.userStats[1].xrp = stats[3] ? stats[3].toFixed(6) : 0;
+                    this.userStats[2].count = stats[4] ? stats[4] : 0;
+                    this.userStats[2].xrp = stats[5] ? stats[5].toFixed(6) : 0;
+                    this.userStats[3].count = stats[6] ? stats[6] : 0;
+                    this.userStats[3].xrp = stats[7] ? stats[7].toFixed(6) : 0;
+                }
 
-        //console.log("top tipper result in dashboard: " + JSON.stringify(topTipper));
-        if(topTipper) {
-            this.topReceivedTips = topTipper[0] ? topTipper[0]: [];
-            this.topSentTips = topTipper[1] ? topTipper[1]: [];
-            this.topReceivedXRP = topTipper[2] ? topTipper[2]: [];
-            this.topSentXRP = topTipper[3] ? topTipper[3]: [];
+                //console.log("top tipper result in dashboard: " + JSON.stringify(topTipper));
+                if(topTipper) {
+                    this.topReceivedTips = topTipper[0] ? topTipper[0]: [];
+                    this.topSentTips = topTipper[1] ? topTipper[1]: [];
+                    this.topReceivedXRP = topTipper[2] ? topTipper[2]: [];
+                    this.topSentXRP = topTipper[3] ? topTipper[3]: [];
+                }
+                this.processingStats = false;
         }
     }
 

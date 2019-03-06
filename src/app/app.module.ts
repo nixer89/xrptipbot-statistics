@@ -43,6 +43,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {ToggleButtonModule} from 'primeng/togglebutton';
 import {ChartModule} from 'primeng/chart';
 import {DropdownModule} from 'primeng/dropdown';
+import {CalendarModule} from 'primeng/calendar';
 
 //App
 import { AppComponent } from './app.component';
@@ -115,7 +116,8 @@ import { OverallStatisticsService } from './services/overallstatistics.service';
     ProgressSpinnerModule,
     ToggleButtonModule,
     ChartModule,
-    DropdownModule
+    DropdownModule,
+    CalendarModule
   ],
   providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService],
   bootstrap: [AppComponent]

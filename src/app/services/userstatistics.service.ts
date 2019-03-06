@@ -162,28 +162,34 @@ export class UserStatisticsService {
         return null;
     }
 
-    async getUserStats(userId:string): Promise<number[]> {
+    async getUserStats(userId:string, fromDate: Date, toDate: Date): Promise<number[]> {
         let emptyResult:number[];
         //console.log("getUserStats")
         try {
             if(userId && userId.trim().length>0) {
+                let optionalDateFilter = "";
+                if(fromDate && toDate) {
+                    optionalDateFilter+="&from_date="+this.setZeroMilliseconds(fromDate).toUTCString();
+                    optionalDateFilter+="&to_date="+this.setHighMilliseconds(toDate).toUTCString();
+                }
+
                 let promises:any[] = [];
                 //received tips
-                promises.push(this.api.getCount("to_id="+userId+"&type=tip"));
+                promises.push(this.api.getCount("to_id="+userId+"&type=tip"+optionalDateFilter));
                 //received tips XRP
-                promises.push(this.api.getAggregatedXRP("to_id="+userId+"&type=tip"));
+                promises.push(this.api.getAggregatedXRP("to_id="+userId+"&type=tip"+optionalDateFilter));
                 //sent tips
-                promises.push(this.api.getCount("user_id="+userId+"&type=tip"));
+                promises.push(this.api.getCount("user_id="+userId+"&type=tip"+optionalDateFilter));
                 //sent tips XRP
-                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=tip"));
+                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=tip"+optionalDateFilter));
                 //deposits
-                promises.push(this.api.getCount("user_id="+userId+"&type=deposit"));
+                promises.push(this.api.getCount("user_id="+userId+"&type=deposit"+optionalDateFilter));
                 //deposits XRP
-                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=deposit"));
+                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=deposit"+optionalDateFilter));
                 //withdraw
-                promises.push(this.api.getCount("user_id="+userId+"&type=withdraw"));
+                promises.push(this.api.getCount("user_id="+userId+"&type=withdraw"+optionalDateFilter));
                 //withdraw XRP
-                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=withdraw"));
+                promises.push(this.api.getAggregatedXRP("user_id="+userId+"&type=withdraw"+optionalDateFilter));
 
                 return Promise.all(promises);
             }
@@ -195,21 +201,25 @@ export class UserStatisticsService {
         return emptyResult;
     }
 
-    async getTopTipper(userId:string): Promise<any[]> {
+    async getTopTipper(userId:string, fromDate: Date, toDate: Date): Promise<any[]> {
         let emptyResult:number[];
         //console.log("getTopTipper")
         try {
-            //get userid first!
             if(userId && userId.trim().length>0) {
+                let optionalDateFilter = "";
+                if(fromDate && toDate) {
+                    optionalDateFilter+="&from_date="+this.setZeroMilliseconds(fromDate).toUTCString();
+                    optionalDateFilter+="&to_date="+this.setHighMilliseconds(toDate).toUTCString();
+                }
                 let promises:any[] = [];
                 //received tips
-                promises.push(this.api.getCountResult("/mostReceivedFrom","to_id="+userId+"&type=tip&limit=10"));
+                promises.push(this.api.getCountResult("/mostReceivedFrom","to_id="+userId+"&type=tip&limit=10"+optionalDateFilter));
                 //sent tips
-                promises.push(this.api.getCountResult("/mostSentTo","user_id="+userId+"&type=tip&limit=10"));
+                promises.push(this.api.getCountResult("/mostSentTo","user_id="+userId+"&type=tip&limit=10"+optionalDateFilter));
                 //received tips XRP
-                promises.push(this.api.getAggregatedResult("/xrp/mostReceivedFrom","to_id="+userId+"&type=tip&limit=10"));
+                promises.push(this.api.getAggregatedResult("/xrp/mostReceivedFrom","to_id="+userId+"&type=tip&limit=10"+optionalDateFilter));
                 //sent tips XRP
-                promises.push(this.api.getAggregatedResult("/xrp/mostSentTo","user_id="+userId+"&type=tip&limit=10"));
+                promises.push(this.api.getAggregatedResult("/xrp/mostSentTo","user_id="+userId+"&type=tip&limit=10"+optionalDateFilter));
 
                 let promiseResult = await Promise.all(promises);
                 //console.log("promiseResult: " + JSON.stringify(promiseResult));
@@ -247,11 +257,21 @@ export class UserStatisticsService {
         return emptyResult;
     }
 
+    private setZeroMilliseconds(dateToModify: Date): Date {
+        dateToModify.setMilliseconds(0);
+        return dateToModify
+    }
+
+    private setHighMilliseconds(dateToModify: Date): Date {
+        dateToModify.setMilliseconds(999999);
+        return dateToModify
+    }
+
     private setZeroTime(dateToModify: Date): Date {
         dateToModify.setHours(0);
         dateToModify.setMinutes(0);
         dateToModify.setSeconds(0);
-        dateToModify.setMilliseconds(0);
+        dateToModify = this.setZeroMilliseconds(dateToModify);
 
         return dateToModify;
     }
@@ -260,7 +280,7 @@ export class UserStatisticsService {
         dateToModify.setHours(23);
         dateToModify.setMinutes(59);
         dateToModify.setSeconds(59);
-        dateToModify.setMilliseconds(999999);
+        dateToModify = this.setHighMilliseconds(dateToModify);
 
         return dateToModify;
     }
