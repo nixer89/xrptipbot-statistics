@@ -8,9 +8,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppRoutes} from './app.routes';
 
 // Angular Material
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 // PrimeNG
 import {AccordionModule} from 'primeng/primeng';
@@ -46,11 +46,11 @@ import {DropdownModule} from 'primeng/dropdown';
 import {CalendarModule} from 'primeng/calendar';
 
 //App
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
 import {AppTopbarComponent}  from './components/topbar';
 import {AppFooterComponent}  from './components/footer';
-import { DashboardUserComponent } from './components/dashboardUser';
-import { DashboardOverallComponent } from './components/dashboardOverall';
+import {DashboardUserComponent} from './components/dashboardUser';
+import {DashboardOverallComponent} from './components/dashboardOverall';
 
 //my components
 import {MainComponent} from './pages/main';
@@ -58,10 +58,11 @@ import {UserStatisticsComponent} from './pages/userstatistics';
 import {OverallStatisticsComponent} from './pages/overallstatistics';
 
 //my services
-import { AppService } from './services/app.service';
-import { ApiService } from './services/api.service';
-import { UserStatisticsService } from './services/userstatistics.service';
-import { OverallStatisticsService } from './services/overallstatistics.service';
+import {AppService} from './services/app.service';
+import {ApiService} from './services/api.service';
+import {UserStatisticsService} from './services/userstatistics.service';
+import {OverallStatisticsService} from './services/overallstatistics.service';
+import {GeneralStatisticsService} from './services/generalstatistics.service'
 
 @NgModule({
   declarations: [
@@ -119,7 +120,7 @@ import { OverallStatisticsService } from './services/overallstatistics.service';
     DropdownModule,
     CalendarModule
   ],
-  providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService],
+  providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

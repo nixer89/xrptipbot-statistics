@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserStatisticsService } from '../services/userstatistics.service';
+import { GeneralStatisticsService } from '../services/generalstatistics.service';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -42,7 +43,7 @@ export class DashboardUserComponent implements OnInit {
     topReceivedXRP:any[] = [];
     topSentXRP:any[] = [];
 
-    constructor(public userStatistics: UserStatisticsService, public api: ApiService) {
+    constructor(private userStatistics: UserStatisticsService, private api: ApiService, private generalStats: GeneralStatisticsService) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -55,19 +56,6 @@ export class DashboardUserComponent implements OnInit {
 
     async ngOnInit() {
         await this.refreshChart();
-        //this.userStatistics.getTopTipperReceived("nixerFFM");
-      }
-
-    async getSentAndReceivedTips(): Promise<any[]> {
-        let promises:any[] = [];
-        promises.push(this.userStatistics.getReceivedTipsOfLastDaysForUser(this.daysToReceive*this.selectedDayOrWeek, this.user_id, this.includeDeposits));
-        promises.push(this.userStatistics.getSentTipsOfLastDaysForUser(this.daysToReceive*this.selectedDayOrWeek, this.user_id));
-        let restult = await Promise.all(promises);
-        
-        let dataReceived = this.userStatistics.aggregateNumbersForXRP(restult[0], this.daysToReceive, this.selectedDayOrWeek);
-        let dataSent = this.userStatistics.aggregateNumbersForXRP(restult[1], this.daysToReceive, this.selectedDayOrWeek);
-
-        return [dataReceived[0].reverse(), dataSent[0].reverse(), dataReceived[1].reverse()];
     }
 
     refreshAllWithTimeout() {
@@ -116,7 +104,7 @@ export class DashboardUserComponent implements OnInit {
             (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
                 this.processingStats = true;
                 let stats:number[] = await this.userStatistics.getUserStats(this.user_id, this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-                let topTipper:any = await this.userStatistics.getTopTipper(this.user_id,  this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
+                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.user_id);
 
                 //console.log("user stats result in dashboard: " + JSON.stringify(stats));
                 if(stats) {
@@ -138,6 +126,8 @@ export class DashboardUserComponent implements OnInit {
                     this.topSentXRP = topTipper[3] ? topTipper[3]: [];
                 }
                 this.processingStats = false;
+        } else {
+            this.initStatsWithZeroValues();
         }
     }
 
@@ -146,8 +136,19 @@ export class DashboardUserComponent implements OnInit {
             this.processingChart=true;
             //console.log("include deposits? " + this.includeDeposits);
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
-            let dataSet = await this.getSentAndReceivedTips();
-            //console.log("dataSet received:" + JSON.stringify(dataSet));
+            let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.user_id);
+            
+            if(this.includeDeposits) {
+                for(let i = 0;i<result.receivedXRP.length;i++)
+                result.receivedXRP[i]+=result.directDepositsXRP[i];
+            }
+
+            let dataSet:any[]=[];
+            dataSet.push(result.receivedXRP.reverse());
+            dataSet.push(result.sentXRP.reverse());
+            dataSet.push(result.dateTimes.reverse())
+
+            
             dataSet[0].push(0); //hidden value of 0 to always force the chart to start at 0 on y axis
             dataSet[1].push(0); //hidden value of 0 to always force the chart to start at 0 on y axis
             
@@ -158,9 +159,9 @@ export class DashboardUserComponent implements OnInit {
                 let to = new Date(jsonDate.to);
 
                 if(this.selectedDayOrWeek==1)
-                    labelsX.push(to.toLocaleDateString());
+                    labelsX.push(to.getUTCDate()+"."+(to.getUTCMonth()+1)+"."+to.getUTCFullYear());
                 else
-                    labelsX.push(from.toLocaleDateString() + " - \n" + to.toLocaleDateString());
+                    labelsX.push(from.getUTCDate()+"."+(from.getUTCMonth()+1)+"."+from.getUTCFullYear() + " - \n" + to.getUTCDate()+"."+(to.getUTCMonth()+1)+"."+to.getUTCFullYear());
             })
         
             this.chartData = {
@@ -195,9 +196,7 @@ export class DashboardUserComponent implements OnInit {
         }
     }
 
-    initWithZeroValues() {
-        let currentDate = new Date();
-
+    initStatsWithZeroValues() {
         this.userStats = [
             {label: "Received Tips", count: 0, xrp:0},
             {label: "Sent Tips", count: 0, xrp:0},
@@ -209,6 +208,12 @@ export class DashboardUserComponent implements OnInit {
         this.topSentTips = [];
         this.topReceivedXRP = [];
         this.topSentXRP = [];
+    }
+
+    initWithZeroValues() {
+
+        this.initStatsWithZeroValues();
+        let currentDate = new Date();
 
         this.chartData = {
         labels: [],

@@ -1,6 +1,179 @@
 <div class="ui-g ui-fluid">
-    <div class="ui-g-12">
-        <p-card header="Overall Statistics for XRPTipBot coming soon!">
+    <div>
+        <p-card>
+            <div class="ui-g-12">
+                <div class="floatleft" style="width:20%">
+                    <div>
+                        <p-card header="Choose Date (optional):">
+                            <div style="padding-top: 0.5em;">
+                                <div class="floatleft">
+                                    <p-checkbox binary="true" label="Choose specific Time" [(ngModel)]="useDateRange" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>
+                                </div>
+                                <div class="floatright" style="vertical-align: middle">
+                                    <p-progressSpinner *ngIf="processingStats" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                                </div>
+                                <div class="floatleft" style="width: 80%">
+                                    <label disabled="!useDateRange"><b>From</b></label>
+                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="fromDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onClose)="refreshStatsWithTimeout()"></p-calendar>
+                                </div>
+                                <div class="floatleft" style="width: 80%">
+                                    <label><b>To</b></label>
+                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onClose)="refreshStatsWithTimeout()"></p-calendar>
+                                </div>
+                                <div class="floatleft" style="width: 80%">
+                                    <label style="font-size: 9px;"><b>DB timestamps are in UTC, so your selected time will be converted into UTC as well!</b></label>
+                                </div>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div style="padding-top: 1.5em;">
+                        <p-card header="Overall Stats">
+                            <p-table [value]="overallStats" [style]="{'width':'100%'}">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 38%"></th>
+                                        <th style="width: 22%">Count</th>
+                                        <th style="width: 40%">XRP</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-overallStats>
+                                    <tr>
+                                        <td><b>{{overallStats['label']}}</b></td>
+                                        <td style="text-align: center">{{overallStats['count']}}</td>
+                                        <td style="text-align: center">{{overallStats['xrp']}}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </p-card>
+                    </div>
+                    <div style="padding-top: 1.5em;">
+                        <p-card header="Overall Stats by Network">
+                            <p-table [value]="overallStatsByNetwork" [style]="{'width':'100%'}">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 38%;text-align: left">Sent via</th>
+                                        <th style="width: 22%">Count</th>
+                                        <th style="width: 40%">XRP</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-overallStatsByNetwork>
+                                    <tr>
+                                        <td><b>{{overallStatsByNetwork['label']}}</b></td>
+                                        <td style="text-align: center">{{overallStatsByNetwork['count']}}</td>
+                                        <td style="text-align: center">{{overallStatsByNetwork['xrp']}}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </p-card>
+                    </div>
+                </div>
+                <div class="floatright" style="width: 80%;padding-left: 1em;">
+                    <p-card header="{{statsHeader}}">
+                        <div *ngIf="useDateRange" class="ui-g-12">
+                            <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
+                            <label>To: {{toDate ? toDate.toUTCString():''}}</label>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Most tips received</h3>
+                                <div class="center">
+                                    <p-table [value]="topTipperReceived" [style]="{'width':'95%'}">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 65%">User</th>
+                                                <th style="width: 35%">Tips</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-topTipperReceived>
+                                            <tr>
+                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topTipperReceived['_id']}}">{{topTipperReceived['_id']}}</a></td>
+                                                <td style="text-align: center">{{topTipperReceived['count']}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Most XRP received by tip</h3>
+                                <div class="center">
+                                    <p-table [value]="topXRPReceived" [style]="{'width':'95%'}">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 65%">User</th>
+                                                <th style="width: 35%">XRP</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-topXRPReceived>
+                                            <tr>
+                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topXRPReceived['_id']}}">{{topXRPReceived['_id']}}</a></td>
+                                                <td style="text-align: center">{{topXRPReceived['xrp']}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Most tips sent</h3>
+                                <div class="center">
+                                    <p-table [value]="topTipperSent" [style]="{'width':'95%'}">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 65%">User</th>
+                                                <th style="width: 35%">Tips</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-topTipperSent>
+                                            <tr>
+                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topTipperSent['_id']}}">{{topTipperSent['_id']}}</a></td>
+                                                <td style="text-align: center">{{topTipperSent['count']}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                            <div class="floatleft" style="width: 25%">
+                                <h3>Most XRP sent by tip</h3>
+                                <div class="center">
+                                    <p-table [value]="topXRPSent" [style]="{'width':'95%'}">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 65%">User</th>
+                                                <th style="width: 35%">XRP</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-topXRPSent>
+                                            <tr>
+                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topXRPSent['_id']}}">{{topXRPSent['_id']}}</a></td>
+                                                <td style="text-align: center">{{topXRPSent['xrp']}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                        </div>
+                    </p-card>
+                </div>
+            </div>
         </p-card>
+    </div>
+    <div style="padding-top: 2em;">
+        <div class="ui-g-12 floatleft" style="width: 25%;">
+            <p-card header="Tip Chart for last Days/Weeks">
+                <div class="ui-g-12">
+                    <div class="floatleft">
+                        <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refreshChartWithTimeout()"></p-dropdown>
+                    </div>
+                    <div class="floatcenter" style="padding-left: 1em;">
+                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="10" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
+                    </div>
+                    <div class="floatright">
+                        <p-progressSpinner *ngIf="processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+        <div class="ui-g-12 center-screen" style="margin: 0 auto">
+            <p-chart type="bar" [data]="chartData" [options]="options" width="95vw" height="50vh"></p-chart>
+        </div>
     </div>
 </div>

@@ -57,9 +57,13 @@
                 </div>
                 <div class="floatright" style="width: 80%;padding-left: 1em;">
                     <p-card header="Top Activities">
+                        <div *ngIf="useDateRange" class="ui-g-12">
+                            <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
+                            <label>To: {{toDate ? toDate.toUTCString():''}}</label>
+                        </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
-                                <h3>Received Tips from</h3>
+                                <h3>Most tips received from</h3>
                                 <div class="center">
                                     <p-table [value]="topReceivedTips" [style]="{'width':'95%'}">
                                         <ng-template pTemplate="header">
@@ -78,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <h3>Received XRP from Tips</h3>
+                                <h3>Most XRP received from</h3>
                                 <div class="center">
                                     <p-table [value]="topReceivedXRP" [style]="{'width':'95%'}">
                                         <ng-template pTemplate="header">
@@ -97,7 +101,7 @@
                                 </div>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <h3>Sent Tips to</h3>
+                                <h3>Most tips sent to</h3>
                                 <div class="center">
                                     <p-table [value]="topSentTips" [style]="{'width':'95%'}">
                                         <ng-template pTemplate="header">
@@ -116,7 +120,7 @@
                                 </div>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <h3>Sent XRP via tips</h3>
+                                <h3>Mist XRP sent to (via tips)</h3>
                                 <div class="center">
                                     <p-table [value]="topSentXRP" [style]="{'width':'95%'}">
                                         <ng-template pTemplate="header">
