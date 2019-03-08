@@ -170,7 +170,7 @@ export class GeneralStatisticsService {
 
     private roundToSixDecimals(array:any[]): any[] {
         for(let i = 0; i < array.length;i++)
-            array[i] = array[i].toFixed(6)
+            array[i] = Number(array[i].toFixed(6));
 
         return array;
     }
