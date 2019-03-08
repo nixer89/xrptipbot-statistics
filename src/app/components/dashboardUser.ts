@@ -140,7 +140,7 @@ export class DashboardUserComponent implements OnInit {
             
             if(this.includeDeposits) {
                 for(let i = 0;i<result.receivedXRP.length;i++)
-                result.receivedXRP[i] = (result.receivedXRP[i]*1000000+result.directDepositsXRP[i]*1000000)/1000000;
+                    result.receivedXRP[i] = (result.receivedXRP[i]*1000000+result.directDepositsXRP[i]*1000000)/1000000;
             }
 
             let dataSet:any[]=[];
