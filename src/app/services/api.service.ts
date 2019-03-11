@@ -5,12 +5,15 @@ import { AppService } from './app.service';
 export class ApiService {
     constructor(private app: AppService) {}
 
+    isTestMode = true;
+    baseUrlToUse = this.isTestMode ? 'http://localhost:4000' : 'https://xrptipbot-api.siedentopf.xyz';
+
     async callTipBotFeedApi(queryParams: string): Promise<any[]> {
         let receivedTips: any[]
 
         try {
             //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
-            let tipbotFeed = await this.app.get("https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams);
+            let tipbotFeed = await this.app.get(this.baseUrlToUse+"/feed?"+queryParams);
             //console.log("feed length: " + tipbotFeed.feed.length);
             receivedTips = tipbotFeed.feed;
         } catch(err) {
@@ -38,7 +41,7 @@ export class ApiService {
     private async callTipBotCountApi(path: string, queryParams: string): Promise<any> {
         try {
             //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/count"+path+"?"+queryParams)
-            return this.app.get("https://xrptipbot-api.siedentopf.xyz/count"+path+"?"+queryParams);
+            return this.app.get(this.baseUrlToUse+"/count"+path+"?"+queryParams);
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -62,7 +65,7 @@ export class ApiService {
     private async callTipBotAggregateApi(path:string, queryParams: string): Promise<any> {
         try {
             //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/aggregate"+path+"?"+queryParams)
-            return this.app.get("https://xrptipbot-api.siedentopf.xyz/aggregate"+path+"?"+queryParams);
+            return this.app.get(this.baseUrlToUse+"/aggregate"+path+"?"+queryParams);
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -106,6 +109,24 @@ export class ApiService {
                 userNameResult = await this.callTipBotFeedApi("to_id="+userId+"&limit=1&result_fields=to");
                 if(userNameResult && userNameResult.length>0)
                     return userNameResult[0].to;
+                else return ""
+            }
+        } catch(err) {
+            console.log(err);
+            return "";
+        }
+    }
+
+    async getUserNameAndNetwork(userId:string): Promise<string> {
+        let userNameResult:any[];
+        try {
+            userNameResult = await this.callTipBotFeedApi("user_id="+userId+"&limit=1&result_fields=user,network,user_id");
+            if(userNameResult && userNameResult.length>0)
+                return userNameResult[0];
+            else {
+                userNameResult = await this.callTipBotFeedApi("to_id="+userId+"&limit=1&result_fields=to,network,to_id");
+                if(userNameResult && userNameResult.length>0)
+                    return userNameResult[0];
                 else return ""
             }
         } catch(err) {

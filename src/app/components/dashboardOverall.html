@@ -86,7 +86,11 @@
                                         </ng-template>
                                         <ng-template pTemplate="body" let-topTipperReceived>
                                             <tr>
-                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topTipperReceived['_id']}}">{{topTipperReceived['_id']}}</a></td>
+                                                <td>
+                                                    {{getShowName(topTipperReceived)}}&nbsp;
+                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topTipperReceived)}}"><img src="../../assets/networks/{{topTipperReceived['network']}}.png" width="20" height="20"></a>
+                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topTipperReceived['_id']}}/n:{{topTipperReceived['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
+                                                </td>
                                                 <td style="text-align: center">{{topTipperReceived['count']}}</td>
                                             </tr>
                                         </ng-template>
@@ -105,7 +109,11 @@
                                         </ng-template>
                                         <ng-template pTemplate="body" let-topXRPReceived>
                                             <tr>
-                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topXRPReceived['_id']}}">{{topXRPReceived['_id']}}</a></td>
+                                                <td>
+                                                    {{getShowName(topXRPReceived)}}&nbsp;
+                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topXRPReceived)}}"><img src="../../assets/networks/{{topXRPReceived['network']}}.png" width="20" height="20"></a>
+                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topXRPReceived['_id']}}/n:{{topXRPReceived['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
+                                                </td>
                                                 <td style="text-align: center">{{topXRPReceived['xrp']}}</td>
                                             </tr>
                                         </ng-template>
@@ -124,7 +132,11 @@
                                         </ng-template>
                                         <ng-template pTemplate="body" let-topTipperSent>
                                             <tr>
-                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topTipperSent['_id']}}">{{topTipperSent['_id']}}</a></td>
+                                                <td>
+                                                    {{getShowName(topTipperSent)}}&nbsp;
+                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topTipperSent)}}"><img src="../../assets/networks/{{topTipperSent['network']}}.png" width="20" height="20"></a>
+                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topTipperSent['_id']}}/n:{{topTipperSent['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
+                                                </td>
                                                 <td style="text-align: center">{{topTipperSent['count']}}</td>
                                             </tr>
                                         </ng-template>
@@ -143,7 +155,11 @@
                                         </ng-template>
                                         <ng-template pTemplate="body" let-topXRPSent>
                                             <tr>
-                                                <td><a style="color:blue; text-align: center" href="https://twitter.com/{{topXRPSent['_id']}}">{{topXRPSent['_id']}}</a></td>
+                                                <td>
+                                                    {{getShowName(topXRPSent)}}&nbsp;
+                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topXRPSent)}}"><img src="../../assets/networks/{{topXRPSent['network']}}.png" width="20" height="20"></a>
+                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topXRPSent['_id']}}/n:{{topXRPSent['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
+                                                </td>
                                                 <td style="text-align: center">{{topXRPSent['xrp']}}</td>
                                             </tr>
                                         </ng-template>

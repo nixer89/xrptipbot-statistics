@@ -39,7 +39,7 @@ export class GeneralStatisticsService {
                 //console.log("singleResult: " + JSON.stringify(singleResult));
                 let promises2: any[] = [];
                 for(let j = 0; j < singleResult.length; j++)
-                    promises2.push(this.api.getUserName(singleResult[j]['_id']));
+                    promises2.push(this.api.getUserNameAndNetwork(singleResult[j]['_id']));
 
                     resolveUserNamesPromiseAll.push(Promise.all(promises2));
             }
@@ -49,7 +49,10 @@ export class GeneralStatisticsService {
             for(let i = 0; i < resolveUserNamesPromiseAllResult.length; i++) {
                 let singleResult:any[] = resolveUserNamesPromiseAllResult[i];
                 for(let k = 0; k < singleResult.length; k++) {
-                    promiseResult[i][k]['_id']=singleResult[k];
+                    promiseResult[i][k]['_id']=singleResult[k].user ? singleResult[k].user : singleResult[k].to;
+                    promiseResult[i][k]['network']=singleResult[k].network;
+                    promiseResult[i][k]['user_id']=singleResult[k].user_id;
+                    promiseResult[i][k]['to_id']=singleResult[k].to_id;
                     if(promiseResult[i][k]['xrp']) {
                         if(userId)
                             promiseResult[i][k]['xrp']=promiseResult[i][k]['xrp'].toFixed(6);
