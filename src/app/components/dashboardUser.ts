@@ -83,16 +83,18 @@ export class DashboardUserComponent implements OnInit {
     async refreshAll() {
         if(this.selectedUser) {
             this.processingAll = true;
-            this.user_id = await this.api.getUserId(this.selectedUser.trim());
-            console.log("selectedUser: " + this.selectedUser)
-            console.log("userId for user " + this.selectedUser + " is: " + this.user_id);
-            //check if user was found
-            if(this.user_id && this.user_id.trim().length>0) {
+            let user = await this.api.getUser(this.selectedUser.trim());
+            if(user) {
+                this.user_id = user.id;
+                console.log("selectedUser: " + this.selectedUser)
+                console.log("userId for user " + this.selectedUser + " is: " + this.user_id);
+                //check if user was found
                 //user found, continue!
                 let promises:any[] = [this.refreshStats(), this.refreshChart()]
-                await Promise.all(promises);    
+                await Promise.all(promises); 
+
             } else {
-                this.initWithZeroValues();
+                this.initStatsWithZeroValues();
             }
             
             this.processingAll = false;
@@ -103,8 +105,8 @@ export class DashboardUserComponent implements OnInit {
         if(this.selectedUser && this.selectedUser.trim().length>0 &&
             (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
                 this.processingStats = true;
-                let stats:number[] = await this.userStatistics.getUserStats(this.user_id, this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.user_id);
+                let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.user_id, this.selectedUser.trim());
+                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.user_id, this.selectedUser.trim());
 
                 //console.log("user stats result in dashboard: " + JSON.stringify(stats));
                 if(stats) {
@@ -136,7 +138,7 @@ export class DashboardUserComponent implements OnInit {
             this.processingChart=true;
             //console.log("include deposits? " + this.includeDeposits);
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
-            let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.user_id);
+            let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.user_id, this.selectedUser ? this.selectedUser.trim():null);
             
             if(this.includeDeposits) {
                 for(let i = 0;i<result.receivedXRP.length;i++)
