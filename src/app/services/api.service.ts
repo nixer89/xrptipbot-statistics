@@ -78,6 +78,32 @@ export class ApiService {
         }
     }
 
+    async getUser(userHandle:string): Promise<any> {
+        let user = {
+            id:null,
+            name: null
+        }
+        try {
+            let userIdResult = await this.callTipBotFeedApi("user="+userHandle+"&limit=1&result_fields=user_id,user");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].user_id;
+                user.name = userIdResult[0].user;
+                return user;
+            } else {
+                userIdResult = await this.callTipBotFeedApi("to="+userHandle+"&limit=1&result_fields=to_id,to");
+                if(userIdResult && userIdResult.length>0) {
+                    user.id = userIdResult[0].to_id;
+                    user.name = userIdResult[0].to;
+                    return user;
+                } else
+                    return null
+            }
+        } catch(err) {
+            console.log(err);
+            return null;
+        }
+    }
+
     async getUserId(userHandle:string): Promise<string> {
         let userIdResult:any[];
         try {
