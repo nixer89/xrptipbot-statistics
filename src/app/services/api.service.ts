@@ -81,76 +81,67 @@ export class ApiService {
         }
     }
 
-    async getUser(userHandle:string): Promise<any> {
+    async getUser(userHandle:string, network:string): Promise<any> {
         let user = {
             id:null,
-            name: null
+            name: null,
+            network: network
         }
+        let userFilter = network === 'discord' ? 'user_id=' : 'user=';
+        let toFilter = network === 'discord' ? 'to_id=' : 'to=';
         try {
-            let userIdResult = await this.callTipBotFeedApi("user="+userHandle+"&limit=1&result_fields=user_id,user");
+            //checking first if the user has any deposits, withdraws or sent out any tips on his network
+            let userIdResult = await this.callTipBotFeedApi(userFilter+userHandle+"&network="+network+"&limit=1&result_fields=user_id,user");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].user_id;
                 user.name = userIdResult[0].user;
                 return user;
-            } else {
-                userIdResult = await this.callTipBotFeedApi("to="+userHandle+"&limit=1&result_fields=to_id,to");
-                if(userIdResult && userIdResult.length>0) {
-                    user.id = userIdResult[0].to_id;
-                    user.name = userIdResult[0].to;
-                    return user;
-                } else
-                    return null
             }
+
+            //checking if the user received any tips within the same network
+            userIdResult = await this.callTipBotFeedApi(toFilter+userHandle+"&network="+network+"&limit=1&result_fields=to_id,to");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].to_id;
+                user.name = userIdResult[0].to;
+                return user;
+            }
+
+            //checking first tips TO the user via another network
+            userIdResult = await this.callTipBotFeedApi(toFilter+userHandle+"&to_network="+network+"&limit=1&result_fields=to_id,to");
+            console.log("checked cross network 1");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].to_id;
+                user.name = userIdResult[0].to;
+                return user;
+            }
+
+            //checking next tips FROM the user via another network
+            userIdResult = await this.callTipBotFeedApi(userFilter+userHandle+"&user_network="+network+"&limit=1&result_fields=user_id,user");
+            console.log("checked cross network 2");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].user_id;
+                user.name = userIdResult[0].user;
+                return user;
+            }
+
+            return null;
+            
         } catch(err) {
             console.log(err);
             return null;
         }
     }
 
-    async getUserId(userHandle:string): Promise<string> {
-        let userIdResult:any[];
-        try {
-            userIdResult = await this.callTipBotFeedApi("user="+userHandle+"&limit=1&result_fields=user_id");
-            if(userIdResult && userIdResult.length>0)
-                return userIdResult[0].user_id;
-            else {
-                userIdResult = await this.callTipBotFeedApi("to="+userHandle+"&limit=1&result_fields=to_id");
-                if(userIdResult && userIdResult.length>0)
-                    return userIdResult[0].to_id;
-                else return ""
-            }
-        } catch(err) {
-            console.log(err);
-            return "";
-        }
-    }
-
-    async getUserName(userId:string): Promise<string> {
+    async getUserNameAndNetwork(userIdToLookFor:string, userIdInteractedWith:string, userNameInteractedWith:string): Promise<string> {
         let userNameResult:any[];
+        let userInteractionFilter = userIdInteractedWith ? "&user_id="+userIdInteractedWith : (userNameInteractedWith ? "&user="+userNameInteractedWith : "")
+        let toInteractionFilter = userIdInteractedWith ? "&to_id="+userIdInteractedWith : (userIdInteractedWith ? "&to="+userIdInteractedWith : "")
         try {
-            userNameResult = await this.callTipBotFeedApi("user_id="+userId+"&limit=1&result_fields=user");
-            if(userNameResult && userNameResult.length>0)
-                return userNameResult[0].user;
-            else {
-                userNameResult = await this.callTipBotFeedApi("to_id="+userId+"&limit=1&result_fields=to");
-                if(userNameResult && userNameResult.length>0)
-                    return userNameResult[0].to;
-                else return ""
-            }
-        } catch(err) {
-            console.log(err);
-            return "";
-        }
-    }
-
-    async getUserNameAndNetwork(userId:string): Promise<string> {
-        let userNameResult:any[];
-        try {
-            userNameResult = await this.callTipBotFeedApi("user_id="+userId+"&limit=1&result_fields=user,network,user_id");
+            userNameResult = await this.callTipBotFeedApi("user_id="+userIdToLookFor+toInteractionFilter+"&limit=1&result_fields=user,network,user_id,user_network");
             if(userNameResult && userNameResult.length>0)
                 return userNameResult[0];
             else {
-                userNameResult = await this.callTipBotFeedApi("to_id="+userId+"&limit=1&result_fields=to,network,to_id");
+                userNameResult = await this.callTipBotFeedApi("to_id="+userIdToLookFor+userInteractionFilter+"&limit=1&result_fields=to,network,to_id,to_network");
                 if(userNameResult && userNameResult.length>0)
                     return userNameResult[0];
                 else return ""

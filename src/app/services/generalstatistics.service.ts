@@ -6,10 +6,8 @@ export class GeneralStatisticsService {
 
     constructor(private api: ApiService) {}
 
-    async getTopTipper(fromDate: Date, toDate: Date, userId?:string, userName?:string): Promise<any[]> {
+    async getTopTipper(fromDate: Date, toDate: Date, network:string, userId?:string, userName?:string): Promise<any[]> {
         try {
-            console.log("get top tipper with userId: " + userId + " and userName: " + userName);
-
             let userFilter = userId ? "&user_id="+userId : (userName ? "&user="+userName : "")
             let toFilter = userId ? "&to_id="+userId : (userName ? "&to="+userName : "")
             let optionalDateFilter = "";
@@ -40,10 +38,10 @@ export class GeneralStatisticsService {
 
             for(let i = 0; i < promiseResult.length; i++) {
                 let singleResult:any[] = promiseResult[i];
-                //console.log("singleResult: " + JSON.stringify(singleResult));
+                //console.log("singleResult " + i + ": " + JSON.stringify(singleResult));
                 let promises2: any[] = [];
                 for(let j = 0; j < singleResult.length; j++)
-                    promises2.push(this.api.getUserNameAndNetwork(singleResult[j]['_id']));
+                    promises2.push(this.api.getUserNameAndNetwork(singleResult[j]['_id'], userId, userName));
 
                     resolveUserNamesPromiseAll.push(Promise.all(promises2));
             }
@@ -54,9 +52,17 @@ export class GeneralStatisticsService {
                 let singleResult:any[] = resolveUserNamesPromiseAllResult[i];
                 for(let k = 0; k < singleResult.length; k++) {
                     promiseResult[i][k]['_id']=singleResult[k].user ? singleResult[k].user : singleResult[k].to;
-                    promiseResult[i][k]['network']=singleResult[k].network;
                     promiseResult[i][k]['user_id']=singleResult[k].user_id;
                     promiseResult[i][k]['to_id']=singleResult[k].to_id;
+
+                    if(singleResult[k].user && (singleResult[k].network === 'app' || singleResult[k].network === 'btn'))
+                        promiseResult[i][k]['network'] = singleResult[k].user_network;
+                    else if(singleResult[k].to && (singleResult[k].network === 'app' || singleResult[k].network === 'btn'))
+                        promiseResult[i][k]['network'] = singleResult[k].to_network;
+                    else
+                        promiseResult[i][k]['network'] = singleResult[k].network;
+
+
                     if(promiseResult[i][k]['xrp']) {
                         if(userId)
                             promiseResult[i][k]['xrp']=promiseResult[i][k]['xrp'].toFixed(6);

@@ -51,6 +51,7 @@ import {AppTopbarComponent}  from './components/topbar';
 import {AppFooterComponent}  from './components/footer';
 import {DashboardUserComponent} from './components/dashboardUser';
 import {DashboardOverallComponent} from './components/dashboardOverall';
+import {UserTableComponent} from './components/userTable';
 
 //my components
 import {MainComponent} from './pages/main';
@@ -71,6 +72,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     AppFooterComponent,
     DashboardUserComponent,
     DashboardOverallComponent,
+    UserTableComponent,
     MainComponent,
     UserStatisticsComponent,
     OverallStatisticsComponent

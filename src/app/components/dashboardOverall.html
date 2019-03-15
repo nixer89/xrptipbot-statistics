@@ -75,96 +75,16 @@
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
-                                <h3>Most tips received</h3>
-                                <div class="center">
-                                    <p-table [value]="topTipperReceived" [style]="{'width':'95%'}">
-                                        <ng-template pTemplate="header">
-                                            <tr>
-                                                <th style="width: 65%">User</th>
-                                                <th style="width: 35%">Tips</th>
-                                            </tr>
-                                        </ng-template>
-                                        <ng-template pTemplate="body" let-topTipperReceived>
-                                            <tr>
-                                                <td>
-                                                    {{getShowName(topTipperReceived)}}&nbsp;
-                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topTipperReceived)}}"><img src="../../assets/networks/{{topTipperReceived['network']}}.png" width="20" height="20"></a>
-                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topTipperReceived['_id']}}/n:{{topTipperReceived['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
-                                                </td>
-                                                <td style="text-align: center">{{topTipperReceived['count']}}</td>
-                                            </tr>
-                                        </ng-template>
-                                    </p-table>
-                                </div>
+                                <userTable [data]="topTipperReceived" headline="Most tips received" columnName1="User" columnName2="Tips" columnField2="count"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <h3>Most XRP received by tip</h3>
-                                <div class="center">
-                                    <p-table [value]="topXRPReceived" [style]="{'width':'95%'}">
-                                        <ng-template pTemplate="header">
-                                            <tr>
-                                                <th style="width: 65%">User</th>
-                                                <th style="width: 35%">XRP</th>
-                                            </tr>
-                                        </ng-template>
-                                        <ng-template pTemplate="body" let-topXRPReceived>
-                                            <tr>
-                                                <td>
-                                                    {{getShowName(topXRPReceived)}}&nbsp;
-                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topXRPReceived)}}"><img src="../../assets/networks/{{topXRPReceived['network']}}.png" width="20" height="20"></a>
-                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topXRPReceived['_id']}}/n:{{topXRPReceived['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
-                                                </td>
-                                                <td style="text-align: center">{{topXRPReceived['xrp']}}</td>
-                                            </tr>
-                                        </ng-template>
-                                    </p-table>
-                                </div>
+                                <userTable [data]="topXRPReceived" headline="Most XRP received (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <h3>Most tips sent</h3>
-                                <div class="center">
-                                    <p-table [value]="topTipperSent" [style]="{'width':'95%'}">
-                                        <ng-template pTemplate="header">
-                                            <tr>
-                                                <th style="width: 65%">User</th>
-                                                <th style="width: 35%">Tips</th>
-                                            </tr>
-                                        </ng-template>
-                                        <ng-template pTemplate="body" let-topTipperSent>
-                                            <tr>
-                                                <td>
-                                                    {{getShowName(topTipperSent)}}&nbsp;
-                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topTipperSent)}}"><img src="../../assets/networks/{{topTipperSent['network']}}.png" width="20" height="20"></a>
-                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topTipperSent['_id']}}/n:{{topTipperSent['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
-                                                </td>
-                                                <td style="text-align: center">{{topTipperSent['count']}}</td>
-                                            </tr>
-                                        </ng-template>
-                                    </p-table>
-                                </div>
+                                <userTable [data]="topTipperSent" headline="Most tips sent" columnName1="User" columnName2="Tips" columnField2="count"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <h3>Most XRP sent by tip</h3>
-                                <div class="center">
-                                    <p-table [value]="topXRPSent" [style]="{'width':'95%'}">
-                                        <ng-template pTemplate="header">
-                                            <tr>
-                                                <th style="width: 65%">User</th>
-                                                <th style="width: 35%">XRP</th>
-                                            </tr>
-                                        </ng-template>
-                                        <ng-template pTemplate="body" let-topXRPSent>
-                                            <tr>
-                                                <td>
-                                                    {{getShowName(topXRPSent)}}&nbsp;
-                                                    <a style="vertical-align: middle;" href="{{getNetworkURL(topXRPSent)}}"><img src="../../assets/networks/{{topXRPSent['network']}}.png" width="20" height="20"></a>
-                                                    <a style="vertical-align: middle;" href="https://www.xrptipbot.com/u:{{topXRPSent['_id']}}/n:{{topXRPSent['network']}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
-                                                </td>
-                                                <td style="text-align: center">{{topXRPSent['xrp']}}</td>
-                                            </tr>
-                                        </ng-template>
-                                    </p-table>
-                                </div>
+                                <userTable [data]="topXRPSent" headline="Most XRP sent (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp"></userTable>
                             </div>
                         </div>
                     </p-card>

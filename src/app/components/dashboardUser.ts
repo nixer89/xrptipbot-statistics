@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from '@angular/router';
 import { UserStatisticsService } from '../services/userstatistics.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 import { ApiService } from '../services/api.service';
@@ -14,6 +15,8 @@ export class DashboardUserComponent implements OnInit {
     processingAll = false;
     selectedUser: string;
     user_id:string;
+    networkDropdown:any;
+    selectedNetwork:string;
 
     //chart
     chartData: any;
@@ -43,19 +46,40 @@ export class DashboardUserComponent implements OnInit {
     topReceivedXRP:any[] = [];
     topSentXRP:any[] = [];
 
-    constructor(private userStatistics: UserStatisticsService, private api: ApiService, private generalStats: GeneralStatisticsService) {
+    constructor(private userStatistics: UserStatisticsService,
+                private api: ApiService,
+                private generalStats: GeneralStatisticsService,
+                private route: ActivatedRoute) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
             {label:'Weeks', value:7}
         ];
 
+        this.networkDropdown = [
+            {label:'twitter', value:'twitter'},
+            {label:'reddit', value:'reddit'},
+            {label:'discord', value:'discord'},
+        ];
+
         this.selectedDayOrWeek = this.daysOrWeeksDropDown[0].value;
-        this.initWithZeroValues();        
+        this.selectedNetwork = this.networkDropdown[0].value;
     }
 
     async ngOnInit() {
-        await this.refreshChart();
+        let userInQuery = this.route.snapshot.queryParamMap.get('user');
+        let networkInQuery = this.route.snapshot.queryParamMap.get('network');
+        console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
+        if(userInQuery && userInQuery.trim().length>0) {
+            this.selectedUser = userInQuery.trim();
+
+            if(networkInQuery && networkInQuery.trim().length>0)
+                this.selectedNetwork = networkInQuery.trim();
+            
+            this.refreshAll();
+        } else {
+            this.initWithZeroValues();        
+        }
     }
 
     refreshAllWithTimeout() {
@@ -83,8 +107,9 @@ export class DashboardUserComponent implements OnInit {
     async refreshAll() {
         if(this.selectedUser) {
             this.processingAll = true;
-            let user = await this.api.getUser(this.selectedUser.trim());
+            let user = await this.api.getUser(this.selectedUser.trim(), this.selectedNetwork);
             if(user) {
+                console.log("found user: " + JSON.stringify(user));
                 this.user_id = user.id;
                 console.log("selectedUser: " + this.selectedUser)
                 console.log("userId for user " + this.selectedUser + " is: " + this.user_id);
@@ -105,8 +130,10 @@ export class DashboardUserComponent implements OnInit {
         if(this.selectedUser && this.selectedUser.trim().length>0 &&
             (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
                 this.processingStats = true;
-                let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.user_id, this.selectedUser.trim());
-                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.user_id, this.selectedUser.trim());
+                let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.user_id, this.selectedUser.trim());
+                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.user_id, this.selectedUser.trim());
+
+                console.log("tipTipper: " + JSON.stringify(topTipper));
 
                 //console.log("user stats result in dashboard: " + JSON.stringify(stats));
                 if(stats) {
@@ -139,6 +166,7 @@ export class DashboardUserComponent implements OnInit {
             //console.log("include deposits? " + this.includeDeposits);
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
             let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.user_id, this.selectedUser ? this.selectedUser.trim():null);
+            
             
             if(this.includeDeposits) {
                 for(let i = 0;i<result.receivedXRP.length;i++)
@@ -246,5 +274,22 @@ export class DashboardUserComponent implements OnInit {
                 position: 'top'
             }
         };
+    }
+
+    getShowName(tipper:any) : string {
+        if(tipper.network==='discord')
+            return tipper.user_id ? tipper.user_id : tipper.to_id;
+        else
+            return tipper._id;
+    }
+
+    getNetworkURL(tipper:any): String {
+        if(tipper.network==='discord') {
+            return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
+        } else if(tipper.network ==='reddit') {
+            return 'https://reddit.com/u/'+tipper._id;
+        } else {
+            return 'https://twitter.com/'+tipper._id;
+        }
     }
 }

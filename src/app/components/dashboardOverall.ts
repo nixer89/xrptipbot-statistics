@@ -78,9 +78,7 @@ export class DashboardOverallComponent implements OnInit {
         if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
             let stats:number[] = await this.overAllStatistics.getOverallStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
             let statsByNetwork:number[] = await this.overAllStatistics.getOverallStatsByNetwork(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-
-            console.log("topTipper: " + JSON.stringify(topTipper));
+            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, null);
 
             //console.log("user stats result in dashboard: " + JSON.stringify(stats));
             if(stats) {
@@ -246,7 +244,6 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     getNetworkURL(tipper:any): String {
-        console.log("checkking tipper: " + JSON.stringify(tipper));
         if(tipper.network==='discord') {
             return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
         } else if(tipper.network ==='reddit') {

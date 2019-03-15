@@ -7,7 +7,7 @@ export class UserStatisticsService {
 
     constructor(private api: ApiService, private generalStats: GeneralStatisticsService) {}
 
-    async getUserStats(fromDate: Date, toDate: Date, userId?:string, userName?:string): Promise<number[]> {
+    async getUserStats(fromDate: Date, toDate: Date, network:string, userId?:string, userName?:string): Promise<number[]> {
         //console.log("getUserStats")
         try {
             let userFilter = (userId && userId.trim().length>0) ? "user_id="+userId : "user="+userName;
@@ -20,21 +20,21 @@ export class UserStatisticsService {
 
             let promises:any[] = [];
             //received tips
-            promises.push(this.api.getCount(toFilter+"&type=tip"+optionalDateFilter));
+            promises.push(this.api.getCount(toFilter+"&type=tip&network="+network+optionalDateFilter));
             //received tips XRP
-            promises.push(this.api.getAggregatedXRP(toFilter+"&type=tip"+optionalDateFilter));
+            promises.push(this.api.getAggregatedXRP(toFilter+"&type=tip&network="+network+optionalDateFilter));
             //sent tips
-            promises.push(this.api.getCount(userFilter+"&type=tip"+optionalDateFilter));
+            promises.push(this.api.getCount(userFilter+"&type=tip&network="+network+optionalDateFilter));
             //sent tips XRP
-            promises.push(this.api.getAggregatedXRP(userFilter+"&type=tip"+optionalDateFilter));
+            promises.push(this.api.getAggregatedXRP(userFilter+"&type=tip&network="+network+optionalDateFilter));
             //deposits
-            promises.push(this.api.getCount(userFilter+"&type=deposit"+optionalDateFilter));
+            promises.push(this.api.getCount(userFilter+"&type=deposit&network="+network+optionalDateFilter));
             //deposits XRP
-            promises.push(this.api.getAggregatedXRP(userFilter+"&type=deposit"+optionalDateFilter));
+            promises.push(this.api.getAggregatedXRP(userFilter+"&type=deposit&network="+network+optionalDateFilter));
             //withdraw
-            promises.push(this.api.getCount(userFilter+"&type=withdraw"+optionalDateFilter));
+            promises.push(this.api.getCount(userFilter+"&type=withdraw&network="+network+optionalDateFilter));
             //withdraw XRP
-            promises.push(this.api.getAggregatedXRP(userFilter+"&type=withdraw"+optionalDateFilter));
+            promises.push(this.api.getAggregatedXRP(userFilter+"&type=withdraw&network="+network+optionalDateFilter));
 
             return Promise.all(promises);
         } catch(err) {
