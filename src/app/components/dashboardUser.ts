@@ -69,7 +69,7 @@ export class DashboardUserComponent implements OnInit {
     async ngOnInit() {
         let userInQuery = this.route.snapshot.queryParamMap.get('user');
         let networkInQuery = this.route.snapshot.queryParamMap.get('network');
-        console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
+        //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
         if(userInQuery && userInQuery.trim().length>0) {
             this.selectedUser = userInQuery.trim();
 
@@ -86,14 +86,14 @@ export class DashboardUserComponent implements OnInit {
         if(Number.isInteger(this.daysToReceive)) {
             if(this.executionTimeoutAll) clearTimeout(this.executionTimeoutAll);
             
-            this.executionTimeoutAll = setTimeout(()=> this.refreshAll(),800);
+            this.executionTimeoutAll = setTimeout(()=> this.refreshAll(),1500);
         }
     }
 
     refreshStatsWithTimeout() {
         if(this.executionTimeoutStats) clearTimeout(this.executionTimeoutStats);
         
-        this.executionTimeoutStats = setTimeout(()=> this.refreshStats(),800);
+        this.executionTimeoutStats = setTimeout(()=> this.refreshStats(),1500);
     }
 
     refreshChartWithTimeout() {
@@ -133,7 +133,7 @@ export class DashboardUserComponent implements OnInit {
                 let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.user_id, this.selectedUser.trim());
                 let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.user_id, this.selectedUser.trim());
 
-                console.log("tipTipper: " + JSON.stringify(topTipper));
+                //console.log("tipTipper: " + JSON.stringify(topTipper));
 
                 //console.log("user stats result in dashboard: " + JSON.stringify(stats));
                 if(stats) {

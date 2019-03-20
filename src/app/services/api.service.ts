@@ -24,6 +24,22 @@ export class ApiService {
         return receivedTips;
     }
 
+    async callTipBotStandarizedFeedApi(queryParams: string): Promise<any[]> {
+        let receivedTips: any[]
+
+        try {
+            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
+            let tipbotFeed = await this.app.get(this.baseUrlToUse+"/std-feed?"+queryParams);
+            //console.log("feed length: " + tipbotFeed.feed.length);
+            receivedTips = tipbotFeed.feed;
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            receivedTips = [];
+        }
+
+        return receivedTips;
+    }
+
     async getCount(queryParams: string): Promise<number> {
         let countResult = await this.callTipBotCountApi("", queryParams);
 
@@ -87,11 +103,10 @@ export class ApiService {
             name: null,
             network: network
         }
-        let userFilter = network === 'discord' ? 'user_id=' : 'user=';
-        let toFilter = network === 'discord' ? 'to_id=' : 'to=';
+
         try {
             //checking first if the user has any deposits, withdraws or sent out any tips on his network
-            let userIdResult = await this.callTipBotFeedApi(userFilter+userHandle+"&network="+network+"&limit=1&result_fields=user_id,user");
+            let userIdResult = await this.callTipBotStandarizedFeedApi('user='+userHandle+"&network="+network+"&limit=1&result_fields=user_id,user");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].user_id;
                 user.name = userIdResult[0].user;
@@ -99,7 +114,7 @@ export class ApiService {
             }
 
             //checking if the user received any tips within the same network
-            userIdResult = await this.callTipBotFeedApi(toFilter+userHandle+"&network="+network+"&limit=1&result_fields=to_id,to");
+            userIdResult = await this.callTipBotStandarizedFeedApi('to='+userHandle+"&network="+network+"&limit=1&result_fields=to_id,to");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].to_id;
                 user.name = userIdResult[0].to;
@@ -107,7 +122,7 @@ export class ApiService {
             }
 
             //checking first tips TO the user via another network
-            userIdResult = await this.callTipBotFeedApi(toFilter+userHandle+"&to_network="+network+"&limit=1&result_fields=to_id,to");
+            userIdResult = await this.callTipBotStandarizedFeedApi('to='+userHandle+"&to_network="+network+"&limit=1&result_fields=to_id,to");
             console.log("checked cross network 1");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].to_id;
@@ -116,7 +131,7 @@ export class ApiService {
             }
 
             //checking next tips FROM the user via another network
-            userIdResult = await this.callTipBotFeedApi(userFilter+userHandle+"&user_network="+network+"&limit=1&result_fields=user_id,user");
+            userIdResult = await this.callTipBotStandarizedFeedApi('user='+userHandle+"&user_network="+network+"&limit=1&result_fields=user_id,user");
             console.log("checked cross network 2");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].user_id;
@@ -124,6 +139,40 @@ export class ApiService {
                 return user;
             }
 
+            //if no match, try to check for the ID?!
+            //checking first if the user has any deposits, withdraws or sent out any tips on his network
+            userIdResult = await this.callTipBotStandarizedFeedApi('user_id='+userHandle+"&network="+network+"&limit=1&result_fields=user_id,user");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].user_id;
+                user.name = userIdResult[0].user;
+                return user;
+            }
+
+            //checking if the user received any tips within the same network
+            userIdResult = await this.callTipBotStandarizedFeedApi('to_id='+userHandle+"&network="+network+"&limit=1&result_fields=to_id,to");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].to_id;
+                user.name = userIdResult[0].to;
+                return user;
+            }
+
+            //checking first tips TO the user via another network
+            userIdResult = await this.callTipBotStandarizedFeedApi('to_id='+userHandle+"&to_network="+network+"&limit=1&result_fields=to_id,to");
+            console.log("checked cross network 1");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].to_id;
+                user.name = userIdResult[0].to;
+                return user;
+            }
+
+            //checking next tips FROM the user via another network
+            userIdResult = await this.callTipBotStandarizedFeedApi('user_id='+userHandle+"&user_network="+network+"&limit=1&result_fields=user_id,user");
+            console.log("checked cross network 2");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].user_id;
+                user.name = userIdResult[0].user;
+                return user;
+            }
             return null;
             
         } catch(err) {
@@ -137,11 +186,11 @@ export class ApiService {
         let userInteractionFilter = userIdInteractedWith ? "&user_id="+userIdInteractedWith : (userNameInteractedWith ? "&user="+userNameInteractedWith : "")
         let toInteractionFilter = userIdInteractedWith ? "&to_id="+userIdInteractedWith : (userIdInteractedWith ? "&to="+userIdInteractedWith : "")
         try {
-            userNameResult = await this.callTipBotFeedApi("user_id="+userIdToLookFor+toInteractionFilter+"&limit=1&result_fields=user,network,user_id,user_network");
+            userNameResult = await this.callTipBotStandarizedFeedApi("user_id="+userIdToLookFor+toInteractionFilter+"&limit=1&result_fields=user,network,user_id,user_network");
             if(userNameResult && userNameResult.length>0)
                 return userNameResult[0];
             else {
-                userNameResult = await this.callTipBotFeedApi("to_id="+userIdToLookFor+userInteractionFilter+"&limit=1&result_fields=to,network,to_id,to_network");
+                userNameResult = await this.callTipBotStandarizedFeedApi("to_id="+userIdToLookFor+userInteractionFilter+"&limit=1&result_fields=to,network,to_id,to_network");
                 if(userNameResult && userNameResult.length>0)
                     return userNameResult[0];
                 else return ""

@@ -21,11 +21,12 @@ export class UserTableComponent {
     @Input()
     columnField2:string;
 
-    getShowName(tipper:any) : string {
-        if(tipper.network==='discord')
-            return tipper.user_id ? tipper.user_id : tipper.to_id;
-        else
-            return tipper._id;
+    getXRPTipBotURL(tipper:any) : string {
+        return "https://www.xrptipbot.com/u:"+(tipper['network']==='discord' ? tipper['user_id'] : tipper['_id'])+"/n:"+tipper['network'];
+    }
+
+    isDiscordNetwork(network:string) {
+        return 'discord'===network;
     }
 
     getNetworkURL(tipper:any): String {

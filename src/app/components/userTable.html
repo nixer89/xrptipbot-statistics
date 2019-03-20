@@ -10,8 +10,9 @@
         <ng-template pTemplate="body" let-data>
             <tr>
                 <td>
-                    <a style="vertical-align: middle" href="https://www.xrptipbot.com/u:{{data['_id']}}/n:{{data['network']}}">{{getShowName(data)}}&nbsp;</a>
-                    <a href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{data['network']}}.png" width="20" height="20" style="vertical-align: middle;"></a>
+                    <a style="vertical-align: middle" target="_blank" href="{{getXRPTipBotURL(data)}}">{{data['_id']}}&nbsp;</a>
+                    <a *ngIf="!isDiscordNetwork(data['network'])" target="_blank" href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{data['network']}}.png" width="20" height="20" style="vertical-align: middle;"></a>
+                    <img *ngIf="isDiscordNetwork(data['network'])" src="../../assets/networks/{{data['network']}}.png" width="20" height="20" style="vertical-align: middle;">
                 </td>
                 <td style="text-align: center">{{data[columnField2]}}</td>
             </tr>

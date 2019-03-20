@@ -12,6 +12,7 @@ export class UserStatisticsService {
         try {
             let userFilter = (userId && userId.trim().length>0) ? "user_id="+userId : "user="+userName;
             let toFilter = (userId && userId.trim().length>0) ? "to_id="+userId : "to="+userName;
+
             let optionalDateFilter = "";
             if(fromDate && toDate) {
                 optionalDateFilter+="&from_date="+this.generalStats.setZeroMilliseconds(fromDate).toUTCString();

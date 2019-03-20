@@ -9,12 +9,12 @@
                                 <div class="floatleft" style="width: 60%">
                                     <span class="ui-float-label" style="padding-top: 0.2em">
                                         <input id="userHandle" type="text" size="20" [disabled]="processingAll || processingStats" [(ngModel)]="selectedUser" (input)="refreshAllWithTimeout()" pInputText autofocus> 
-                                        <label for="userHandle">User handle</label>
+                                        <label for="userHandle">User handle / id</label>
                                     </span>
                                 </div>
                                 <div class="floatright"  style="width: 40%; padding-left: 0.2em;">
                                     <div class="floatleft" style="align-items: left;">
-                                        <p-dropdown [options]="networkDropdown" [(ngModel)]="selectedNetwork" (onChange)="refreshAllWithTimeout()" [style]="{'width':'60px','height':'40px'}">
+                                        <p-dropdown [options]="networkDropdown" [(ngModel)]="selectedNetwork" [disabled]="processingAll || processingStats" (onChange)="refreshAllWithTimeout()" [style]="{'width':'60px','height':'40px'}">
                                             <ng-template let-item pTemplate="selectedItem">
                                                 <img src="../../assets/networks/{{item.label}}.png" width="20" height="20" />
                                             </ng-template>
