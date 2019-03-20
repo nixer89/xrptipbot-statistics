@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { of } from 'rxjs';
 
 @Component({
     selector: "userTable",
@@ -37,5 +38,15 @@ export class UserTableComponent {
         } else {
             return 'https://twitter.com/'+tipper._id;
         }
+    }
+
+    resolveIconName(network:string): string {
+        if('discord'===network)
+            return 'albert';
+        else if('reddit'===network)
+            return 'berta'
+        else if('twitter'===network)
+            return 'emil'
+        else return 'emil';
     }
 }

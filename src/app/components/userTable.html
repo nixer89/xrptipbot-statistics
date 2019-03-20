@@ -11,8 +11,8 @@
             <tr>
                 <td>
                     <a style="vertical-align: middle" target="_blank" href="{{getXRPTipBotURL(data)}}">{{data['_id']}}&nbsp;</a>
-                    <a *ngIf="!isDiscordNetwork(data['network'])" target="_blank" href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{data['network']}}.png" width="20" height="20" style="vertical-align: middle;"></a>
-                    <img *ngIf="isDiscordNetwork(data['network'])" src="../../assets/networks/{{data['network']}}.png" width="20" height="20" style="vertical-align: middle;">
+                    <a *ngIf="!isDiscordNetwork(data['network'])" target="_blank" href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{resolveIconName(data['network'])}}.png" width="20" height="20" style="vertical-align: middle;"></a>
+                    <img *ngIf="isDiscordNetwork(data['network'])" src="../../assets/networks/{{resolveIconName(data['network'])}}.png" width="20" height="20" style="vertical-align: middle;">
                 </td>
                 <td style="text-align: center">{{data[columnField2]}}</td>
             </tr>

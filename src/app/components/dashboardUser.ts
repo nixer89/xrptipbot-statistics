@@ -57,9 +57,9 @@ export class DashboardUserComponent implements OnInit {
         ];
 
         this.networkDropdown = [
-            {label:'twitter', value:'twitter'},
-            {label:'reddit', value:'reddit'},
-            {label:'discord', value:'discord'},
+            {label:'emil', value:'twitter'},
+            {label:'berta', value:'reddit'},
+            {label:'albert', value:'discord'},
         ];
 
         this.selectedDayOrWeek = this.daysOrWeeksDropDown[0].value;
