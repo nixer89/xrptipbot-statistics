@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 export class ApiService {
     constructor(private app: AppService) {}
 
-    isTestMode = true;
+    isTestMode = false;
     baseUrlToUse = this.isTestMode ? 'http://localhost:4000' : 'https://xrptipbot-api.siedentopf.xyz';
 
     async callTipBotFeedApi(queryParams: string): Promise<any[]> {

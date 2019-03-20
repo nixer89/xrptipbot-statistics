@@ -16,10 +16,10 @@
                                     <div class="floatleft" style="align-items: left;">
                                         <p-dropdown [options]="networkDropdown" [(ngModel)]="selectedNetwork" [disabled]="processingAll || processingStats" (onChange)="refreshAllWithTimeout()" [style]="{'width':'60px','height':'40px'}">
                                             <ng-template let-item pTemplate="selectedItem">
-                                                <img src="../../assets/networks/{{item.label}}.png" width="20" height="20" />
+                                                <img src="../../assets/networks/{{item.label}}.png" width="18" height="18" />
                                             </ng-template>
-                                            <ng-template let-car pTemplate="item">
-                                                <img src="../../assets/networks/{{car.label}}.png" width="20" height="20"/>
+                                            <ng-template let-network pTemplate="item">
+                                                <img src="../../assets/networks/{{network.label}}.png" width="18" height="18"/>
                                             </ng-template>
                                         </p-dropdown>
                                     </div>
