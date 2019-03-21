@@ -10,9 +10,14 @@
         <ng-template pTemplate="body" let-data>
             <tr>
                 <td>
-                    <a style="vertical-align: middle" target="_blank" href="{{getXRPTipBotURL(data)}}">{{data['_id']}}&nbsp;</a>
-                    <a *ngIf="!isDiscordNetwork(data['network'])" target="_blank" href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{resolveIconName(data['network'])}}.png" width="20" height="20" style="vertical-align: middle;"></a>
-                    <img *ngIf="isDiscordNetwork(data['network'])" src="../../assets/networks/{{resolveIconName(data['network'])}}.png" width="20" height="20" style="vertical-align: middle;">
+                    <div class="floatleft">
+                        <a style="vertical-align: middle" href="{{getStatisticsURL(data)}}">{{data['_id']}}&nbsp;</a>
+                    </div>
+                    <div class="floatright">
+                        <a *ngIf="!isDiscordNetwork(data)" target="_blank" href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{resolveIconName(data)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
+                        <img *ngIf="isDiscordNetwork(data)" src="../../assets/networks/{{resolveIconName(data)}}.png" width="20" height="20" style="vertical-align: middle;">
+                        <a target="_blank" href="{{getXRPTipBotURL(data)}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20" style="vertical-align: middle;"></a>
+                    </div>
                 </td>
                 <td style="text-align: center">{{data[columnField2]}}</td>
             </tr>

@@ -109,10 +109,9 @@ export class DashboardUserComponent implements OnInit {
             this.processingAll = true;
             let user = await this.api.getUser(this.selectedUser.trim(), this.selectedNetwork);
             if(user) {
+                console.log("selectedUser: " + this.selectedUser)
                 console.log("found user: " + JSON.stringify(user));
                 this.user_id = user.id;
-                console.log("selectedUser: " + this.selectedUser)
-                console.log("userId for user " + this.selectedUser + " is: " + this.user_id);
                 //check if user was found
                 //user found, continue!
                 let promises:any[] = [this.refreshStats(), this.refreshChart()]
@@ -154,6 +153,7 @@ export class DashboardUserComponent implements OnInit {
                     this.topReceivedXRP = topTipper[2] ? topTipper[2]: [];
                     this.topSentXRP = topTipper[3] ? topTipper[3]: [];
                 }
+
                 this.processingStats = false;
         } else {
             this.initStatsWithZeroValues();

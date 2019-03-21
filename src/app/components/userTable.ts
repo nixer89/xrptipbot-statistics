@@ -22,12 +22,16 @@ export class UserTableComponent {
     @Input()
     columnField2:string;
 
-    getXRPTipBotURL(tipper:any) : string {
-        return "https://www.xrptipbot.com/u:"+(tipper['network']==='discord' ? tipper['user_id'] : tipper['_id'])+"/n:"+tipper['network'];
+    isDiscordNetwork(tipper:any) {
+        return 'discord'===tipper.network;
     }
 
-    isDiscordNetwork(network:string) {
-        return 'discord'===network;
+    getXRPTipBotURL(tipper:any) : string {
+        return "https://www.xrptipbot.com/u:"+(tipper.network==='discord' ? tipper.user_id : tipper._id)+"/n:"+tipper.network;
+    }
+
+    getStatisticsURL(tipper:any) : string {
+        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+tipper._id+"&network="+tipper.network;
     }
 
     getNetworkURL(tipper:any): String {
@@ -40,12 +44,12 @@ export class UserTableComponent {
         }
     }
 
-    resolveIconName(network:string): string {
-        if('discord'===network)
+    resolveIconName(tipper:any): string {
+        if('discord'===tipper.network)
             return 'albert';
-        else if('reddit'===network)
+        else if('reddit'===tipper.network)
             return 'berta'
-        else if('twitter'===network)
+        else if('twitter'===tipper.network)
             return 'emil'
         else return 'emil';
     }
