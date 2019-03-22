@@ -14,6 +14,7 @@ export class DashboardUserComponent implements OnInit {
     executionTimeoutAll;
     processingAll = false;
     selectedUser: string;
+    foundUser: any;
     user_id:string;
     networkDropdown:any;
     selectedNetwork:string;
@@ -83,6 +84,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     refreshAllWithTimeout() {
+        this.initStatsWithZeroValues();
         if(Number.isInteger(this.daysToReceive)) {
             if(this.executionTimeoutAll) clearTimeout(this.executionTimeoutAll);
             
@@ -91,6 +93,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     refreshStatsWithTimeout() {
+        this.initStatsWithZeroValues();
         if(this.executionTimeoutStats) clearTimeout(this.executionTimeoutStats);
         
         this.executionTimeoutStats = setTimeout(()=> this.refreshStats(),1500);
@@ -107,11 +110,11 @@ export class DashboardUserComponent implements OnInit {
     async refreshAll() {
         if(this.selectedUser) {
             this.processingAll = true;
-            let user = await this.api.getUser(this.selectedUser.trim(), this.selectedNetwork);
-            if(user) {
+            this.foundUser = await this.api.getUser(this.selectedUser.trim(), this.selectedNetwork);
+            if(this.foundUser) {
                 console.log("selectedUser: " + this.selectedUser)
-                console.log("found user: " + JSON.stringify(user));
-                this.user_id = user.id;
+                console.log("found user: " + JSON.stringify(this.foundUser));
+                this.user_id = this.foundUser.id;
                 //check if user was found
                 //user found, continue!
                 let promises:any[] = [this.refreshStats(), this.refreshChart()]
@@ -227,6 +230,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     initStatsWithZeroValues() {
+        this.foundUser = null;
         this.userStats = [
             {label: "Received Tips", count: 0, xrp:0},
             {label: "Sent Tips", count: 0, xrp:0},
@@ -276,13 +280,35 @@ export class DashboardUserComponent implements OnInit {
         };
     }
 
+    isDiscordNetwork(tipper:any) {
+        return 'discord'===tipper.network;
+    }
+
+    getXRPTipBotURL(tipper:any) : string {
+        return "https://www.xrptipbot.com/u:"+(tipper.network==='discord' ? tipper.id : tipper.name)+"/n:"+tipper.network;
+    }
+
+    getStatisticsURL(tipper:any) : string {
+        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+tipper.name+"&network="+tipper.network;
+    }
+
     getNetworkURL(tipper:any): String {
         if(tipper.network==='discord') {
-            return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
+            return 'https://discordapp.com/u/'+tipper.name;
         } else if(tipper.network ==='reddit') {
-            return 'https://reddit.com/u/'+tipper._id;
+            return 'https://reddit.com/u/'+tipper.name;
         } else {
-            return 'https://twitter.com/'+tipper._id;
+            return 'https://twitter.com/'+tipper.name;
         }
+    }
+
+    resolveIconName(tipper:any): string {
+        if('discord'===tipper.network)
+            return 'albert';
+        else if('reddit'===tipper.network)
+            return 'berta'
+        else if('twitter'===tipper.network)
+            return 'emil'
+        else return 'emil';
     }
 }
