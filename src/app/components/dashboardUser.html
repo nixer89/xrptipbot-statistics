@@ -72,7 +72,7 @@
                         <h2 *ngIf="!selectedUser || (selectedUser && !foundUser)">Top Activities for {{selectedUser}}</h2>
                         <h2 *ngIf="selectedUser && foundUser">
                             <div class="floatleft">
-                                Top Activities for {{selectedUser}}
+                                Top Activities for {{foundUser.name}}
                                 <a *ngIf="!isDiscordNetwork(foundUser)" target="_blank" href="{{getNetworkURL(foundUser)}}" style="vertical-align: middle;"><img src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20"></a>
                                 <img *ngIf="isDiscordNetwork(foundUser)" src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20" style="vertical-align: middle;">
                                 <a target="_blank" href="{{getXRPTipBotURL(foundUser)}}" style="vertical-align: middle;"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>

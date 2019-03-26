@@ -123,7 +123,7 @@ export class ApiService {
 
             //checking first tips TO the user via another network
             userIdResult = await this.callTipBotStandarizedFeedApi('to='+userHandle+"&to_network="+network+"&limit=1&result_fields=to_id,to");
-            console.log("checked cross network 1");
+            //console.log("checked cross network 1");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].to_id;
                 user.name = userIdResult[0].to;
@@ -132,7 +132,7 @@ export class ApiService {
 
             //checking next tips FROM the user via another network
             userIdResult = await this.callTipBotStandarizedFeedApi('user='+userHandle+"&user_network="+network+"&limit=1&result_fields=user_id,user");
-            console.log("checked cross network 2");
+            //console.log("checked cross network 2");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].user_id;
                 user.name = userIdResult[0].user;
@@ -158,7 +158,7 @@ export class ApiService {
 
             //checking first tips TO the user via another network
             userIdResult = await this.callTipBotStandarizedFeedApi('to_id='+userHandle+"&to_network="+network+"&limit=1&result_fields=to_id,to");
-            console.log("checked cross network 1");
+            //console.log("checked cross network 1");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].to_id;
                 user.name = userIdResult[0].to;
@@ -167,7 +167,7 @@ export class ApiService {
 
             //checking next tips FROM the user via another network
             userIdResult = await this.callTipBotStandarizedFeedApi('user_id='+userHandle+"&user_network="+network+"&limit=1&result_fields=user_id,user");
-            console.log("checked cross network 2");
+            //console.log("checked cross network 2");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].user_id;
                 user.name = userIdResult[0].user;
