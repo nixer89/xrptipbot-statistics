@@ -27,7 +27,10 @@ export class UserTableComponent {
     }
 
     getXRPTipBotURL(tipper:any) : string {
-        return "https://www.xrptipbot.com/u:"+(tipper.network==='discord' ? tipper.user_id : tipper._id)+"/n:"+tipper.network;
+        if(this.isDiscordNetwork(tipper))
+            return "https://www.xrptipbot.com/u:"+(tipper.user_id ? tipper.user_id : tipper.to_id)+"/n:"+tipper.network;
+        else
+            return "https://www.xrptipbot.com/u:"+tipper._id+"/n:"+tipper.network;
     }
 
     getStatisticsURL(tipper:any) : string {
