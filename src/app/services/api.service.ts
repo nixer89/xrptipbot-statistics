@@ -8,12 +8,38 @@ export class ApiService {
     isTestMode = false;
     baseUrlToUse = this.isTestMode ? 'http://localhost:4000' : 'https://xrptipbot-api.siedentopf.xyz';
 
+    //################################# CALL API METHODS #################################
+    async callTipBotPublicPage(user: string): Promise<any> {
+        try {
+            return this.app.get('https://www.xrptipbot.com/u:'+user+'/n:twitter/f:json');
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return [];
+        }
+    }
+
     async callTipBotFeedApi(queryParams: string): Promise<any[]> {
         let receivedTips: any[]
 
         try {
             //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
             let tipbotFeed = await this.app.get(this.baseUrlToUse+"/feed?"+queryParams);
+            //console.log("feed length: " + tipbotFeed.feed.length);
+            receivedTips = tipbotFeed.feed;
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            receivedTips = [];
+        }
+
+        return receivedTips;
+    }
+
+    async callTipBotILPFeedApi(queryParams: string): Promise<any[]> {
+        let receivedTips: any[]
+
+        try {
+            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
+            let tipbotFeed = await this.app.get(this.baseUrlToUse+"/ilp-feed?"+queryParams);
             //console.log("feed length: " + tipbotFeed.feed.length);
             receivedTips = tipbotFeed.feed;
         } catch(err) {
@@ -40,6 +66,32 @@ export class ApiService {
         return receivedTips;
     }
 
+    private async callTipBotCountApi(path: string, queryParams: string): Promise<any> {
+        try {
+            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/count"+path+"?"+queryParams)
+            return this.app.get(this.baseUrlToUse+"/count"+path+"?"+queryParams);
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
+    
+    private async callTipBotAggregateApi(path:string, queryParams: string): Promise<any> {
+        try {
+            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/aggregate"+path+"?"+queryParams)
+            return this.app.get(this.baseUrlToUse+"/aggregate"+path+"?"+queryParams);
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
+    //################################# CALL API METHODS END #################################
+
+
+    //################################# WRAPPER METHODS #################################
+
     async getCount(queryParams: string): Promise<number> {
         let countResult = await this.callTipBotCountApi("", queryParams);
 
@@ -52,16 +104,6 @@ export class ApiService {
 
         if(countResult) return countResult.result;
         else return [];
-    }
-
-    private async callTipBotCountApi(path: string, queryParams: string): Promise<any> {
-        try {
-            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/count"+path+"?"+queryParams)
-            return this.app.get(this.baseUrlToUse+"/count"+path+"?"+queryParams);
-        } catch(err) {
-            console.log(JSON.stringify(err))
-            return null;
-        }
     }
 
     async getAggregatedXRP(queryParams: string): Promise<number> {
@@ -78,24 +120,23 @@ export class ApiService {
         else return [];
     }
 
-    private async callTipBotAggregateApi(path:string, queryParams: string): Promise<any> {
-        try {
-            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/aggregate"+path+"?"+queryParams)
-            return this.app.get(this.baseUrlToUse+"/aggregate"+path+"?"+queryParams);
-        } catch(err) {
-            console.log(JSON.stringify(err))
-            return null;
+    async getILPDepositXRP(queryParams: string): Promise<number> {
+        let ilpDeposits = await this.callTipBotILPFeedApi(queryParams);
+
+
+        if(ilpDeposits && ilpDeposits.length>0) {
+            let culmulatedXRP = 0;
+            for(let i = 0; i < ilpDeposits.length;i++) {
+                culmulatedXRP+= ilpDeposits[i].xrp;
+            }
+
+            return culmulatedXRP/1000000;
+        } else {
+            return 0;
         }
     }
 
-    async callTipBotPublicPage(user: string): Promise<any> {
-        try {
-            return this.app.get('https://www.xrptipbot.com/u:'+user+'/n:twitter/f:json');
-        } catch(err) {
-            console.log(JSON.stringify(err))
-            return [];
-        }
-    }
+    //################################# WRAPPER METHODS END #################################
 
     async getUser(userHandle:string, network:string): Promise<any> {
         let user = {

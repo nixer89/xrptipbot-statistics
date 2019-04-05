@@ -37,6 +37,7 @@ export class DashboardUserComponent implements OnInit {
         {label: "Sent Tips", count: 0, xrp:0},
         {label: "Deposits", count: 0, xrp:0},
         {label: "Withdrawals", count: 0, xrp:0},
+        {label: "ILP-Deposits", count: '-', xrp:0},
     ];
     useDateRange:boolean = false;
     fromDate:Date;
@@ -147,6 +148,7 @@ export class DashboardUserComponent implements OnInit {
                     this.userStats[2].xrp = stats[5] ? stats[5].toFixed(6) : 0;
                     this.userStats[3].count = stats[6] ? stats[6] : 0;
                     this.userStats[3].xrp = stats[7] ? stats[7].toFixed(6) : 0;
+                    this.userStats[4].xrp = stats[8] ? stats[8].toFixed(6) : 0;
                 }
 
                 //console.log("top tipper result in dashboard: " + JSON.stringify(topTipper));
@@ -236,6 +238,7 @@ export class DashboardUserComponent implements OnInit {
             {label: "Sent Tips", count: 0, xrp:0},
             {label: "Deposits", count: 0, xrp:0},
             {label: "Withdrawals", count: 0, xrp:0},
+            {label: "ILP-Deposits", count: '-', xrp:0},
         ];
 
         this.topReceivedTips = [];
