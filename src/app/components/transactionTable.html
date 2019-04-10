@@ -1,0 +1,26 @@
+<p-sidebar [(visible)]="data" [fullScreen]="true" onHide="close()">
+    <p-table [value]="data" [paginator]="true" [rows]="15">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 20%">Date (UTC)</th>
+                <th style="width: 10%">Type</th>
+                <th style="width: 20%">From</th>
+                <th style="width: 20%">To</th>
+                <th style="width: 10%">XRP</th>
+                <th style="width: 10%">From Network</th>
+                <th style="width: 10%">To Network</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data>
+            <tr>
+                <td style="text-align: center">{{data.momentAsDate}}</td>
+                <td style="text-align: center">{{data.type}}</td>
+                <td style="text-align: center">{{data.user}}</td>
+                <td style="text-align: center">{{data.to}}</td>
+                <td style="text-align: center">{{data.xrp}}</td>
+                <td style="text-align: center">{{data.user_network}}</td>
+                <td style="text-align: center">{{data.to_network}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-sidebar>

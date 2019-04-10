@@ -1,5 +1,4 @@
 import { Component, Input } from "@angular/core";
-import { of } from 'rxjs';
 
 @Component({
     selector: "userTable",
@@ -21,6 +20,13 @@ export class UserTableComponent {
 
     @Input()
     columnField2:string;
+
+    //sidebar overlay
+    @Input()
+    transactionTableFilter:string;
+
+    overlayUsedTransactionFilter:string;
+    openOverlayTable:boolean = false;
 
     isDiscordNetwork(tipper:any) {
         return 'discord'===tipper.network;
@@ -55,5 +61,11 @@ export class UserTableComponent {
         else if('twitter'===tipper.network)
             return 'emil'
         else return 'emil';
+    }
+
+    openTransactions(tipper:any) {
+        this.overlayUsedTransactionFilter = this.transactionTableFilter+(this.transactionTableFilter.includes('user') ? "&to=": "&user=")+tipper['_id'];
+        console.log("filter: " + this.overlayUsedTransactionFilter);
+        this.openOverlayTable = true;
     }
 }

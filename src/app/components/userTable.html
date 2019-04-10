@@ -19,8 +19,10 @@
                         <a target="_blank" href="{{getXRPTipBotURL(data)}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20" style="vertical-align: middle;"></a>
                     </div>
                 </td>
-                <td style="text-align: center">{{data[columnField2]}}</td>
+                <td *ngIf="!transactionTableFilter" style="text-align: center">{{data[columnField2]}}</td>
+                <td *ngIf="transactionTableFilter" style="text-align: center"><a [routerLink]="" (click)="openTransactions(data)">{{data[columnField2]}}</a></td>
             </tr>
         </ng-template>
     </p-table>
 </div>
+<transactionTable *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter"></transactionTable>

@@ -44,6 +44,7 @@ import {ToggleButtonModule} from 'primeng/togglebutton';
 import {ChartModule} from 'primeng/chart';
 import {DropdownModule} from 'primeng/dropdown';
 import {CalendarModule} from 'primeng/calendar';
+import {SidebarModule} from 'primeng/sidebar';
 
 //App
 import {AppComponent} from './app.component';
@@ -52,6 +53,7 @@ import {AppFooterComponent}  from './components/footer';
 import {DashboardUserComponent} from './components/dashboardUser';
 import {DashboardOverallComponent} from './components/dashboardOverall';
 import {UserTableComponent} from './components/userTable';
+import {TransactionTableComponent} from './components/transactionTable';
 
 //my components
 import {MainComponent} from './pages/main';
@@ -73,6 +75,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     DashboardUserComponent,
     DashboardOverallComponent,
     UserTableComponent,
+    TransactionTableComponent,
     MainComponent,
     UserStatisticsComponent,
     OverallStatisticsComponent
@@ -120,7 +123,8 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     ToggleButtonModule,
     ChartModule,
     DropdownModule,
-    CalendarModule
+    CalendarModule,
+    SidebarModule
   ],
   providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService],
   bootstrap: [AppComponent]

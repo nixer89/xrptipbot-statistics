@@ -21,6 +21,10 @@ export class DashboardOverallComponent implements OnInit {
     processingChart:boolean = false;
     executionTimeoutChart;
 
+    //detailed transactions
+    userFilter:string;
+    toFilter:string;
+
     //stats
     executionTimeoutStats;
     processingStats:boolean = false;
@@ -109,6 +113,10 @@ export class DashboardOverallComponent implements OnInit {
                 this.topTipperReceived = topTipper[1] ? topTipper[1]: [];
                 this.topXRPSent = topTipper[2] ? topTipper[2]: [];
                 this.topXRPReceived = topTipper[3] ? topTipper[3]: [];
+                this.userFilter = topTipper[4];
+                this.toFilter = topTipper[5];
+
+                console.log("user filter: "+this.userFilter);
             }
         } else {
             this.initWithZeroValues();

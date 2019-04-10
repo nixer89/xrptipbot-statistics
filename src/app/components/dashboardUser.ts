@@ -19,6 +19,10 @@ export class DashboardUserComponent implements OnInit {
     networkDropdown:any;
     selectedNetwork:string;
 
+    //detailed transactions
+    userFilter:string;
+    toFilter:string;
+
     //chart
     chartData: any;
     options:any;
@@ -157,6 +161,8 @@ export class DashboardUserComponent implements OnInit {
                     this.topSentTips = topTipper[1] ? topTipper[1]: [];
                     this.topReceivedXRP = topTipper[2] ? topTipper[2]: [];
                     this.topSentXRP = topTipper[3] ? topTipper[3]: [];
+                    this.userFilter = topTipper[4];
+                    this.toFilter = topTipper[5];
                 }
 
                 this.processingStats = false;

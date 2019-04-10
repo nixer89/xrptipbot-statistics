@@ -84,16 +84,16 @@
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topReceivedTips" headline="Most tips received from" columnName1="User" columnName2="Tips" columnField2="count"></userTable>
+                                <userTable [data]="topReceivedTips" headline="Most tips received from" columnName1="User" columnName2="Tips" columnField2="count" transactionTableFilter="{{toFilter}}"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topReceivedXRP" headline="Most XRP received from" columnName1="User" columnName2="XRP" columnField2="xrp"></userTable>
+                                <userTable [data]="topReceivedXRP" headline="Most XRP received from" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{toFilter}}"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topSentTips" headline="Most tips sent to" columnName1="User" columnName2="Tips" columnField2="count"></userTable>
+                                <userTable [data]="topSentTips" headline="Most tips sent to" columnName1="User" columnName2="Tips" columnField2="count" transactionTableFilter="{{userFilter}}"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topSentXRP" headline="Most XRP sent to (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp"></userTable>
+                                <userTable [data]="topSentXRP" headline="Most XRP sent to (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{userFilter}}"></userTable>
                             </div>
                         </div>
                     </p-card>

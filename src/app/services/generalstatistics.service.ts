@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
+import { promise } from 'protractor';
 
 @Injectable()
 export class GeneralStatisticsService {
@@ -71,6 +72,9 @@ export class GeneralStatisticsService {
                     }
                 }   
             }
+
+            promiseResult.push(optionalDateFilter+userFilter ? optionalDateFilter+userFilter : " ");
+            promiseResult.push(optionalDateFilter+toFilter ? optionalDateFilter+toFilter : " ");
 
             return promiseResult;
         } catch(err) {
