@@ -45,6 +45,7 @@ import {ChartModule} from 'primeng/chart';
 import {DropdownModule} from 'primeng/dropdown';
 import {CalendarModule} from 'primeng/calendar';
 import {SidebarModule} from 'primeng/sidebar';
+import {DialogModule} from 'primeng/dialog';
 
 //App
 import {AppComponent} from './app.component';
@@ -54,6 +55,7 @@ import {DashboardUserComponent} from './components/dashboardUser';
 import {DashboardOverallComponent} from './components/dashboardOverall';
 import {UserTableComponent} from './components/userTable';
 import {TransactionTableComponent} from './components/transactionTable';
+import {TopTipperFullTableComponent} from './components/topTipperFullTable';
 
 //my components
 import {MainComponent} from './pages/main';
@@ -76,6 +78,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     DashboardOverallComponent,
     UserTableComponent,
     TransactionTableComponent,
+    TopTipperFullTableComponent,
     MainComponent,
     UserStatisticsComponent,
     OverallStatisticsComponent
@@ -124,7 +127,8 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     ChartModule,
     DropdownModule,
     CalendarModule,
-    SidebarModule
+    SidebarModule,
+    DialogModule,
   ],
   providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService],
   bootstrap: [AppComponent]

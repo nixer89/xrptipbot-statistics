@@ -7,10 +7,10 @@ export class GeneralStatisticsService {
 
     constructor(private api: ApiService) {}
 
-    async getTopTipper(fromDate: Date, toDate: Date, network:string, userId?:string, userName?:string): Promise<any[]> {
+    async getTopTipper(fromDate: Date, toDate: Date, limit: number, network:string, userId?:string, userName?:string): Promise<any[]> {
         try {
-            let userFilter = userId ? "&user_id="+userId : (userName ? "&user="+userName : "")
-            let toFilter = userId ? "&to_id="+userId : (userName ? "&to="+userName : "")
+            let userFilter = userId ? "&user_network="+network+"&user_id="+userId : (userName ? "&user="+userName : "")
+            let toFilter = userId ? "&to_network="+network+"&to_id="+userId : (userName ? "&to="+userName : "")
             let optionalDateFilter = "";
             if(fromDate && toDate) {
                 optionalDateFilter+="&from_date="+this.setZeroMilliseconds(fromDate).toUTCString();
@@ -18,13 +18,13 @@ export class GeneralStatisticsService {
             }
             let promises:any[] = [];
             //received tips
-            promises.push(this.api.getCountResult("/mostReceivedFrom","type=tip&limit=11"+optionalDateFilter+toFilter));
+            promises.push(this.api.getCountResult("/mostReceivedFrom","type=tip&limit="+limit+optionalDateFilter+toFilter));
             //sent tips
-            promises.push(this.api.getCountResult("/mostSentTo","type=tip&limit=11"+optionalDateFilter+userFilter));
+            promises.push(this.api.getCountResult("/mostSentTo","type=tip&limit="+limit+optionalDateFilter+userFilter));
             //received tips XRP
-            promises.push(this.api.getAggregatedResult("/xrp/mostReceivedFrom","type=tip&limit=11"+optionalDateFilter+toFilter));
+            promises.push(this.api.getAggregatedResult("/xrp/mostReceivedFrom","type=tip&limit="+limit+optionalDateFilter+toFilter));
             //sent tips XRP
-            promises.push(this.api.getAggregatedResult("/xrp/mostSentTo","type=tip&limit=11"+optionalDateFilter+userFilter));
+            promises.push(this.api.getAggregatedResult("/xrp/mostSentTo","type=tip&limit="+limit+optionalDateFilter+userFilter));
 
             let promiseResult = await Promise.all(promises);
             //console.log("promiseResult: " + JSON.stringify(promiseResult));

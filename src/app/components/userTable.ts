@@ -21,6 +21,9 @@ export class UserTableComponent {
     @Input()
     columnField2:string;
 
+    @Input()
+    isReceiving?:boolean;
+
     //sidebar overlay
     @Input()
     transactionTableFilter:string;
@@ -64,7 +67,8 @@ export class UserTableComponent {
     }
 
     openTransactions(tipper:any) {
-        this.overlayUsedTransactionFilter = this.transactionTableFilter+(this.transactionTableFilter.includes('user') ? "&to=": "&user=")+tipper['_id'];
+        console.log("tipper: " + JSON.stringify(tipper));
+        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceiving ? "&to_id=": "&user_id=")+tipper['user_id'];
         console.log("filter: " + this.overlayUsedTransactionFilter);
         this.openOverlayTable = true;
     }

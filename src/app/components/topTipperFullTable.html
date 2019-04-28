@@ -1,0 +1,17 @@
+<p-dialog [style]="{width: '80%', height: '80%'}" [(visible)]="transactionFilter" (onHide)="cleanup()">
+    <p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+    <p-table *ngIf="data" [value]="data" [paginator]="true" [rows]="20">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 65%">{{columnName1}}</th>
+                <th style="width: 35%">{{columnName2}}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data>
+            <tr>
+                <td style="text-align: center">{{data.momentAsDate}}</td>
+                <td style="text-align: center">{{data.user}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

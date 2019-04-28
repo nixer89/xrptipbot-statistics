@@ -82,7 +82,7 @@ export class DashboardOverallComponent implements OnInit {
         if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
             let stats:number[] = await this.overAllStatistics.getOverallStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
             let statsByNetwork:number[] = await this.overAllStatistics.getOverallStatsByNetwork(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, null);
+            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 11, null);
 
             //console.log("user stats result in dashboard: " + JSON.stringify(stats));
             if(stats) {
@@ -115,8 +115,6 @@ export class DashboardOverallComponent implements OnInit {
                 this.topXRPReceived = topTipper[3] ? topTipper[3]: [];
                 this.userFilter = topTipper[4];
                 this.toFilter = topTipper[5];
-
-                console.log("user filter: "+this.userFilter);
             }
         } else {
             this.initWithZeroValues();
