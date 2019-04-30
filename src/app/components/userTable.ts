@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 @Component({
     selector: "userTable",
@@ -22,14 +22,23 @@ export class UserTableComponent {
     columnField2:string;
 
     @Input()
-    isReceiving?:boolean;
+    showAllButton:string;
+
+    @Input()
+    isReceiving?:string;
 
     //sidebar overlay
     @Input()
     transactionTableFilter:string;
 
+    @Output()
+    openAllClicked: EventEmitter<any> = new EventEmitter();
+
+    @Output()
+    allClosed: EventEmitter<any> = new EventEmitter();
+
     overlayUsedTransactionFilter:string;
-    openOverlayTable:boolean = false;
+    openOverlayTable:string;
 
     isDiscordNetwork(tipper:any) {
         return 'discord'===tipper.network;
@@ -68,8 +77,18 @@ export class UserTableComponent {
 
     openTransactions(tipper:any) {
         console.log("tipper: " + JSON.stringify(tipper));
-        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceiving ? "&to_id=": "&user_id=")+tipper['user_id'];
+        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceiving ? "&user_id=": "&to_id=")+tipper['user_id'];
         console.log("filter: " + this.overlayUsedTransactionFilter);
-        this.openOverlayTable = true;
+        this.openOverlayTable = "true";
+    }
+
+    openAll() {
+        this.openAllClicked.emit(null);
+    }
+
+    closedAll() {
+        this.overlayUsedTransactionFilter = "";
+        this.openOverlayTable = null;
+        this.allClosed.emit(null);
     }
 }

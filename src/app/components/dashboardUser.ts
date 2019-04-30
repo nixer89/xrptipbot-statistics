@@ -18,6 +18,14 @@ export class DashboardUserComponent implements OnInit {
     user_id:string;
     networkDropdown:any;
     selectedNetwork:string;
+    topTipperAllReceived:any[];
+    topTipperAllReceivedClicked:boolean = false;
+    topTipperAllReceivedXRP:any[];
+    topTipperAllReceivedXRPClicked:boolean = false;
+    topTipperAllSent:any[];
+    topTipperAllSentClicked:boolean = false;
+    topTipperAllSentXRP:any[];
+    topTipperAllSentXRPClicked:boolean = false;
 
     //detailed transactions
     userFilter:string;
@@ -319,5 +327,46 @@ export class DashboardUserComponent implements OnInit {
         else if('twitter'===tipper.network)
             return 'emil'
         else return 'emil';
+    }
+
+    async openAllTopReceived() {
+        this.topTipperAllReceived = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostReceivedFrom","type=tip"+this.toFilter));
+    }
+
+    async openAllTopReceivedXRP() {
+        this.topTipperAllReceivedXRP = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostReceivedFrom","type=tip"+this.toFilter));
+    }
+
+    async openAllTopSent() {
+        this.topTipperAllSent = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostSentTo","type=tip"+this.userFilter));
+    }
+
+    async openAllTopSentXRP() {
+        this.topTipperAllSentXRP = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostSentTo","type=tip"+this.userFilter));
+    }
+
+    async resolveNamesAndChangeNetwork(numberResultList: any[]): Promise<any[]> {
+        numberResultList = numberResultList.filter(user => user['_id']!="1069586402898337792");
+        if(numberResultList.length > 10)
+            numberResultList.pop();
+        
+        let resolvedUserNames:any[] = await this.generalStats.resolveUserNameAndNetwork(numberResultList, this.user_id, this.selectedUser)
+        return this.generalStats.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList);
+    }
+
+    resetTopTipperAllReceived() {
+        this.topTipperAllReceived = null;
+    }
+
+    resetTopTipperAllReceivedXRP() {
+        this.topTipperAllReceivedXRP = null;
+    }
+
+    resetTopTipperAllSent() {
+        this.topTipperAllSent = null;
+    }
+
+    resetTopTipperAllSentXRP() {
+        this.topTipperAllSentXRP = null;
     }
 }

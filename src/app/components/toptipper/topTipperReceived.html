@@ -1,0 +1,5 @@
+<p-dialog *ngIf="loadAll" [style]="{width: '90%', height: '90%'}" [(visible)]="loadAll && topTipperAllReceived" (onHide)="onHide()">
+    <p-progressSpinner *ngIf="!topTipperAllReceived" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+    <userTable *ngIf="topTipperAllReceived" [data]="topTipperAllReceived" [headline]="headline" [columnName1]="columnName1" [columnName2]="columnName2" [columnField2]="columnField2" [showAllButton]="loadAll"></userTable>
+</p-dialog>
+<userTable *ngIf="!loadAll" [data]="topTipperAllReceived" [headline]="headline" [columnName1]="columnName1" [columnName2]="columnName2" [columnField2]="columnField2" [showAllButton]="loadAll"></userTable>

@@ -88,16 +88,16 @@
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topReceivedTips" headline="Most tips received from" columnName1="User" columnName2="Tips" columnField2="count" transactionTableFilter="{{toFilter}}"></userTable>
+                                <topTipperReceived headline="Most tips received from" columnName1="User" columnName2="Tips" columnField2="count" [filter]="toFilter" showAllButton="true"></topTipperReceived>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topReceivedXRP" headline="Most XRP received from" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{toFilter}}"></userTable>
+                                <userTable [data]="topReceivedXRP" headline="Most XRP received from" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{toFilter}}" (openAllClicked)="openAllTopReceivedXRP()" showAllButton="true" isReceiving="true"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topSentTips" headline="Most tips sent to" columnName1="User" columnName2="Tips" columnField2="count" transactionTableFilter="{{userFilter}}"></userTable>
+                                <userTable [data]="topSentTips" headline="Most tips sent to" columnName1="User" columnName2="Tips" columnField2="count" transactionTableFilter="{{userFilter}}" (openAllClicked)="openAllTopSent()" showAllButton="true"></userTable>
                             </div>
                             <div class="floatleft" style="width: 25%">
-                                <userTable [data]="topSentXRP" headline="Most XRP sent to (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{userFilter}}"></userTable>
+                                <userTable [data]="topSentXRP" headline="Most XRP sent to (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{userFilter}}" (openAllClicked)="openAllTopSentXRP()" showAllButton="true"></userTable>
                             </div>
                         </div>
                     </p-card>
@@ -131,3 +131,8 @@
         </div>
     </div>
 </div>
+
+<topTipperFullTable *ngIf="topTipperAllReceived && topTipperAllReceived.length > 0" [data]="topTipperAllReceived" [headlineDialog]="foundUser.name" headline="Most tips received from" columnName1="User" columnName2="Tips" columnField2="count" (closed)="resetTopTipperAllReceived()"></topTipperFullTable>
+<topTipperFullTable *ngIf="topTipperAllReceivedXRP && topTipperAllReceivedXRP.length > 0" [data]="topTipperAllReceivedXRP" [headlineDialog]="foundUser.name" headline="Most XRP received from" columnName1="User" columnName2="XRP" columnField2="xrp" (closed)="resetTopTipperAllReceivedXRP()"></topTipperFullTable>
+<topTipperFullTable *ngIf="topTipperAllSent && topTipperAllSent.length > 0" [data]="topTipperAllSent" [headlineDialog]="foundUser.name" headline="Most tips sent to" columnName1="User" columnName2="Tips" columnField2="count" (closed)="resetTopTipperAllSent()"></topTipperFullTable>
+<topTipperFullTable *ngIf="topTipperAllSentXRP && topTipperAllSentXRP.length > 0" [data]="topTipperAllSentXRP" [headlineDialog]="foundUser.name" headline="Most XRP sent to (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp" (closed)="resetTopTipperAllSentXRP()"></topTipperFullTable>

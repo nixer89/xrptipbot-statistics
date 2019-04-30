@@ -1,11 +1,27 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { promise } from 'protractor';
 
 @Injectable()
 export class GeneralStatisticsService {
 
     constructor(private api: ApiService) {}
+
+    getTopTipperFilter(fromDate: Date, toDate: Date, limit?: number, network?:string, userId?:string, userName?:string) {
+        let filter = "type=tip";
+
+        if(limit)
+            filter+= "&limit="+limit;
+            
+        let userFilter = userId ? "&user_network="+network+"&user_id="+userId : (userName ? "&user="+userName : "")
+        let toFilter = userId ? "&to_network="+network+"&to_id="+userId : (userName ? "&to="+userName : "")
+        let optionalDateFilter = "";
+        if(fromDate && toDate) {
+            optionalDateFilter+="&from_date="+this.setZeroMilliseconds(fromDate).toUTCString();
+            optionalDateFilter+="&to_date="+this.setHighMilliseconds(toDate).toUTCString();
+        }
+        
+
+    }
 
     async getTopTipper(fromDate: Date, toDate: Date, limit: number, network:string, userId?:string, userName?:string): Promise<any[]> {
         try {
@@ -26,61 +42,74 @@ export class GeneralStatisticsService {
             //sent tips XRP
             promises.push(this.api.getAggregatedResult("/xrp/mostSentTo","type=tip&limit="+limit+optionalDateFilter+userFilter));
 
-            let promiseResult = await Promise.all(promises);
-            //console.log("promiseResult: " + JSON.stringify(promiseResult));
+            let numbersResult = await Promise.all(promises);
 
             let resolveUserNamesPromiseAll:any[] = [];
 
-            for(let i = 0; i < promiseResult.length; i++) {
-                promiseResult[i] = promiseResult[i].filter(user => user['_id']!="1069586402898337792");
-                if(promiseResult[i].length > 10)
-                    promiseResult[i].pop();
-            }
-
-            for(let i = 0; i < promiseResult.length; i++) {
-                let singleResult:any[] = promiseResult[i];
-                //console.log("singleResult " + i + ": " + JSON.stringify(singleResult));
-                let promises2: any[] = [];
-                for(let j = 0; j < singleResult.length; j++)
-                    promises2.push(this.api.getUserNameAndNetwork(singleResult[j]['_id'], userId, userName));
-
-                    resolveUserNamesPromiseAll.push(Promise.all(promises2));
+            for(let i = 0; i < numbersResult.length; i++) {              
+                resolveUserNamesPromiseAll.push(this.resolveNamesAndChangeNetworkSingle(numbersResult[i], userId, userName));
             }
 
             let resolveUserNamesPromiseAllResult = await Promise.all(resolveUserNamesPromiseAll);
 
-            for(let i = 0; i < resolveUserNamesPromiseAllResult.length; i++) {
-                let singleResult:any[] = resolveUserNamesPromiseAllResult[i];
-                for(let k = 0; k < singleResult.length; k++) {
-                    promiseResult[i][k]['_id']=singleResult[k].user ? singleResult[k].user : singleResult[k].to;
-                    promiseResult[i][k]['user_id']=singleResult[k].user_id;
-                    promiseResult[i][k]['to_id']=singleResult[k].to_id;
+            resolveUserNamesPromiseAllResult.push(optionalDateFilter + (userFilter ? userFilter : ""));
+            resolveUserNamesPromiseAllResult.push(optionalDateFilter + (toFilter ? toFilter : ""));
 
-                    if(singleResult[k].user && (singleResult[k].network === 'app' || singleResult[k].network === 'btn'))
-                        promiseResult[i][k]['network'] = singleResult[k].user_network;
-                    else if(singleResult[k].to && (singleResult[k].network === 'app' || singleResult[k].network === 'btn'))
-                        promiseResult[i][k]['network'] = singleResult[k].to_network;
-                    else
-                        promiseResult[i][k]['network'] = singleResult[k].network;
-
-
-                    if(promiseResult[i][k]['xrp']) {
-                        if(userId)
-                            promiseResult[i][k]['xrp']=promiseResult[i][k]['xrp'].toFixed(6);
-                        else
-                            promiseResult[i][k]['xrp']=promiseResult[i][k]['xrp'].toFixed(2);
-                    }
-                }   
-            }
-
-            promiseResult.push(optionalDateFilter+userFilter ? optionalDateFilter+userFilter : " ");
-            promiseResult.push(optionalDateFilter+toFilter ? optionalDateFilter+toFilter : " ");
-
-            return promiseResult;
+            return resolveUserNamesPromiseAllResult;
         } catch(err) {
             console.log(err);
             return [];
         }
+    }
+
+    async resolveNamesAndChangeNetworkSingle(numberResultList: any[], userId?: string, userName?: string): Promise<any[]> {
+        numberResultList = numberResultList.filter(user => user['_id']!="1069586402898337792");
+        if(numberResultList.length > 10)
+            numberResultList.pop();
+        
+        let resolvedUserNames:any[] = await this.resolveUserNameAndNetwork(numberResultList, userId, userName)
+        return this.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList);
+    }
+
+    async resolveUserNameAndNetwork(resultList:any[], userId: string, userName: string): Promise<any[]> {
+        let promises2: any[] = [];
+
+        for(let j = 0; j < resultList.length; j++)
+            promises2.push(this.api.getUserNameAndNetwork(resultList[j]['_id'], userId, userName));
+
+        return Promise.all(promises2);
+    }
+
+    changeToCorrectNetworkAndFixedXRP(resultList:any[], numbersResult: any[], userId?:string): any[] {
+        for(let k = 0; k < resultList.length; k++) {
+            //merge numbers and users
+            if(numbersResult[k]['xrp'])
+                resultList[k]['xrp'] = numbersResult[k]['xrp'];
+
+            if(numbersResult[k]['count'])
+                resultList[k]['count'] = numbersResult[k]['count'];
+
+            resultList[k]['_id']=resultList[k].user ? resultList[k].user : resultList[k].to;
+            resultList[k]['user_id']=resultList[k].user_id;
+            resultList[k]['to_id']=resultList[k].to_id;
+
+            if(resultList[k].user && (resultList[k].network === 'app' || resultList[k].network === 'btn'))
+                resultList[k]['network'] = resultList[k].user_network;
+            else if(resultList[k].to && (resultList[k].network === 'app' || resultList[k].network === 'btn'))
+                resultList[k]['network'] = resultList[k].to_network;
+            else
+                resultList[k]['network'] = resultList[k].network;
+
+
+            if(resultList[k]['xrp']) {
+                if(userId)
+                    resultList[k]['xrp']=resultList[k]['xrp'].toFixed(6);
+                else
+                    resultList[k]['xrp']=resultList[k]['xrp'].toFixed(2);
+            }
+        }
+
+        return resultList;
     }
 
     async getChartData(days:number, multiplier: number,

@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { ApiService } from '../services/api.service';
+import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 
 @Component({
     selector: "topTipperFullTable",
@@ -8,22 +7,30 @@ import { ApiService } from '../services/api.service';
 export class TopTipperFullTableComponent implements OnInit {
 
     @Input()
-    transactionFilter:string;
+    data:any;
 
-    data:any[];
+    @Input()
+    headlineDialog:string;
 
-    constructor(private api: ApiService) {
+    @Input()
+    headline:string;
 
+    @Input()
+    columnName1:string;
+
+    @Input()
+    columnName2:string;
+
+    @Input()
+    columnField2:string;
+
+    @Output()
+    closed: EventEmitter<any> = new EventEmitter();
+
+    ngOnInit() {
     }
 
-    async ngOnInit() {
-        console.log("getting transactions");
-        this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
-        console.log("got transactions: " + JSON.stringify(this.data));
-    }
-
-    cleanup() {
-        this.transactionFilter = null;
-        this.data = null;
+    onHide() {
+        this.closed.emit(null);
     }
 }

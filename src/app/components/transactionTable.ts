@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -10,6 +10,9 @@ export class TransactionTableComponent implements OnInit {
     @Input()
     transactionFilter:string;
 
+    @Output()
+    closed: EventEmitter<any> = new EventEmitter();
+
     data:any[];
 
     constructor(private api: ApiService) {
@@ -19,11 +22,13 @@ export class TransactionTableComponent implements OnInit {
     async ngOnInit() {
         console.log("getting transactions");
         this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
+        console.log("got data: " + this.data.length);
     }
 
     cleanup() {
         this.transactionFilter = null;
         this.data = null;
+        this.closed.emit(null);
     }
 
     isDiscordNetwork(tipper:any) {

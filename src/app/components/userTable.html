@@ -1,6 +1,6 @@
-<h3>{{headline}} <a href=''><i class="material-icons">vertical_align_bottom</i></a></h3>
+<h3>{{headline}}<a *ngIf="showAllButton && data.length>0" [routerLink]="topTipperFullTable" (click)="openAll()"><i class="material-icons">vertical_align_bottom</i></a></h3>
 <div class="center">
-    <p-table [value]="data" [style]="{'width':'95%'}">
+    <p-table [value]="data" [paginator]="!showAllButton" [rows]="10" [style]="{'width':'95%'}" [autoLayout]="!showAllButton">
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 65%">{{columnName1}}</th>
@@ -25,4 +25,4 @@
         </ng-template>
     </p-table>
 </div>
-<transactionTable *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter"></transactionTable>
+<transactionTable *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter" (closed)="closedAll()"></transactionTable>
