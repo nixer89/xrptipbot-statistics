@@ -18,14 +18,6 @@ export class DashboardUserComponent implements OnInit {
     user_id:string;
     networkDropdown:any;
     selectedNetwork:string;
-    topTipperAllReceived:any[];
-    topTipperAllReceivedClicked:boolean = false;
-    topTipperAllReceivedXRP:any[];
-    topTipperAllReceivedXRPClicked:boolean = false;
-    topTipperAllSent:any[];
-    topTipperAllSentClicked:boolean = false;
-    topTipperAllSentXRP:any[];
-    topTipperAllSentXRPClicked:boolean = false;
 
     //detailed transactions
     userFilter:string;
@@ -74,6 +66,7 @@ export class DashboardUserComponent implements OnInit {
             {label:'emil', value:'twitter'},
             {label:'berta', value:'reddit'},
             {label:'albert', value:'discord'},
+            {label: 'coil', value: 'coil'}
         ];
 
         this.selectedDayOrWeek = this.daysOrWeeksDropDown[0].value;
@@ -81,6 +74,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async ngOnInit() {
+
         let userInQuery = this.route.snapshot.queryParamMap.get('user');
         let networkInQuery = this.route.snapshot.queryParamMap.get('network');
         //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
@@ -172,6 +166,8 @@ export class DashboardUserComponent implements OnInit {
                     this.userFilter = topTipper[4];
                     this.toFilter = topTipper[5];
                 }
+
+                //console.log(JSON.stringify(this.topSentTips));
 
                 this.processingStats = false;
         } else {
@@ -297,8 +293,8 @@ export class DashboardUserComponent implements OnInit {
         };
     }
 
-    isDiscordNetwork(tipper:any) {
-        return 'discord'===tipper.network;
+    isDiscordOrCoilNetwork(tipper:any) {
+        return 'discord'===tipper.network || 'coil'===tipper.network;
     }
 
     getXRPTipBotURL(tipper:any) : string {
@@ -314,6 +310,8 @@ export class DashboardUserComponent implements OnInit {
             return 'https://discordapp.com/u/'+tipper.name;
         } else if(tipper.network ==='reddit') {
             return 'https://reddit.com/u/'+tipper.name;
+        } else if(tipper.network === 'coil') {
+            return 'https://coil.com/u/'+tipper.name;
         } else {
             return 'https://twitter.com/'+tipper.name;
         }
@@ -324,49 +322,10 @@ export class DashboardUserComponent implements OnInit {
             return 'albert';
         else if('reddit'===tipper.network)
             return 'berta'
+        else if('coil'===tipper.network)
+            return 'coil'
         else if('twitter'===tipper.network)
             return 'emil'
         else return 'emil';
-    }
-
-    async openAllTopReceived() {
-        this.topTipperAllReceived = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostReceivedFrom","type=tip"+this.toFilter));
-    }
-
-    async openAllTopReceivedXRP() {
-        this.topTipperAllReceivedXRP = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostReceivedFrom","type=tip"+this.toFilter));
-    }
-
-    async openAllTopSent() {
-        this.topTipperAllSent = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostSentTo","type=tip"+this.userFilter));
-    }
-
-    async openAllTopSentXRP() {
-        this.topTipperAllSentXRP = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostSentTo","type=tip"+this.userFilter));
-    }
-
-    async resolveNamesAndChangeNetwork(numberResultList: any[]): Promise<any[]> {
-        numberResultList = numberResultList.filter(user => user['_id']!="1069586402898337792");
-        if(numberResultList.length > 10)
-            numberResultList.pop();
-        
-        let resolvedUserNames:any[] = await this.generalStats.resolveUserNameAndNetwork(numberResultList, this.user_id, this.selectedUser)
-        return this.generalStats.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList);
-    }
-
-    resetTopTipperAllReceived() {
-        this.topTipperAllReceived = null;
-    }
-
-    resetTopTipperAllReceivedXRP() {
-        this.topTipperAllReceivedXRP = null;
-    }
-
-    resetTopTipperAllSent() {
-        this.topTipperAllSent = null;
-    }
-
-    resetTopTipperAllSentXRP() {
-        this.topTipperAllSentXRP = null;
     }
 }

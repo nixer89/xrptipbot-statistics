@@ -56,7 +56,6 @@ import {DashboardOverallComponent} from './components/dashboardOverall';
 import {UserTableComponent} from './components/userTable';
 import {TransactionTableComponent} from './components/transactionTable';
 import {TopTipperFullTableComponent} from './components/topTipperFullTable';
-import {TopTipperReceivedComponent} from './components/toptipper/topTipperReceived';
 
 //my components
 import {MainComponent} from './pages/main';
@@ -79,8 +78,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     DashboardOverallComponent,
     UserTableComponent,
     TransactionTableComponent,
-    TopTipperFullTableComponent,
-    TopTipperReceivedComponent,
+    TopTipperFullTableComponent,    
     MainComponent,
     UserStatisticsComponent,
     OverallStatisticsComponent

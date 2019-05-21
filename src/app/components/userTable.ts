@@ -1,4 +1,7 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import { ApiService } from '../services/api.service';
+import { GeneralStatisticsService } from '../services/generalstatistics.service';
+import { JsonpInterceptor } from '@angular/common/http';
 
 @Component({
     selector: "userTable",
@@ -6,6 +9,7 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 })
 export class UserTableComponent {
 
+    //for initial view
     @Input()
     data:any;
 
@@ -25,27 +29,42 @@ export class UserTableComponent {
     showAllButton:string;
 
     @Input()
-    isReceiving?:string;
+    isReceivingTips?:string;
+
+    @Input()
+    isReceivingXRP?:string;
+
+    @Input()
+    isSentTips?:string;
+
+    @Input()
+    isSentXRP?:string;
 
     //sidebar overlay
     @Input()
     transactionTableFilter:string;
 
-    @Output()
-    openAllClicked: EventEmitter<any> = new EventEmitter();
+    @Input()
+    foundUser?:string;
 
-    @Output()
-    allClosed: EventEmitter<any> = new EventEmitter();
+    @Input()
+    isDetailsView?:string;
 
     overlayUsedTransactionFilter:string;
     openOverlayTable:string;
+    openAllClicked:boolean = false;
+    topTipperAllData:any[] = [];
+    foundUserForward:string;
+    hideLinks = false;
 
-    isDiscordNetwork(tipper:any) {
-        return 'discord'===tipper.network;
+    constructor(private api: ApiService, private generalStats: GeneralStatisticsService) {}
+
+    isDiscordOrCoilNetwork(tipper:any) {
+        return 'discord'===tipper.network || 'coil' === tipper.network;
     }
 
     getXRPTipBotURL(tipper:any) : string {
-        if(this.isDiscordNetwork(tipper))
+        if(this.isDiscordOrCoilNetwork(tipper))
             return "https://www.xrptipbot.com/u:"+(tipper.user_id ? tipper.user_id : tipper.to_id)+"/n:"+tipper.network;
         else
             return "https://www.xrptipbot.com/u:"+tipper._id+"/n:"+tipper.network;
@@ -60,6 +79,8 @@ export class UserTableComponent {
             return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
         } else if(tipper.network ==='reddit') {
             return 'https://reddit.com/u/'+tipper._id;
+        } else if(tipper.network ==='coil') {
+            return 'https://coil.com/u/'+tipper._id;
         } else {
             return 'https://twitter.com/'+tipper._id;
         }
@@ -70,25 +91,59 @@ export class UserTableComponent {
             return 'albert';
         else if('reddit'===tipper.network)
             return 'berta'
+        else if('coil'===tipper.network)
+            return 'coil'
         else if('twitter'===tipper.network)
             return 'emil'
         else return 'emil';
     }
 
-    openTransactions(tipper:any) {
-        console.log("tipper: " + JSON.stringify(tipper));
-        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceiving ? "&user_id=": "&to_id=")+tipper['user_id'];
-        console.log("filter: " + this.overlayUsedTransactionFilter);
+    openAllTransactions(tipper:any) {
+        //console.log("userTable openTransactions()");
+        //console.log("tipper: " + JSON.stringify(tipper));
+        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceivingTips || this.isReceivingXRP ? "&user_id=": "&to_id=")+tipper['user_id'];
+        //console.log("filter: " + this.overlayUsedTransactionFilter);
         this.openOverlayTable = "true";
     }
 
-    openAll() {
-        this.openAllClicked.emit(null);
+    async getAllTopTipperData(): Promise<any> {
+        console.log("filter: " + this.transactionTableFilter);
+        if(this.isReceivingTips) {
+            this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostReceivedFrom","type=tip"+this.transactionTableFilter));
+        } else if(this.isReceivingXRP) {
+            this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostReceivedFrom","type=tip"+this.transactionTableFilter));
+        } else if(this.isSentTips) {
+            this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostSentTo","type=tip"+this.transactionTableFilter));
+        } else if(this.isSentXRP) {
+            this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostSentTo","type=tip"+this.transactionTableFilter));
+        }
+
+        //console.log("tipTipperAll loaded: " + this.topTipperAllData.length);
+    }
+
+    async openAllTopTipper() {
+        //console.log("userTable openAll()");
+        if(!this.openAllClicked) {
+            this.openAllClicked = true;
+            await this.getAllTopTipperData();
+            this.openAllClicked = false;
+        }
     }
 
     closedAll() {
+        //console.log("userTable closedAll()");
+        this.openAllClicked = false;
         this.overlayUsedTransactionFilter = "";
         this.openOverlayTable = null;
-        this.allClosed.emit(null);
+    }
+
+    async resolveNamesAndChangeNetwork(numberResultList: any[]): Promise<any[]> {
+        numberResultList = numberResultList.filter(user => user['_id']!="1069586402898337792");
+        if(numberResultList.length > 10)
+            numberResultList.pop();
+        
+        console.log("found user in user table: " + JSON.stringify(this.foundUser));
+        let resolvedUserNames:any[] = await this.generalStats.resolveUserNameAndNetwork(numberResultList, this.foundUser['id'], this.foundUser['name']);
+        return this.generalStats.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList);
     }
 }

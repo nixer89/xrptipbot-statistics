@@ -10,7 +10,7 @@ export class TopTipperFullTableComponent implements OnInit {
     data:any;
 
     @Input()
-    headlineDialog:string;
+    foundUser:any;
 
     @Input()
     headline:string;
@@ -28,9 +28,11 @@ export class TopTipperFullTableComponent implements OnInit {
     closed: EventEmitter<any> = new EventEmitter();
 
     ngOnInit() {
+        console.log("DialogHeadline: " + JSON.stringify(this.foundUser));
     }
 
     onHide() {
+        //console.log("tipTipperFullTable onHide()");
         this.closed.emit(null);
     }
 }

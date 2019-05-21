@@ -241,14 +241,4 @@ export class DashboardOverallComponent implements OnInit {
             }
         };
     }
-
-    getNetworkURL(tipper:any): String {
-        if(tipper.network==='discord') {
-            return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
-        } else if(tipper.network ==='reddit') {
-            return 'https://reddit.com/u/'+tipper._id;
-        } else {
-            return 'https://twitter.com/'+tipper._id;
-        }
-    }
 }

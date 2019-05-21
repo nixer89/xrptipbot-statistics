@@ -1,6 +1,13 @@
-<h3>{{headline}}<a *ngIf="showAllButton && data.length>0" [routerLink]="topTipperFullTable" (click)="openAll()"><i class="material-icons">vertical_align_bottom</i></a></h3>
+<h3>{{headline}}
+    <a *ngIf="showAllButton && data.length>0" [routerLink]="topTipperFullTable" (click)="openAllTopTipper()">
+        <i *ngIf="!openAllClicked" class="material-icons">vertical_align_bottom</i>
+        <p-progressSpinner *ngIf="openAllClicked" [style]="{width: '24px', height: '24px'}"></p-progressSpinner>
+    </a>
+</h3>
+<p-checkbox *ngIf="isDetailsView" [(ngModel)]="hideLinks" binary="true" label="Hide Links"></p-checkbox>
+<div *ngIf="isDetailsView"></div>
 <div class="center">
-    <p-table [value]="data" [paginator]="!showAllButton" [rows]="10" [style]="{'width':'95%'}" [autoLayout]="!showAllButton">
+    <p-table [value]="data" [paginator]="isDetailsView" [rows]="10" [style]="{'width':'95%'}">
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 65%">{{columnName1}}</th>
@@ -11,18 +18,20 @@
             <tr>
                 <td>
                     <div class="floatleft">
-                        <a style="vertical-align: middle" href="{{getStatisticsURL(data)}}">{{data['_id']}}&nbsp;</a>
+                        <a *ngIf="!hideLinks" style="vertical-align: middle" href="{{getStatisticsURL(data)}}">{{data['_id']}}&nbsp;</a>
+                        <label *ngIf="hideLinks" style="vertical-align: middle">{{data['_id']}}&nbsp;</label>
                     </div>
-                    <div class="floatright">
-                        <a *ngIf="!isDiscordNetwork(data)" target="_blank" href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{resolveIconName(data)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
-                        <img *ngIf="isDiscordNetwork(data)" src="../../assets/networks/{{resolveIconName(data)}}.png" width="20" height="20" style="vertical-align: middle;">
+                    <div *ngIf="!hideLinks" class="floatright">
+                        <a *ngIf="!isDiscordOrCoilNetwork(data)" target="_blank" href="{{getNetworkURL(data)}}"><img src="../../assets/networks/{{resolveIconName(data)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
+                        <img *ngIf="isDiscordOrCoilNetwork(data)" src="../../assets/networks/{{resolveIconName(data)}}.png" width="20" height="20" style="vertical-align: middle;">
                         <a target="_blank" href="{{getXRPTipBotURL(data)}}"><img src="../../assets/networks/xrptipbot.png" width="20" height="20" style="vertical-align: middle;"></a>
                     </div>
                 </td>
-                <td *ngIf="!transactionTableFilter" style="text-align: center">{{data[columnField2]}}</td>
-                <td *ngIf="transactionTableFilter" style="text-align: center"><a [routerLink]="" (click)="openTransactions(data)">{{data[columnField2]}}</a></td>
+                <td *ngIf="!transactionTableFilter || hideLinks" style="text-align: center">{{data[columnField2]}}</td>
+                <td *ngIf="transactionTableFilter && !hideLinks" style="text-align: center"><a [routerLink]="" (click)="openAllTransactions(data)">{{data[columnField2]}}</a></td>
             </tr>
         </ng-template>
     </p-table>
 </div>
+<topTipperFullTable *ngIf="topTipperAllData && topTipperAllData.length > 0" [data]="topTipperAllData" [foundUser]="foundUser" headline="{{headline}}" columnName1="{{columnName1}}" columnName2="{{columnName2}}" columnField2="{{columnField2}}" (closed)="closedAll()"></topTipperFullTable>
 <transactionTable *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter" (closed)="closedAll()"></transactionTable>

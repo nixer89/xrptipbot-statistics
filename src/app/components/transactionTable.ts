@@ -20,12 +20,14 @@ export class TransactionTableComponent implements OnInit {
     }
 
     async ngOnInit() {
-        console.log("getting transactions");
+        //console.log("transactionTable ngOnInit()");
+        //console.log("getting transactions");
         this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
-        console.log("got data: " + this.data.length);
+        //console.log("got data: " + this.data.length);
     }
 
     cleanup() {
+        //console.log("transactionTable cleanup()");
         this.transactionFilter = null;
         this.data = null;
         this.closed.emit(null);
@@ -51,6 +53,8 @@ export class TransactionTableComponent implements OnInit {
             return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
         } else if(tipper.network ==='reddit') {
             return 'https://reddit.com/u/'+tipper._id;
+        } else if(tipper.network ==='coil') {
+            return 'https://coil.com/u/'+tipper._id;
         } else {
             return 'https://twitter.com/'+tipper._id;
         }
@@ -61,6 +65,8 @@ export class TransactionTableComponent implements OnInit {
             return 'albert';
         else if('reddit'===tipper.network)
             return 'berta'
+        else if('coil'===tipper.network)
+            return 'coil'
         else if('twitter'===tipper.network)
             return 'emil'
         else return 'emil';
