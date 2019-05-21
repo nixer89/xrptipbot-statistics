@@ -1,5 +1,5 @@
 <h3>{{headline}}
-    <a *ngIf="showAllButton && data.length>0" [routerLink]="topTipperFullTable" (click)="openAllTopTipper()">
+    <a *ngIf="showAllButton && data.length>0" pTooltip="Full list" tooltipPosition="top" routerLink="." (click)="openAllTopTipper()">
         <i *ngIf="!openAllClicked" class="material-icons">vertical_align_bottom</i>
         <p-progressSpinner *ngIf="openAllClicked" [style]="{width: '24px', height: '24px'}"></p-progressSpinner>
     </a>
@@ -28,7 +28,7 @@
                     </div>
                 </td>
                 <td *ngIf="!transactionTableFilter || hideLinks" style="text-align: center">{{data[columnField2]}}</td>
-                <td *ngIf="transactionTableFilter && !hideLinks" style="text-align: center"><a [routerLink]="" (click)="openAllTransactions(data)">{{data[columnField2]}}</a></td>
+                <td *ngIf="transactionTableFilter && !hideLinks" style="text-align: center"><a routerLink="." pTooltip="Show Transactions" tooltipPosition="top" (click)="openAllTransactions(data)">{{data[columnField2]}}</a></td>
             </tr>
         </ng-template>
     </p-table>

@@ -46,6 +46,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {CalendarModule} from 'primeng/calendar';
 import {SidebarModule} from 'primeng/sidebar';
 import {DialogModule} from 'primeng/dialog';
+import {TooltipModule} from 'primeng/tooltip';
 
 //App
 import {AppComponent} from './app.component';
@@ -129,6 +130,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     CalendarModule,
     SidebarModule,
     DialogModule,
+    TooltipModule,
   ],
   providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService],
   bootstrap: [AppComponent]
