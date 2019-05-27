@@ -68,7 +68,7 @@ export class GeneralStatisticsService {
             numberResultList.pop();
         
         let resolvedUserNames:any[] = await this.resolveUserNameAndNetwork(numberResultList, userId, userName)
-        return this.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList);
+        return this.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList, userId);
     }
 
     async resolveUserNameAndNetwork(resultList:any[], userId: string, userName: string): Promise<any[]> {

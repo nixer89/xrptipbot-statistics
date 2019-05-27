@@ -10,6 +10,7 @@
                 <th>Type</th>
                 <th>From Network</th>
                 <th>To Network</th>
+                <th>Context</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
@@ -21,6 +22,8 @@
                 <td style="text-align: center">{{data.type}}</td>
                 <td style="text-align: center">{{data.user_network}}</td>
                 <td style="text-align: center">{{data.to_network}}</td>
+                <td *ngIf="data.network != 'twitter'" style="text-align: center">{{data.context}}</td>
+                <td *ngIf="data.network === 'twitter'" style="text-align: center"><a target="_blank" href="https://twitter.com{{data.context}}">{{data.context}}</a></td>
             </tr>
         </ng-template>
     </p-table>
