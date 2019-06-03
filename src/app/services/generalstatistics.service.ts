@@ -100,9 +100,9 @@ export class GeneralStatisticsService {
             if(numbersResult[k]['count'])
                 resultList[k]['count'] = numbersResult[k]['count'];
 
-            resultList[k]['_id']=resultList[k].user ? resultList[k].user : resultList[k].to;
-            resultList[k]['user_id']=resultList[k].user_id;
-            resultList[k]['to_id']=resultList[k].to_id;
+            resultList[k]['_id']= resultList[k].user ? resultList[k].user : resultList[k].to;
+            resultList[k]['user_id']= resultList[k].user_id ? resultList[k].user_id : resultList[k].to_id;
+            resultList[k]['to_id']= resultList[k].to_id;
 
             if(resultList[k].user && (resultList[k].network === 'app' || resultList[k].network === 'btn'))
                 resultList[k]['network'] = resultList[k].user_network;
