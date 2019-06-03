@@ -73,6 +73,10 @@
                             <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
                             <label>To: {{toDate ? toDate.toUTCString():''}}</label>
                         </div>
+                        <div>
+                            <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                            <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                        </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
                                 <userTable [data]="topTipperReceived" headline="Most tips received" columnName1="User" columnName2="Tips" columnField2="count"></userTable>

@@ -127,7 +127,7 @@ export class ApiService {
         if(ilpDeposits && ilpDeposits.length>0) {
             let culmulatedXRP = 0;
             for(let i = 0; i < ilpDeposits.length;i++) {
-                culmulatedXRP+= ilpDeposits[i].xrp;
+                culmulatedXRP+= ilpDeposits[i].amount;
             }
 
             return culmulatedXRP/1000000;
@@ -208,6 +208,24 @@ export class ApiService {
 
             //checking next tips FROM the user via another network
             userIdResult = await this.callTipBotStandarizedFeedApi('user_id='+userHandle+"&user_network="+network+"&limit=1&result_fields=user_id,user");
+            //console.log("checked cross network 2");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].user_id;
+                user.name = userIdResult[0].user;
+                return user;
+            }
+
+            //checking ILP to the user
+            userIdResult = await this.callTipBotILPFeedApi('user='+userHandle+"&network="+network+"&limit=1&result_fields=user_id,user");
+            //console.log("checked cross network 2");
+            if(userIdResult && userIdResult.length>0) {
+                user.id = userIdResult[0].user_id;
+                user.name = userIdResult[0].user;
+                return user;
+            }
+
+            //checking ILP to the user-id
+            userIdResult = await this.callTipBotILPFeedApi('user_id='+userHandle+"&network="+network+"&limit=1&result_fields=user_id,user");
             //console.log("checked cross network 2");
             if(userIdResult && userIdResult.length>0) {
                 user.id = userIdResult[0].user_id;

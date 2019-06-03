@@ -1,7 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ApiService } from '../services/api.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
-import { JsonpInterceptor } from '@angular/common/http';
 
 @Component({
     selector: "userTable",
@@ -107,7 +106,7 @@ export class UserTableComponent {
     }
 
     async getAllTopTipperData(): Promise<any> {
-        console.log("filter: " + this.transactionTableFilter);
+        //console.log("filter: " + this.transactionTableFilter);
         if(this.isReceivingTips) {
             this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostReceivedFrom","type=tip"+this.transactionTableFilter));
         } else if(this.isReceivingXRP) {
@@ -142,7 +141,7 @@ export class UserTableComponent {
         if(numberResultList.length > 10)
             numberResultList.pop();
         
-        console.log("found user in user table: " + JSON.stringify(this.foundUser));
+        //console.log("found user in user table: " + JSON.stringify(this.foundUser));
         let resolvedUserNames:any[] = await this.generalStats.resolveUserNameAndNetwork(numberResultList, this.foundUser['id'], this.foundUser['name']);
         return this.generalStats.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList);
     }

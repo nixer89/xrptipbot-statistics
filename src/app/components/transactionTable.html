@@ -1,29 +1,31 @@
 <p-dialog [style]="{width: '90%', height: '90%'}" [(visible)]="transactionFilter" [modal]="true" (onHide)="cleanup()">
     <p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
     <p-table *ngIf="data" [value]="data" [paginator]="true" [rows]="15" [autoLayout]="true">
-        <ng-template pTemplate="header" autoLayout="true">
+        <ng-template pTemplate="header">
             <tr>
                 <th [pSortableColumn]="'momentAsDate'"><p-sortIcon [field]="'momentAsDate'"></p-sortIcon>Date (UTC)</th>
                 <th>From</th>
                 <th>To</th>
                 <th [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
+                <th>Network</th>
                 <th>Type</th>
-                <th>From Network</th>
-                <th>To Network</th>
+                <th>From</th>
+                <th>To</th>
                 <th>Context</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
             <tr>
                 <td style="text-align: center">{{data.momentAsDate}}</td>
-                <td style="text-align: center">{{data.user}}</td>
-                <td style="text-align: center">{{data.to}}</td>
+                <td style="text-align: center"><a href="{{getStatisticsURLFrom(data)}}">{{data.user}}</a></td>
+                <td style="text-align: center"><a href="{{getStatisticsURLTo(data)}}">{{data.to}}</a></td>
                 <td style="text-align: center">{{data.xrp}}</td>
+                <td style="text-align: center">{{data.network}}</td>
                 <td style="text-align: center">{{data.type}}</td>
-                <td style="text-align: center">{{data.user_network}}</td>
+                <td style="text-align: center">{{(data.type =='deposit' || data.type == 'withdraw') ? '' : data.user_network}}</td>
                 <td style="text-align: center">{{data.to_network}}</td>
-                <td *ngIf="data.network != 'twitter'" style="text-align: center">{{data.context}}</td>
-                <td *ngIf="data.network === 'twitter'" style="text-align: center"><a target="_blank" href="https://twitter.com{{data.context}}">{{data.context}}</a></td>
+                <td *ngIf="data.network != 'twitter' || data.type != 'tip'" style="text-align: center">{{data.context}}</td>
+                <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="https://twitter.com{{data.context}}">{{data.context}}</a></td>
             </tr>
         </ng-template>
     </p-table>

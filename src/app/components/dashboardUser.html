@@ -62,9 +62,11 @@
                                 </ng-template>
                                 <ng-template pTemplate="body" let-userStats>
                                     <tr>
-                                        <td><b>{{userStats['label']}}</b></td>
-                                        <td style="text-align: center">{{userStats['count']}}</td>
-                                        <td style="text-align: center">{{userStats['xrp']}}</td>
+                                        <td><b>{{userStats['label']}}</b>&nbsp;<i *ngIf="userStats['showInfoBox']" class="material-icons" pTooltip="since Feb 2019">info</i></td>
+                                        <td *ngIf="!userStats['showTrx'] || userStats['count'] ==0" style="text-align: center">{{userStats['count']}}</td>
+                                        <td *ngIf="!userStats['showTrx'] || userStats['count'] == 0" style="text-align: center">{{userStats['xrp']}}</td>
+                                        <td *ngIf="userStats['showTrx'] && userStats['count'] > 0" style="text-align: center"><a routerLink="." pTooltip="Show Transactions" tooltipPosition="top" (click)="openAllTransactionsClick(userStats)">{{userStats['count']}}</a></td>
+                                        <td *ngIf="userStats['showTrx'] && userStats['count'] > 0" style="text-align: center"><a routerLink="." pTooltip="Show Transactions" tooltipPosition="top" (click)="openAllTransactionsClick(userStats)">{{userStats['xrp']}}</a></td>                                        
                                     </tr>
                                 </ng-template>
                             </p-table>
@@ -85,6 +87,10 @@
                         <div *ngIf="useDateRange" class="ui-g-12">
                             <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
                             <label>To: {{toDate ? toDate.toUTCString():''}}</label>
+                        </div>
+                        <div>
+                            <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                            <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
@@ -131,3 +137,5 @@
         </div>
     </div>
 </div>
+
+<transactionTable *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter" (closed)="closedAll()"></transactionTable>

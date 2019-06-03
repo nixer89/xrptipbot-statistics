@@ -18,6 +18,10 @@ export class DashboardUserComponent implements OnInit {
     user_id:string;
     networkDropdown:any;
     selectedNetwork:string;
+    excludeBots:boolean = false;
+    excludeCharities:boolean = false;
+    overlayUsedTransactionFilter:string;
+    openOverlayTable:string;
 
     //detailed transactions
     userFilter:string;
@@ -37,11 +41,11 @@ export class DashboardUserComponent implements OnInit {
     executionTimeoutStats;
     processingStats = false;
     userStats:any[]=[
-        {label: "Received Tips", count: 0, xrp:0},
-        {label: "Sent Tips", count: 0, xrp:0},
-        {label: "Deposits", count: 0, xrp:0},
-        {label: "Withdrawals", count: 0, xrp:0},
-        {label: "ILP-Deposits", count: '-', xrp:0},
+        {label: "Received Tips", count: 0, xrp:0, showTrx: true, isReceiving: true},
+        {label: "Sent Tips", count: 0, xrp:0, showTrx: true, isReceiving: false},
+        {label: "Deposits", count: 0, xrp:0, showTrx: false},
+        {label: "Withdrawals", count: 0, xrp:0, showTrx: false},
+        {label: "ILP-Deposits", count: '-', xrp: 0, showTrx: false, showInfoBox: true},
     ];
     useDateRange:boolean = false;
     fromDate:Date;
@@ -100,7 +104,6 @@ export class DashboardUserComponent implements OnInit {
     }
 
     refreshStatsWithTimeout() {
-        this.initStatsWithZeroValues();
         if(this.executionTimeoutStats) clearTimeout(this.executionTimeoutStats);
         
         this.executionTimeoutStats = setTimeout(()=> this.refreshStats(),1500);
@@ -140,7 +143,7 @@ export class DashboardUserComponent implements OnInit {
             (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
                 this.processingStats = true;
                 let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.user_id, this.selectedUser.trim());
-                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 11, this.selectedNetwork, this.user_id, this.selectedUser.trim());
+                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 30, this.selectedNetwork, this.excludeBots, this.excludeCharities, this.user_id, this.selectedUser.trim());
 
                 //console.log("tipTipper: " + JSON.stringify(topTipper));
 
@@ -244,11 +247,11 @@ export class DashboardUserComponent implements OnInit {
     initStatsWithZeroValues() {
         this.foundUser = null;
         this.userStats = [
-            {label: "Received Tips", count: 0, xrp:0},
-            {label: "Sent Tips", count: 0, xrp:0},
-            {label: "Deposits", count: 0, xrp:0},
-            {label: "Withdrawals", count: 0, xrp:0},
-            {label: "ILP-Deposits", count: '-', xrp:0},
+            {label: "Received Tips", count: 0, xrp: 0, showTrx: true, isReceiving: true},
+            {label: "Sent Tips", count: 0, xrp: 0, showTrx: true, isReceiving: false},
+            {label: "Deposits", count: 0, xrp: 0, showTrx: true, isDeposit: true},
+            {label: "Withdrawals", count: 0, xrp: 0, showTrx: true, isWithdrawal: true},
+            {label: "ILP-Deposits", count: '-', xrp: 0, showTrx: false, showInfoBox: true},
         ];
 
         this.topReceivedTips = [];
@@ -327,5 +330,40 @@ export class DashboardUserComponent implements OnInit {
         else if('twitter'===tipper.network)
             return 'emil'
         else return 'emil';
+    }
+
+    openAllTransactionsClick(userStats: any) {
+        let filter = "";
+        if(userStats.isDeposit)
+            filter = "type=deposit";
+        else if(userStats.isWithdrawal)
+            filter = "type=withdraw"
+        else
+            filter = "type=tip";
+        
+        if(userStats.isReceiving)        
+            filter+= (this.foundUser && this.foundUser.id && this.foundUser.id.trim().length>0) ? "&to_id="+this.foundUser.id : "&to="+this.selectedUser;
+        else
+            filter+= (this.foundUser && this.foundUser.id && this.foundUser.id.trim().length>0) ? "&user_id="+this.foundUser.id : "&user="+this.selectedUser;
+        
+        this.openAllTransactions(filter);
+    }
+
+    openAllTransactions(filter:string) {
+        let optionalDateFilter = "";
+            if(this.fromDate && this.toDate) {
+                optionalDateFilter+="&from_date="+this.generalStats.setZeroMilliseconds(this.fromDate).toUTCString();
+                optionalDateFilter+="&to_date="+this.generalStats.setHighMilliseconds(this.toDate).toUTCString();
+            }
+        //console.log("userTable openTransactions()");
+        //console.log("tipper: " + JSON.stringify(tipper));
+        this.overlayUsedTransactionFilter = filter + optionalDateFilter;
+        //console.log("filter: " + this.overlayUsedTransactionFilter);
+        this.openOverlayTable = "true";
+    }
+
+    closedAll() {
+        this.overlayUsedTransactionFilter = "";
+        this.openOverlayTable = null;
     }
 }

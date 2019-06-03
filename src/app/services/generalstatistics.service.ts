@@ -6,6 +6,10 @@ export class GeneralStatisticsService {
 
     constructor(private api: ApiService) {}
 
+    accountsToExclude:string[] = ['COIL_SETTLEMENT_ACCOUNT', 'COIL_SETTLED_ILP_BALANCE', '1069586402898337792']
+    bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792'];
+    charities:string[] = ['9624042', '3443786712', '951179206104403968', '21855719', '970803226470531072', '1080843472129658880'];
+
     getTopTipperFilter(fromDate: Date, toDate: Date, limit?: number, network?:string, userId?:string, userName?:string) {
         let filter = "type=tip";
 
@@ -23,7 +27,7 @@ export class GeneralStatisticsService {
 
     }
 
-    async getTopTipper(fromDate: Date, toDate: Date, limit: number, network:string, userId?:string, userName?:string): Promise<any[]> {
+    async getTopTipper(fromDate: Date, toDate: Date, limit: number, network: string, excludeBots?: boolean, excludeCharities?: boolean, userId?: string, userName?: string): Promise<any[]> {
         try {
             let userFilter = userId ? "&user_network="+network+"&user_id="+userId : (userName ? "&user="+userName : "")
             let toFilter = userId ? "&to_network="+network+"&to_id="+userId : (userName ? "&to="+userName : "")
@@ -47,7 +51,7 @@ export class GeneralStatisticsService {
             let resolveUserNamesPromiseAll:any[] = [];
 
             for(let i = 0; i < numbersResult.length; i++) {              
-                resolveUserNamesPromiseAll.push(this.resolveNamesAndChangeNetworkSingle(numbersResult[i], userId, userName));
+                resolveUserNamesPromiseAll.push(this.resolveNamesAndChangeNetworkSingle(numbersResult[i], excludeBots, excludeCharities, userId, userName));
             }
 
             let resolveUserNamesPromiseAllResult = await Promise.all(resolveUserNamesPromiseAll);
@@ -62,9 +66,16 @@ export class GeneralStatisticsService {
         }
     }
 
-    async resolveNamesAndChangeNetworkSingle(numberResultList: any[], userId?: string, userName?: string): Promise<any[]> {
-        numberResultList = numberResultList.filter(user => user['_id']!="1069586402898337792");
-        if(numberResultList.length > 10)
+    async resolveNamesAndChangeNetworkSingle(numberResultList: any[], excludeBots?: boolean, excludeCharities?: boolean, userId?: string, userName?: string): Promise<any[]> {
+        numberResultList = numberResultList.filter(user => !this.accountsToExclude.includes(user['_id']));
+
+        if(excludeBots)
+            numberResultList = numberResultList.filter(user => !this.bots.includes(user['_id']));
+        
+        if(excludeCharities)
+            numberResultList = numberResultList.filter(user => !this.charities.includes(user['_id']));
+
+        while(numberResultList.length > 10)
             numberResultList.pop();
         
         let resolvedUserNames:any[] = await this.resolveUserNameAndNetwork(numberResultList, userId, userName)

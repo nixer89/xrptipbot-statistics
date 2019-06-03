@@ -11,6 +11,8 @@ export class DashboardOverallComponent implements OnInit {
 
     //All for User
     executionTimeoutAll;
+    excludeBots:boolean = false;
+    excludeCharities:boolean = false;
 
     //chart
     chartData: any;
@@ -82,7 +84,7 @@ export class DashboardOverallComponent implements OnInit {
         if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
             let stats:number[] = await this.overAllStatistics.getOverallStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
             let statsByNetwork:number[] = await this.overAllStatistics.getOverallStatsByNetwork(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 11, null);
+            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 30, null, this.excludeBots, this.excludeCharities);
 
             //console.log("user stats result in dashboard: " + JSON.stringify(stats));
             if(stats) {

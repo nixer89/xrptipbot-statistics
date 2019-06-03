@@ -44,8 +44,12 @@ export class TransactionTableComponent implements OnInit {
             return "https://www.xrptipbot.com/u:"+tipper._id+"/n:"+tipper.network;
     }
 
-    getStatisticsURL(tipper:any) : string {
-        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+tipper._id+"&network="+tipper.network;
+    getStatisticsURLFrom(data:any) : string {
+        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+data.user+"&network="+data.user_network;
+    }
+
+    getStatisticsURLTo(data:any) : string {
+        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+data.to+"&network="+data.to_network;
     }
 
     getNetworkURL(tipper:any): String {
