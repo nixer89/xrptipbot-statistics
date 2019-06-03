@@ -41,10 +41,10 @@ export class DashboardUserComponent implements OnInit {
     executionTimeoutStats;
     processingStats = false;
     userStats:any[]=[
-        {label: "Received Tips", count: 0, xrp:0, showTrx: true, isReceiving: true},
-        {label: "Sent Tips", count: 0, xrp:0, showTrx: true, isReceiving: false},
-        {label: "Deposits", count: 0, xrp:0, showTrx: false},
-        {label: "Withdrawals", count: 0, xrp:0, showTrx: false},
+        {label: "Received Tips", count: 0, xrp: 0, showTrx: true, isReceiving: true},
+        {label: "Sent Tips", count: 0, xrp: 0, showTrx: true, isReceiving: false},
+        {label: "Deposits", count: 0, xrp: 0, showTrx: true, isDeposit: true},
+        {label: "Withdrawals", count: 0, xrp: 0, showTrx: true, isWithdrawal: true},
         {label: "ILP-Deposits", count: '-', xrp: 0, showTrx: false, showInfoBox: true},
     ];
     useDateRange:boolean = false;

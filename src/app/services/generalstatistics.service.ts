@@ -7,7 +7,7 @@ export class GeneralStatisticsService {
     constructor(private api: ApiService) {}
 
     accountsToExclude:string[] = ['COIL_SETTLEMENT_ACCOUNT', 'COIL_SETTLED_ILP_BALANCE', '1069586402898337792']
-    bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792'];
+    bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792','52249814'];
     charities:string[] = ['9624042', '3443786712', '951179206104403968', '21855719', '970803226470531072', '1080843472129658880'];
 
     getTopTipperFilter(fromDate: Date, toDate: Date, limit?: number, network?:string, userId?:string, userName?:string) {
