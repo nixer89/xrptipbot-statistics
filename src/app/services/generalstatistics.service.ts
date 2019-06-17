@@ -114,9 +114,11 @@ export class GeneralStatisticsService {
 
             if(resultList[k]['xrp']) {
                 if(userId)
-                    resultList[k]['xrp']=resultList[k]['xrp'].toFixed(6);
+                    resultList[k]['xrp'] = resultList[k]['xrp'].toFixed(6);
                 else
-                    resultList[k]['xrp']=resultList[k]['xrp'].toFixed(2);
+                    resultList[k]['xrp'] = resultList[k]['xrp'].toFixed(2);
+            } else {
+                resultList[k]['xrp'] = 0;
             }
         }
 
