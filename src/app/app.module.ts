@@ -11,6 +11,7 @@ import {AppRoutes} from './app.routes';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // PrimeNG
 import {AccordionModule} from 'primeng/primeng';
@@ -70,6 +71,9 @@ import {UserStatisticsService} from './services/userstatistics.service';
 import {OverallStatisticsService} from './services/overallstatistics.service';
 import {GeneralStatisticsService} from './services/generalstatistics.service'
 
+//Special
+import { ClipboardModule } from 'ngx-clipboard';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -96,6 +100,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     MatToolbarModule,
     MatButtonModule,
     MatTooltipModule,
+    MatSnackBarModule,
     // PrimeNG:
     AccordionModule,
     AutoCompleteModule,
@@ -131,6 +136,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
     SidebarModule,
     DialogModule,
     TooltipModule,
+    ClipboardModule
   ],
   providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService],
   bootstrap: [AppComponent]

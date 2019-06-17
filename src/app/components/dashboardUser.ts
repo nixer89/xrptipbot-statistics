@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { UserStatisticsService } from '../services/userstatistics.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 import { ApiService } from '../services/api.service';
-import { from } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpParams } from '@angular/common/http';
+import { ClipboardService } from 'ngx-clipboard'
 
 @Component({
     selector: "dashboardUser",
@@ -60,7 +62,9 @@ export class DashboardUserComponent implements OnInit {
     constructor(private userStatistics: UserStatisticsService,
                 private api: ApiService,
                 private generalStats: GeneralStatisticsService,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private snackBar: MatSnackBar,
+                private clipboard: ClipboardService) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -262,7 +266,9 @@ export class DashboardUserComponent implements OnInit {
     }
 
     initStatsWithZeroValues() {
-        this.foundUser = null;
+        if(this.foundUser != null && (!this.selectedUser || this.selectedUser.trim().length <= 0 || this.selectedUser.toLocaleLowerCase() != this.foundUser.name.toLocaleLowerCase()))
+            this.foundUser = null;
+        
         this.userStats = [
             {label: "Received Tips", count: 0, xrp: 0, showTrx: true, isReceiving: true},
             {label: "Sent Tips", count: 0, xrp: 0, showTrx: true, isReceiving: false},
@@ -382,5 +388,28 @@ export class DashboardUserComponent implements OnInit {
     closedAll() {
         this.overlayUsedTransactionFilter = "";
         this.openOverlayTable = null;
+    }
+
+    copy2Clipboard() {
+        let params = new HttpParams()
+
+        let url = 'https://xrptipbot-statistics.siedentopf.xyz/userstatistics?'
+
+        if(this.selectedUser)
+            params = params.set('user',this.selectedUser);
+        
+        if(this.selectedNetwork)
+            params = params.set('network',this.selectedNetwork);
+        
+        if(this.fromDate)
+            params = params.set('from_date',this.fromDate.toISOString());
+
+        if(this.toDate)
+            params = params.set('to_date',this.toDate.toISOString());
+
+        if(this.clipboard.isSupported) {
+            this.clipboard.copyFromContent(url+params.toString());
+            this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
+        }
     }
 }

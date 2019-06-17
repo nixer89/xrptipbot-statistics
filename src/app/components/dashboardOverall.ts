@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { OverallStatisticsService } from '../services/overallstatistics.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
-import { ApiService } from '../services/api.service';
 import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpParams } from '@angular/common/http';
+import { ClipboardService } from 'ngx-clipboard'
 
 @Component({
     selector: "dashboardOverall",
@@ -55,9 +57,10 @@ export class DashboardOverallComponent implements OnInit {
     topXRPReceived:any[] = [];
 
     constructor(private overAllStatistics: OverallStatisticsService,
-        private api: ApiService,
         private generalStats: GeneralStatisticsService,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        private snackBar: MatSnackBar,
+        private clipboard: ClipboardService) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -258,5 +261,24 @@ export class DashboardOverallComponent implements OnInit {
                 position: 'top'
             }
         };
+    }
+
+    copy2Clipboard() {
+        let params = new HttpParams()
+
+        let url = 'https://xrptipbot-statistics.siedentopf.xyz/overallstatistics?'
+        
+        if(this.fromDate)
+            params = params.set('from_date',this.fromDate.toISOString());
+
+        if(this.toDate)
+            params = params.set('to_date',this.toDate.toISOString());
+
+        console.log('params: ' +params.toString())
+
+        if(this.clipboard.isSupported) {
+            this.clipboard.copyFromContent(url+params.toString());
+            this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
+        }
     }
 }

@@ -83,6 +83,13 @@
                                 <img *ngIf="isDiscordOrCoilNetwork(foundUser)" src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20" style="vertical-align: middle;">
                                 <a target="_blank" href="{{getXRPTipBotURL(foundUser)}}" style="vertical-align: middle;"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
                             </div>
+                            <div class="floatright">
+                                <button mat-icon-button title="Share this statistic" (click)="copy2Clipboard()">
+                                    <i class="material-icons">
+                                        share
+                                    </i>
+                                </button>
+                            </div>
                         </h2>
                         <div *ngIf="useDateRange" class="ui-g-12">
                             <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
