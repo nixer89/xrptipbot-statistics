@@ -1,7 +1,6 @@
-import {NgModule}      from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {NgModule} from '@angular/core';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {HttpClientModule}    from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 //import {LocationStrategy,HashLocationStrategy} from '@angular/common';
@@ -14,30 +13,13 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // PrimeNG
-import {AccordionModule} from 'primeng/primeng';
-import {AutoCompleteModule} from 'primeng/primeng';
 import {ButtonModule} from 'primeng/primeng';
-import {CaptchaModule} from 'primeng/primeng';
 import {CheckboxModule} from 'primeng/primeng';
-import {ConfirmDialogModule} from 'primeng/primeng';
-import {FieldsetModule} from 'primeng/primeng';
-import {GrowlModule} from 'primeng/primeng';
-import {InputMaskModule} from 'primeng/primeng';
-import {InputSwitchModule} from 'primeng/primeng';
 import {InputTextModule} from 'primeng/primeng';
-import {InputTextareaModule} from 'primeng/primeng';
-import {MenuModule} from 'primeng/primeng';
-import {MenubarModule} from 'primeng/primeng';
 import {MessagesModule} from 'primeng/primeng';
 import {PaginatorModule} from 'primeng/primeng';
-import {PanelModule} from 'primeng/primeng';
-import {PasswordModule} from 'primeng/primeng';
-import {ProgressBarModule} from 'primeng/primeng';
-import {RadioButtonModule} from 'primeng/primeng';
-import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {SpinnerModule} from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
-import {TabMenuModule} from 'primeng/primeng';
 import {ToolbarModule} from 'primeng/primeng';
 import {CardModule} from 'primeng/primeng';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
@@ -45,7 +27,6 @@ import {ToggleButtonModule} from 'primeng/togglebutton';
 import {ChartModule} from 'primeng/chart';
 import {DropdownModule} from 'primeng/dropdown';
 import {CalendarModule} from 'primeng/calendar';
-import {SidebarModule} from 'primeng/sidebar';
 import {DialogModule} from 'primeng/dialog';
 import {TooltipModule} from 'primeng/tooltip';
 
@@ -90,8 +71,6 @@ import { ClipboardModule } from 'ngx-clipboard';
   ],
   imports: [
     BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
     FlexLayoutModule,
     AppRoutes,
     HttpClientModule,
@@ -102,30 +81,13 @@ import { ClipboardModule } from 'ngx-clipboard';
     MatTooltipModule,
     MatSnackBarModule,
     // PrimeNG:
-    AccordionModule,
-    AutoCompleteModule,
     ButtonModule,
-    CaptchaModule,
     CheckboxModule,
-    ConfirmDialogModule,
-    FieldsetModule,
-    GrowlModule,
-    InputMaskModule,
-    InputSwitchModule,
     InputTextModule,
-    InputTextareaModule,
-    MenuModule,
-    MenubarModule,
     MessagesModule,
     PaginatorModule,
-    PanelModule,
-    PasswordModule,
-    ProgressBarModule,
-    RadioButtonModule,
-    ScrollPanelModule,
     SpinnerModule,
     TableModule,
-    TabMenuModule,
     ToolbarModule,
     CardModule,
     ProgressSpinnerModule,
@@ -133,7 +95,6 @@ import { ClipboardModule } from 'ngx-clipboard';
     ChartModule,
     DropdownModule,
     CalendarModule,
-    SidebarModule,
     DialogModule,
     TooltipModule,
     ClipboardModule
