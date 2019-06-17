@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserStatisticsService } from '../services/userstatistics.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 import { ApiService } from '../services/api.service';
+import { from } from 'rxjs';
 
 @Component({
     selector: "dashboardUser",
@@ -81,14 +82,30 @@ export class DashboardUserComponent implements OnInit {
 
         let userInQuery = this.route.snapshot.queryParamMap.get('user');
         let networkInQuery = this.route.snapshot.queryParamMap.get('network');
+        let fromDate = this.route.snapshot.queryParamMap.get('from_date');
+        let toDate = this.route.snapshot.queryParamMap.get('to_date');
         //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
-        if(userInQuery && userInQuery.trim().length>0) {
-            this.selectedUser = userInQuery.trim();
+        if((userInQuery && userInQuery.trim().length>0) || fromDate || toDate) {
+            if(userInQuery)
+                this.selectedUser = userInQuery.trim();
+
+            console.log(fromDate);
 
             if(networkInQuery && networkInQuery.trim().length>0)
                 this.selectedNetwork = networkInQuery.trim();
+
+            if(fromDate && fromDate.trim().length>0 && Date.parse(fromDate)>0)
+                this.fromDate = new Date(fromDate);
+
+            if(toDate && toDate.trim().length>0 && Date.parse(toDate)>0)
+                this.toDate = new Date(toDate);
             
-            this.refreshAll();
+            if(this.fromDate && this.toDate)
+                this.useDateRange = true;
+            
+            if(this.selectedUser)
+                this.refreshAll();
+                
         } else {
             this.initWithZeroValues();        
         }

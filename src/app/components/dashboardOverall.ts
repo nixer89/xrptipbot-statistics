@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { OverallStatisticsService } from '../services/overallstatistics.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 import { ApiService } from '../services/api.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: "dashboardOverall",
@@ -53,7 +54,10 @@ export class DashboardOverallComponent implements OnInit {
     topXRPSent:any[] = [];
     topXRPReceived:any[] = [];
 
-    constructor(private overAllStatistics: OverallStatisticsService, private api: ApiService, private generalStats: GeneralStatisticsService) {
+    constructor(private overAllStatistics: OverallStatisticsService,
+        private api: ApiService,
+        private generalStats: GeneralStatisticsService,
+        private route: ActivatedRoute) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -65,6 +69,18 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     async ngOnInit() {
+        let fromDate = this.route.snapshot.queryParamMap.get('from_date');
+        let toDate = this.route.snapshot.queryParamMap.get('to_date');
+
+        if(fromDate && fromDate.trim().length>0 && Date.parse(fromDate)>0)
+                this.fromDate = new Date(fromDate);
+
+        if(toDate && toDate.trim().length>0 && Date.parse(toDate)>0)
+            this.toDate = new Date(toDate)
+
+        if(this.fromDate && this.toDate)
+            this.useDateRange = true;
+            
         await this.refreshAll();
     }
 
