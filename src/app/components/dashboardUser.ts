@@ -127,7 +127,7 @@ export class DashboardUserComponent implements OnInit {
     refreshStatsWithTimeout() {
         if(this.executionTimeoutStats) clearTimeout(this.executionTimeoutStats);
         
-        this.executionTimeoutStats = setTimeout(()=> this.refreshStats(),1500);
+        this.executionTimeoutStats = setTimeout(()=> this.refreshStats(),2500);
     }
 
     refreshChartWithTimeout() {

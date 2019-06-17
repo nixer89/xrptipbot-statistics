@@ -14,11 +14,11 @@
                                 </div>
                                 <div class="floatleft" style="width: 80%">
                                     <label disabled="!useDateRange"><b>From</b></label>
-                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="fromDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onClose)="refreshStatsWithTimeout()"></p-calendar>
+                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="fromDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
                                 <div class="floatleft" style="width: 80%">
                                     <label><b>To</b></label>
-                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onClose)="refreshStatsWithTimeout()"></p-calendar>
+                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
                                 <div class="floatleft" style="width: 80%">
                                     <label style="font-size: 9px;"><b>DB timestamps are in UTC, so your selected time will be converted into UTC as well!</b></label>
