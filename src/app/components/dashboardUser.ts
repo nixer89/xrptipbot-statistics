@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserStatisticsService } from '../services/userstatistics.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 import { ApiService } from '../services/api.service';
+import * as mqtt from '../../../libs/browserMqtt.js';
 
 @Component({
     selector: "dashboardUser",
@@ -77,10 +78,55 @@ export class DashboardUserComponent implements OnInit {
         this.selectedNetwork = this.networkDropdown[0].value;
     }
 
+    mqttClient: mqtt.Client;
+
+    graphJson:any = {
+        "nodes": [],
+        "links": []
+    }
+
+    initMQTT() {
+        this.mqttClient = mqtt.connect('mqtt://mqtt.xrptipbot-api.siedentopf.xyz:4001');
+        this.mqttClient.on('connect', () => {
+            //when connection sucessfull then subscribe to transactions for the user
+            console.log("MQTT connected. Subscribing to topics:");
+            console.log("subscribing to topic: " + 'tip/sent/*');
+            this.mqttClient.subscribe('tip/sent/*');
+            console.log("Waiting for tips...");
+        });
+
+        this.mqttClient.on('close', () => {
+            console.log("MQTT closed.");
+        });
+
+        this.mqttClient.on('error', err => {
+            console.log("MQTT not ready: " + err);
+        });
+
+        this.mqttClient.on('message', async (topic, message) => {
+            let newTip = JSON.parse(message.toString());
+            //add new tip to graph
+            if(!this.graphJson.nodes.find(userNode => userNode.id === newTip.user_id))
+                this.graphJson.nodes.push({"name": newTip.user, "id": newTip.user_id});
+
+            if(!this.graphJson.nodes.find(userNode => userNode.id === newTip.to_id))
+                this.graphJson.nodes.push({"name": newTip.to, "id": newTip.to_id});
+
+            this.graphJson.links.push({"source": newTip.user_id, "target": newTip.to_id});
+
+            console.log(JSON.stringify(this.graphJson));
+        });
+    }
+
     async ngOnInit() {
+
+        console.log("init force graph and mqtt");
+        this.initMQTT();
 
         let userInQuery = this.route.snapshot.queryParamMap.get('user');
         let networkInQuery = this.route.snapshot.queryParamMap.get('network');
+        let from_date = this.route.snapshot.queryParamMap.get('from_date');
+        let to_date = this.route.snapshot.queryParamMap.get('to_date');
         //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
         if(userInQuery && userInQuery.trim().length>0) {
             this.selectedUser = userInQuery.trim();
@@ -88,6 +134,13 @@ export class DashboardUserComponent implements OnInit {
             if(networkInQuery && networkInQuery.trim().length>0)
                 this.selectedNetwork = networkInQuery.trim();
             
+            if(from_date && from_date.trim().length > 0)
+                this.fromDate = new Date(from_date);
+            
+            if(to_date && to_date.trim().length > 0)
+                this.fromDate = new Date(to_date);
+                
+
             this.refreshAll();
         } else {
             this.initWithZeroValues();        
@@ -128,7 +181,7 @@ export class DashboardUserComponent implements OnInit {
                 //check if user was found
                 //user found, continue!
                 let promises:any[] = [this.refreshStats(), this.refreshChart()]
-                await Promise.all(promises); 
+                promises = await Promise.all(promises); 
 
             } else {
                 this.initStatsWithZeroValues();
@@ -145,7 +198,7 @@ export class DashboardUserComponent implements OnInit {
                 let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.user_id, this.selectedUser.trim());
                 let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 30, this.selectedNetwork, this.excludeBots, this.excludeCharities, this.user_id, this.selectedUser.trim());
 
-                //console.log("tipTipper: " + JSON.stringify(topTipper));
+                console.log("tipTipper: " + JSON.stringify(topTipper));
 
                 //console.log("user stats result in dashboard: " + JSON.stringify(stats));
                 if(stats) {
