@@ -4,7 +4,15 @@
             <div class="ui-g-12">
                 <div class="floatleft" style="width:20%">
                     <div>
-                        <p-card header="Choose Date (optional):">
+                        <p-card>
+                            <div>
+                                <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                <p-checkbox binary="true" label="Exclude Coil-Settlement" [(ngModel)]="excludeCoilSettlement" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                            </div>
+                            <h2>
+                                Choose Date (optional):
+                            </h2>
                             <div style="padding-top: 0.5em;">
                                 <div class="floatleft">
                                     <p-checkbox binary="true" label="Choose specific Time" [(ngModel)]="useDateRange" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>
@@ -86,10 +94,6 @@
                                 <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
                                 <label>To: {{toDate ? toDate.toUTCString():''}}</label>
                             </div>
-                            <div>
-                                <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
-                                <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
-                            </div>
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
@@ -123,6 +127,9 @@
                     <div class="floatright">
                         <p-progressSpinner *ngIf="processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
                     </div>
+                </div>
+                <div>
+                    <p-checkbox binary="true" label="Exclude Coil-Settlement" [(ngModel)]="excludeCoilSettlementChart" [disabled]="processingChart" (onChange)="refreshChartWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                 </div>
             </p-card>
         </div>

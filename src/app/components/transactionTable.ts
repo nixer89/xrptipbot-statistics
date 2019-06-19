@@ -39,28 +39,28 @@ export class TransactionTableComponent implements OnInit {
 
     getXRPTipBotURL(tipper:any) : string {
         if(this.isDiscordNetwork(tipper))
-            return "https://www.xrptipbot.com/u:"+(tipper.user_id ? tipper.user_id : tipper.to_id)+"/n:"+tipper.network;
+            return "https://www.xrptipbot.com/u:"+tipper.id+"/n:"+tipper.network;
         else
-            return "https://www.xrptipbot.com/u:"+tipper._id+"/n:"+tipper.network;
+            return "https://www.xrptipbot.com/u:"+tipper.userName+"/n:"+tipper.network;
     }
 
     getStatisticsURLFrom(data:any) : string {
-        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+data.user+"&network="+data.user_network;
+        return window.location.origin+"/userstatistics?user="+data.user+"&network="+data.user_network;
     }
 
     getStatisticsURLTo(data:any) : string {
-        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+data.to+"&network="+data.to_network;
+        return window.location.origin+"/userstatistics?user="+data.to+"&network="+data.to_network;
     }
 
     getNetworkURL(tipper:any): String {
         if(tipper.network==='discord') {
-            return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
+            return 'https://discordapp.com/u/'+tipper.id;
         } else if(tipper.network ==='reddit') {
-            return 'https://reddit.com/u/'+tipper._id;
+            return 'https://reddit.com/u/'+tipper.userName;
         } else if(tipper.network ==='coil') {
-            return 'https://coil.com/u/'+tipper._id;
+            return 'https://coil.com/u/'+tipper.userName;
         } else {
-            return 'https://twitter.com/'+tipper._id;
+            return 'https://twitter.com/'+tipper.userName;
         }
     }
 

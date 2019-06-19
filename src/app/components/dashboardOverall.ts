@@ -16,6 +16,8 @@ export class DashboardOverallComponent implements OnInit {
     executionTimeoutAll;
     excludeBots:boolean = false;
     excludeCharities:boolean = false;
+    excludeCoilSettlement:boolean = true;
+    excludeCoilSettlementChart: boolean = true;
 
     //chart
     chartData: any;
@@ -101,9 +103,9 @@ export class DashboardOverallComponent implements OnInit {
     async refreshStats() {
         this.processingStats = true;
         if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
-            let stats:number[] = await this.overAllStatistics.getOverallStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-            let statsByNetwork:number[] = await this.overAllStatistics.getOverallStatsByNetwork(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null);
-            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 30, null, this.excludeBots, this.excludeCharities);
+            let stats:number[] = await this.overAllStatistics.getOverallStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement);
+            let statsByNetwork:number[] = await this.overAllStatistics.getOverallStatsByNetwork(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement);
+            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 10, null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement);
 
             //console.log("user stats result in dashboard: " + JSON.stringify(stats));
             if(stats) {
@@ -153,7 +155,7 @@ export class DashboardOverallComponent implements OnInit {
 
     async refreshChart() {
         this.processingChart=true;
-        let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, true, true, false, false, false, false);
+        let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, true, true, false, false, false, false, null, this.excludeCoilSettlementChart);
 
         let dataSet:any[] = [];
         dataSet.push(result.sentTips.reverse());
@@ -266,7 +268,8 @@ export class DashboardOverallComponent implements OnInit {
     copy2Clipboard() {
         let params = new HttpParams()
 
-        let url = 'https://xrptipbot-statistics.siedentopf.xyz/overallstatistics?'
+        //console.log(JSON.stringify(window.location));
+        let url = window.location.origin+'/overallstatistics?'
         
         if(this.fromDate)
             params = params.set('from_date',this.fromDate.toISOString());
@@ -274,7 +277,7 @@ export class DashboardOverallComponent implements OnInit {
         if(this.toDate)
             params = params.set('to_date',this.toDate.toISOString());
 
-        console.log('params: ' +params.toString())
+        //console.log('params: ' +params.toString())
 
         if(this.clipboard.isSupported) {
             this.clipboard.copyFromContent(url+params.toString());
