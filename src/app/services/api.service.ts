@@ -100,6 +100,7 @@ export class ApiService {
     }
 
     async getCountResult(path:string, queryParams: string): Promise<[]> {
+        //console.log(" count with path: " + path + " and filter: " + queryParams)
         let countResult = await this.callTipBotCountApi(path, queryParams);
 
         if(countResult) return countResult.result;

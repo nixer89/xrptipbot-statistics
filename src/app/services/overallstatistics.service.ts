@@ -7,15 +7,15 @@ export class OverallStatisticsService {
 
     constructor(private api: ApiService, private generalStats: GeneralStatisticsService) {}
 
-    async getOverallStats(fromDate: Date, toDate: Date): Promise<number[]> {
+    coilAccounts:string[] = ['COIL_SETTLED_ILP_BALANCE', 'COIL_SETTLEMENT_ACCOUNT'];
+    bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792','52249814'];
+    charities:string[] = ['9624042', '3443786712', '951179206104403968', '21855719', '970803226470531072', '1080843472129658880'];
+
+    async getOverallStats(fromDate: Date, toDate: Date, excludeBots?:boolean, excludeCharities?:boolean, excludeCoilSettlement?: boolean): Promise<number[]> {
         let emptyResult:number[];
-        //console.log("getUserStats")
+        //console.log("getOverallStats")
         try {
-            let optionalDateFilter = "";
-            if(fromDate && toDate) {
-                optionalDateFilter+="&from_date="+this.generalStats.setZeroMilliseconds(fromDate).toUTCString();
-                optionalDateFilter+="&to_date="+this.generalStats.setHighMilliseconds(toDate).toUTCString();
-            }
+            let optionalDateFilter = this.generalStats.constructOptionalFilter(fromDate, toDate, excludeBots, excludeCharities, excludeCoilSettlement);
 
             let promises:any[] = [];
             //sent tips
@@ -38,15 +38,11 @@ export class OverallStatisticsService {
         }
     }
 
-    async getOverallStatsByNetwork(fromDate: Date, toDate: Date): Promise<number[]> {
+    async getOverallStatsByNetwork(fromDate: Date, toDate: Date, excludeBots?:boolean, excludeCharities?:boolean, excludeCoilSettlement?: boolean): Promise<number[]> {
         let emptyResult:number[];
         //console.log("getUserStats")
         try {
-            let optionalDateFilter = "";
-            if(fromDate && toDate) {
-                optionalDateFilter+="&from_date="+this.generalStats.setZeroMilliseconds(fromDate).toUTCString();
-                optionalDateFilter+="&to_date="+this.generalStats.setHighMilliseconds(toDate).toUTCString();
-            }
+            let optionalDateFilter = this.generalStats.constructOptionalFilter(fromDate, toDate, excludeBots, excludeCharities, excludeCoilSettlement);
 
             let promises:any[] = [];
             //sent tips via twitter

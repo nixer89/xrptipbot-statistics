@@ -64,24 +64,24 @@ export class UserTableComponent {
 
     getXRPTipBotURL(tipper:any) : string {
         if(this.isDiscordOrCoilNetwork(tipper))
-            return "https://www.xrptipbot.com/u:"+(tipper.user_id ? tipper.user_id : tipper.to_id)+"/n:"+tipper.network;
+            return "https://www.xrptipbot.com/u:"+tipper.id+"/n:"+tipper.network;
         else
-            return "https://www.xrptipbot.com/u:"+tipper._id+"/n:"+tipper.network;
+            return "https://www.xrptipbot.com/u:"+tipper.userName+"/n:"+tipper.network;
     }
 
     getStatisticsURL(tipper:any) : string {
-        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+tipper._id+"&network="+tipper.network;
+        return window.location.origin+"/userstatistics?user="+tipper.userName+"&network="+tipper.network;
     }
 
     getNetworkURL(tipper:any): String {
         if(tipper.network==='discord') {
-            return 'https://discordapp.com/u/'+(tipper.user_id ? tipper.user_id:tipper.to_id);
+            return 'https://discordapp.com/u/'+tipper.id;
         } else if(tipper.network ==='reddit') {
-            return 'https://reddit.com/u/'+tipper._id;
+            return 'https://reddit.com/u/'+tipper.userName;
         } else if(tipper.network ==='coil') {
-            return 'https://coil.com/u/'+tipper._id;
+            return 'https://coil.com/u/'+tipper.userName;
         } else {
-            return 'https://twitter.com/'+tipper._id;
+            return 'https://twitter.com/'+tipper.userName;
         }
     }
 
@@ -100,7 +100,7 @@ export class UserTableComponent {
     openAllTransactions(tipper:any) {
         //console.log("userTable openTransactions()");
         //console.log("tipper: " + JSON.stringify(tipper));
-        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceivingTips || this.isReceivingXRP ? "&user_id=": "&to_id=")+tipper['user_id'];
+        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceivingTips || this.isReceivingXRP ? "&user=": "&to=")+tipper['userName'];
         //console.log("filter: " + this.overlayUsedTransactionFilter);
         this.openOverlayTable = "true";
     }
@@ -136,13 +136,15 @@ export class UserTableComponent {
         this.openOverlayTable = null;
     }
 
-    async resolveNamesAndChangeNetwork(numberResultList: any[]): Promise<any[]> {
-        numberResultList = numberResultList.filter(user => user['_id']!="1069586402898337792");
-        if(numberResultList.length > 10)
-            numberResultList.pop();
-        
+    async resolveNamesAndChangeNetwork(numberResultList: any[]): Promise<any[]> {       
         //console.log("found user in user table: " + JSON.stringify(this.foundUser));
-        let resolvedUserNames:any[] = await this.generalStats.resolveUserNameAndNetwork(numberResultList, this.foundUser['id'], this.foundUser['name']);
-        return this.generalStats.changeToCorrectNetworkAndFixedXRP(resolvedUserNames, numberResultList);
+        return this.generalStats.changeToCorrectNetworkAndFixedXRP(numberResultList);
+    }
+
+    getUserName(tipper): string {
+        if('COIL_SETTLED_ILP_BALANCE' === tipper.userName || 'COIL_SETTLEMENT_ACCOUNT' === tipper.userName)
+            return tipper.userName.substring(0,tipper.userName.lastIndexOf('_')+1) + ' ' + tipper.userName.substring(tipper.userName.lastIndexOf('_')+1)
+        else
+            return tipper.userName;
     }
 }

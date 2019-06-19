@@ -163,8 +163,8 @@ export class DashboardUserComponent implements OnInit {
         if(this.selectedUser && this.selectedUser.trim().length>0 &&
             (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
                 this.processingStats = true;
-                let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.user_id, this.selectedUser.trim());
-                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 30, this.selectedNetwork, this.excludeBots, this.excludeCharities, this.user_id, this.selectedUser.trim());
+                let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim());
+                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 10, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim());
 
                 //console.log("tipTipper: " + JSON.stringify(topTipper));
 
@@ -204,7 +204,7 @@ export class DashboardUserComponent implements OnInit {
             this.processingChart=true;
             //console.log("include deposits? " + this.includeDeposits);
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
-            let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.user_id, this.selectedUser ? this.selectedUser.trim():null);
+            let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.selectedUser.trim());
             
             
             if(this.includeDeposits) {
@@ -328,7 +328,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     getStatisticsURL(tipper:any) : string {
-        return "https://xrptipbot-statistics.siedentopf.xyz/userstatistics?user="+tipper.name+"&network="+tipper.network;
+        return window.location.origin+"/userstatistics?user="+tipper.name+"&network="+tipper.network;
     }
 
     getNetworkURL(tipper:any): String {
@@ -365,9 +365,9 @@ export class DashboardUserComponent implements OnInit {
             filter = "type=tip";
         
         if(userStats.isReceiving)        
-            filter+= (this.foundUser && this.foundUser.id && this.foundUser.id.trim().length>0) ? "&to_id="+this.foundUser.id : "&to="+this.selectedUser;
+            filter+= "&to="+this.foundUser.name;
         else
-            filter+= (this.foundUser && this.foundUser.id && this.foundUser.id.trim().length>0) ? "&user_id="+this.foundUser.id : "&user="+this.selectedUser;
+            filter+= "&user="+this.foundUser.name;
         
         this.openAllTransactions(filter);
     }
@@ -392,8 +392,8 @@ export class DashboardUserComponent implements OnInit {
 
     copy2Clipboard() {
         let params = new HttpParams()
-
-        let url = 'https://xrptipbot-statistics.siedentopf.xyz/userstatistics?'
+        
+        let url = window.location.origin+'/userstatistics?'
 
         if(this.selectedUser)
             params = params.set('user',this.selectedUser);
