@@ -10,7 +10,6 @@ export class AppService {
     requestOptions() {
         let headers = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json');
-        headers = headers.append('Access-Control-Allow-Origin','*');
         return { headers: headers };
     }
 
