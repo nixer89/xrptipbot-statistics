@@ -84,29 +84,32 @@ export class DashboardUserComponent implements OnInit {
 
     async ngOnInit() {
 
-        let userInQuery = this.route.snapshot.queryParamMap.get('user');
-        let networkInQuery = this.route.snapshot.queryParamMap.get('network');
-        let fromDate = this.route.snapshot.queryParamMap.get('from_date');
-        let toDate = this.route.snapshot.queryParamMap.get('to_date');
+        let userParam = this.route.snapshot.queryParamMap.get('user');
+        let networkParam = this.route.snapshot.queryParamMap.get('network');
+        let fromDateParam = this.route.snapshot.queryParamMap.get('from_date');
+        let toDateParam = this.route.snapshot.queryParamMap.get('to_date');
+        let excludeBotsParam = this.route.snapshot.queryParamMap.get('excludeBots');
+        let excludeCharitiesParam = this.route.snapshot.queryParamMap.get('excludeCharities');
         //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
-        if((userInQuery && userInQuery.trim().length>0) || fromDate || toDate) {
-            if(userInQuery)
-                this.selectedUser = userInQuery.trim();
+        if((userParam && userParam.trim().length>0) || fromDateParam || fromDateParam) {
+            if(userParam)
+                this.selectedUser = userParam.trim();
 
-            console.log(fromDate);
+            if(networkParam && networkParam.trim().length>0)
+                this.selectedNetwork = networkParam.trim();
 
-            if(networkInQuery && networkInQuery.trim().length>0)
-                this.selectedNetwork = networkInQuery.trim();
+            if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
+                this.fromDate = new Date(fromDateParam);
 
-            if(fromDate && fromDate.trim().length>0 && Date.parse(fromDate)>0)
-                this.fromDate = new Date(fromDate);
-
-            if(toDate && toDate.trim().length>0 && Date.parse(toDate)>0)
-                this.toDate = new Date(toDate);
+            if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
+                this.toDate = new Date(toDateParam);
             
             if(this.fromDate && this.toDate)
                 this.useDateRange = true;
             
+            this.excludeBots = (excludeBotsParam == 'true');
+            this.excludeCharities = (excludeCharitiesParam == 'true');
+
             if(this.selectedUser)
                 this.refreshAll();
                 
@@ -401,11 +404,19 @@ export class DashboardUserComponent implements OnInit {
         if(this.selectedNetwork)
             params = params.set('network',this.selectedNetwork);
         
-        if(this.fromDate)
-            params = params.set('from_date',this.fromDate.toISOString());
+        if(this.useDateRange) {
+            if(this.fromDate)
+                params = params.set('from_date',this.fromDate.toISOString());
 
-        if(this.toDate)
-            params = params.set('to_date',this.toDate.toISOString());
+            if(this.toDate)
+                params = params.set('to_date',this.toDate.toISOString());
+        }
+
+        if(this.excludeBots)
+            params = params.set('excludeBots', this.excludeBots.toString());
+
+        if(this.excludeCharities)
+            params = params.set('excludeCharities', this.excludeCharities.toString());
 
         if(this.clipboard.isSupported) {
             this.clipboard.copyFromContent(url+params.toString());

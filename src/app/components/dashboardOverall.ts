@@ -74,17 +74,24 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     async ngOnInit() {
-        let fromDate = this.route.snapshot.queryParamMap.get('from_date');
-        let toDate = this.route.snapshot.queryParamMap.get('to_date');
+        let fromDateParam = this.route.snapshot.queryParamMap.get('from_date');
+        let toDateParam = this.route.snapshot.queryParamMap.get('to_date');
+        let excludeBotsParam = this.route.snapshot.queryParamMap.get('excludeBots');
+        let excludeCharitiesParam = this.route.snapshot.queryParamMap.get('excludeCharities');
+        let excludeCoilParam = this.route.snapshot.queryParamMap.get('excludeCoilSettlement');
 
-        if(fromDate && fromDate.trim().length>0 && Date.parse(fromDate)>0)
-                this.fromDate = new Date(fromDate);
+        if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
+                this.fromDate = new Date(fromDateParam);
 
-        if(toDate && toDate.trim().length>0 && Date.parse(toDate)>0)
-            this.toDate = new Date(toDate)
+        if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
+            this.toDate = new Date(toDateParam)
 
         if(this.fromDate && this.toDate)
             this.useDateRange = true;
+
+        this.excludeBots = (excludeBotsParam == 'true');
+        this.excludeCharities = (excludeCharitiesParam == 'true');
+        this.excludeCoilSettlement = (excludeCoilParam == 'true');
             
         await this.refreshAll();
     }
@@ -271,11 +278,22 @@ export class DashboardOverallComponent implements OnInit {
         //console.log(JSON.stringify(window.location));
         let url = window.location.origin+'/overallstatistics?'
         
-        if(this.fromDate)
-            params = params.set('from_date',this.fromDate.toISOString());
+        if(this.useDateRange) {
+            if(this.fromDate)
+                params = params.set('from_date',this.fromDate.toISOString());
 
-        if(this.toDate)
-            params = params.set('to_date',this.toDate.toISOString());
+            if(this.toDate)
+                params = params.set('to_date',this.toDate.toISOString());
+        }
+
+        if(this.excludeBots)
+            params = params.set('excludeBots', this.excludeBots.toString());
+
+        if(this.excludeCharities)
+            params = params.set('excludeCharities', this.excludeCharities.toString());
+        
+        if(this.excludeCoilSettlement)
+            params = params.set('excludeCoilSettlement', this.excludeCoilSettlement.toString());
 
         //console.log('params: ' +params.toString())
 

@@ -36,7 +36,8 @@ export class UserStatisticsService {
             //withdraw XRP
             promises.push(this.api.getAggregatedXRP(userFilter+"&type=withdraw&user_network="+network+optionalDateFilter));
             //ILP-Deposits XRP
-            promises.push(this.api.getILPDepositXRP(userFilter+"&type=ILP deposit&network="+network+optionalDateFilter));
+            let ilpOptionalFilter = optionalDateFilter.includes("&excludeUser") ? optionalDateFilter.substring(0, optionalDateFilter.indexOf("&excludeUser")) : optionalDateFilter;
+            promises.push(this.api.getILPDepositXRP(userFilter+"&type=ILP deposit&network="+network+ilpOptionalFilter));
 
             return Promise.all(promises);
         } catch(err) {
