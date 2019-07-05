@@ -7,17 +7,13 @@ export class UserStatisticsService {
 
     constructor(private api: ApiService, private generalStats: GeneralStatisticsService) {}
 
-    async getUserStats(fromDate: Date, toDate: Date, network:string, userId?:string, userName?:string): Promise<number[]> {
+    async getUserStats(fromDate: Date, toDate: Date, network:string, excludeBots?:boolean, excludeCharities?:boolean, excludeCoilSettlement?: boolean, userName?:string): Promise<number[]> {
         //console.log("getUserStats")
         try {
-            let userFilter = (userId && userId.trim().length>0) ? "user_id="+userId : "user="+userName;
-            let toFilter = (userId && userId.trim().length>0) ? "to_id="+userId : "to="+userName;
+            let userFilter = "user="+userName;
+            let toFilter = "to="+userName;
 
-            let optionalDateFilter = "";
-            if(fromDate && toDate) {
-                optionalDateFilter+="&from_date="+this.generalStats.setZeroMilliseconds(fromDate).toUTCString();
-                optionalDateFilter+="&to_date="+this.generalStats.setHighMilliseconds(toDate).toUTCString();
-            }
+            let optionalDateFilter = this.generalStats.constructOptionalFilter(fromDate, toDate, excludeBots, excludeCharities, excludeCoilSettlement);
 
             //console.log("userFilter: " + userFilter);
             //console.log("toFilter: " + toFilter);

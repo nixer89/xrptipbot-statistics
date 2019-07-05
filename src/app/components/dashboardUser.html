@@ -33,18 +33,22 @@
                                 </div>
                             </div>
                             <div style="padding-top: 2em;">
-                                <div class="floatleft">
+                                <div>
+                                    <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                    <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                </div>
+                                <div>
                                     <p-checkbox binary="true" label="Choose specific Time" [(ngModel)]="useDateRange" [disabled]="processingAll || processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>
                                 </div>
-                                <div class="floatleft" style="width: 80%">
+                                <div style="width: 80%">
                                     <label disabled="!useDateRange"><b>From</b></label>
                                     <p-calendar [disabled]="!useDateRange" [(ngModel)]="fromDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
-                                <div class="floatleft" style="width: 80%">
+                                <div style="width: 80%">
                                     <label><b>To</b></label>
                                     <p-calendar [disabled]="!useDateRange" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
-                                <div class="floatleft" style="width: 80%">
+                                <div style="width: 80%">
                                     <label style="font-size: 9px;"><b>DB timestamps are in UTC, so your selected time will be converted into UTC as well!</b></label>
                                 </div>
                             </div>
@@ -84,8 +88,8 @@
                                 <a target="_blank" href="{{getXRPTipBotURL(foundUser)}}" style="vertical-align: middle;"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
                             </div>
                             <div class="floatright">
-                                <button mat-icon-button pTooltip="Share this statistic" (click)="copy2Clipboard()">
-                                    <i class="material-icons">
+                                <button mat-icon-button pTooltip="Share this statistic" tooltipPosition="left" (click)="copy2Clipboard()">
+                                    <i class="material-icons" style="color: #0089E1">
                                         share
                                     </i>
                                 </button>
@@ -94,10 +98,6 @@
                         <div *ngIf="useDateRange" class="ui-g-12">
                             <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
                             <label>To: {{toDate ? toDate.toUTCString():''}}</label>
-                        </div>
-                        <div>
-                            <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
-                            <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
