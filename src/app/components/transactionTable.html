@@ -1,32 +1,44 @@
-<p-dialog [style]="{width: '90%', height: '90%'}" [(visible)]="transactionFilter" [modal]="true" (onHide)="cleanup()">
-    <p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
-    <p-table *ngIf="data" [value]="data" [paginator]="true" [rows]="15" [autoLayout]="true">
-        <ng-template pTemplate="header">
-            <tr>
-                <th [pSortableColumn]="'momentAsDate'"><p-sortIcon [field]="'momentAsDate'"></p-sortIcon>Date (UTC)</th>
-                <th>From</th>
-                <th>To</th>
-                <th [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
-                <th>Network</th>
-                <th>Type</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Context</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-data>
-            <tr>
-                <td style="text-align: center">{{data.momentAsDate}}</td>
-                <td style="text-align: center"><a href="{{getStatisticsURLFrom(data)}}">{{data.user}}</a></td>
-                <td style="text-align: center"><a href="{{getStatisticsURLTo(data)}}">{{data.to}}</a></td>
-                <td style="text-align: center">{{data.xrp}}</td>
-                <td style="text-align: center">{{data.network}}</td>
-                <td style="text-align: center">{{data.type}}</td>
-                <td style="text-align: center">{{(data.type =='deposit' || data.type == 'withdraw') ? '' : data.user_network}}</td>
-                <td style="text-align: center">{{data.to_network}}</td>
-                <td *ngIf="data.network != 'twitter' || data.type != 'tip'" style="text-align: center">{{data.context}}</td>
-                <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="https://twitter.com{{data.context}}">{{data.context}}</a></td>
-            </tr>
-        </ng-template>
-    </p-table>
-</p-dialog>
+<p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+<p-table *ngIf="data" [value]="data" [paginator]="paginator" [rows]="rows" [autoLayout]="true">
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngIf="enableSort" [pSortableColumn]="'momentAsDate'">Date (GMT+2)<p-sortIcon [field]="'momentAsDate'"></p-sortIcon></th>
+            <th *ngIf="!enableSort">Date (GMT+2)</th>
+            <th>Type</th>
+            <th *ngIf="enableSort" [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
+            <th *ngIf="!enableSort">XRP</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Network</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Context</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-data>
+        <tr style="white-space: nowrap;">
+            <td style="text-align: center">{{formatStringDate(data.momentAsDate)}}</td>
+            <td style="text-align: center">{{data.type}}</td>
+            <td style="text-align: center">{{data.xrp}}</td>
+            <td style="text-align: left;">
+                <a href="{{getStatisticsURLFrom(data)}}">{{data.user}} </a>
+                <a *ngIf="!isDiscordOrCoilNetwork(data.user_network)" target="_blank" href="{{getNetworkURLFrom(data)}}"><img src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
+                <img *ngIf="isDiscordOrCoilNetwork(data.user_network)" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;">
+            </td>
+            <td style="text-align: left">
+                <div *ngIf="data.type === 'tip'">
+                    <a href="{{getStatisticsURLTo(data)}}">{{data.to}} </a>
+                    <a *ngIf="!isDiscordOrCoilNetwork(data.to_network)" target="_blank" href="{{getNetworkURLTo(data)}}"><img src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
+                    <img *ngIf="isDiscordOrCoilNetwork(data.to_network)" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;">
+                </div>
+            </td>
+            <td *ngIf="data.network === 'app' || data.network === 'btn'" style="text-align: center"><i class="material-icons">{{getIconName(data.network)}}</i></td>
+            <td *ngIf="data.network != 'app' && data.network != 'btn'" style="text-align: center"><img src="../../assets/networks/{{resolveIconName(data.network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
+            <td style="text-align: center"><img *ngIf="data.type != 'deposit' && data.type != 'withdraw' && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
+            <td style="text-align: center"><img *ngIf="data.to_network && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
+            <td *ngIf="(data.network != 'twitter' && data.network != 'btn') || data.type != 'tip'" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
+            <td *ngIf="data.network === 'btn' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="{{shortenContext(data.network,data.context)}}">{{shortenContext(data.network,data.context)}}</a></td>
+            <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="https://twitter.com{{data.context}}">{{data.context}}</a></td>
+        </tr>
+    </ng-template>
+</p-table>

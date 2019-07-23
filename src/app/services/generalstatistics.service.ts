@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, LOCALE_ID } from '@angular/core';
 import { ApiService } from './api.service';
+import * as formatUtil from '../util/formattingUtil';
 
 @Injectable()
 export class GeneralStatisticsService {
 
-    constructor(private api: ApiService) {}
+    constructor(private api: ApiService, @Inject(LOCALE_ID) public locale: string) {}
 
     coilAccounts:string[] = ['COIL_SETTLED_ILP_BALANCE', 'COIL_SETTLEMENT_ACCOUNT'];
     bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792','52249814'];
@@ -101,9 +102,10 @@ export class GeneralStatisticsService {
         let directDepositsXRP:any[] = [];
         let dateTimes:any[] = [];
 
-        let upperDate = this.setHigherTime(new Date());;
-        let nextLowDate = new Date();
-        let lowestDate = new Date();
+        let upperDate = this.setHigherTime(new Date(formatUtil.initializeDateAsGMT2(new Date())));;
+        let nextLowDate = new Date(formatUtil.initializeDateAsGMT2(new Date()));
+        let lowestDate = new Date(formatUtil.initializeDateAsGMT2(new Date()))
+
         //next low day should be last monday if we calculate weeks
         let daysToMonday = nextLowDate.getDay()-1;
         if(multiplier==7) {
@@ -131,9 +133,9 @@ export class GeneralStatisticsService {
             if(getDepositsXRP)
                 directDepositsXRP.push(this.getDepositXRP(nextLowDate, upperDate, userFilter));
 
-            dateTimes.push({from: nextLowDate.toUTCString(), to: upperDate.toUTCString()})
+            dateTimes.push({from: nextLowDate.toString(), to: upperDate.toString()})
 
-            upperDate = new Date(nextLowDate.toUTCString());
+            upperDate = new Date(nextLowDate.toString());
             upperDate.setDate(upperDate.getDate()-1)
             upperDate = this.setHigherTime(upperDate);
 
@@ -153,27 +155,27 @@ export class GeneralStatisticsService {
     }
 
     async getSentTips(fromDate: Date, toDate:Date, userFilter?: string): Promise<any> {
-        return this.api.getCount("type=tip&from_date="+fromDate.toUTCString()+"&to_date="+toDate.toUTCString()+userFilter);
+        return this.api.getCount("type=tip&from_date="+formatUtil.dateToStringEuropeForAPI(fromDate)+"&to_date="+formatUtil.dateToStringEuropeForAPI(toDate)+userFilter);
     }
 
     async getSentXRP(fromDate: Date, toDate:Date, userFilter?: string): Promise<any> {
-        return this.api.getAggregatedXRP("type=tip&from_date="+fromDate.toUTCString()+"&to_date="+toDate.toUTCString()+userFilter);
+        return this.api.getAggregatedXRP("type=tip&from_date="+formatUtil.dateToStringEuropeForAPI(fromDate)+"&to_date="+formatUtil.dateToStringEuropeForAPI(toDate)+userFilter);
     }
 
     async getReceivedTips(fromDate: Date, toDate:Date, userFilter?: string): Promise<any> {
-        return this.api.getCount("type=tip&from_date="+fromDate.toUTCString()+"&to_date="+toDate.toUTCString()+userFilter);
+        return this.api.getCount("type=tip&from_date="+formatUtil.dateToStringEuropeForAPI(fromDate)+"&to_date="+formatUtil.dateToStringEuropeForAPI(toDate)+userFilter);
     }
 
     async getReceivedXRP(fromDate: Date, toDate:Date, userFilter?: string): Promise<any> {
-        return this.api.getAggregatedXRP("type=tip&from_date="+fromDate.toUTCString()+"&to_date="+toDate.toUTCString()+userFilter);
+        return this.api.getAggregatedXRP("type=tip&from_date="+formatUtil.dateToStringEuropeForAPI(fromDate)+"&to_date="+formatUtil.dateToStringEuropeForAPI(toDate)+userFilter);
     }
 
     async getDepositCount(fromDate: Date, toDate:Date, userFilter?: string): Promise<any> {
-        return this.api.getCount("type=deposit&from_date="+fromDate.toUTCString()+"&to_date="+toDate.toUTCString()+userFilter);
+        return this.api.getCount("type=deposit&from_date="+formatUtil.dateToStringEuropeForAPI(fromDate)+"&to_date="+formatUtil.dateToStringEuropeForAPI(toDate)+userFilter);
     }
 
     async getDepositXRP(fromDate: Date, toDate:Date, userFilter?): Promise<any> {
-        return this.api.getAggregatedXRP("type=deposit&from_date="+fromDate.toUTCString()+"&to_date="+toDate.toUTCString()+userFilter);
+        return this.api.getAggregatedXRP("type=deposit&from_date="+formatUtil.dateToStringEuropeForAPI(fromDate)+"&to_date="+formatUtil.dateToStringEuropeForAPI(toDate)+userFilter);
     }
 
     private roundToSixDecimals(array:any[]): any[] {
@@ -184,28 +186,28 @@ export class GeneralStatisticsService {
     }
 
     setZeroMilliseconds(dateToModify: Date): Date {
-        dateToModify.setUTCMilliseconds(0);
+        dateToModify.setMilliseconds(0);
         return dateToModify
     }
 
     setHighMilliseconds(dateToModify: Date): Date {
-        dateToModify.setUTCMilliseconds(999);
+        dateToModify.setMilliseconds(999);
         return dateToModify
     }
 
     setZeroTime(dateToModify: Date): Date {
-        dateToModify.setUTCHours(0);
-        dateToModify.setUTCMinutes(0);
-        dateToModify.setUTCSeconds(0);
+        dateToModify.setHours(0);
+        dateToModify.setMinutes(0);
+        dateToModify.setSeconds(0);
         dateToModify = this.setZeroMilliseconds(dateToModify);
 
         return dateToModify;
     }
     
     setHigherTime(dateToModify: Date): Date {
-        dateToModify.setUTCHours(23);
-        dateToModify.setUTCMinutes(59);
-        dateToModify.setUTCSeconds(59);
+        dateToModify.setHours(23);
+        dateToModify.setMinutes(59);
+        dateToModify.setSeconds(59);
         dateToModify = this.setHighMilliseconds(dateToModify);
 
         return dateToModify;
@@ -214,8 +216,9 @@ export class GeneralStatisticsService {
     constructOptionalFilter(fromDate: Date, toDate: Date, excludeBots?: boolean, excludeCharities?: boolean, excludeCoilSettlement?: boolean) {
         let optionalDateFilter = "";
         if(fromDate && toDate) {
-            optionalDateFilter+="&from_date="+this.setZeroMilliseconds(fromDate).toUTCString();
-            optionalDateFilter+="&to_date="+this.setHighMilliseconds(toDate).toUTCString();
+            
+            optionalDateFilter+="&from_date="+formatUtil.dateToStringEuropeForAPI(this.setZeroMilliseconds(fromDate));
+            optionalDateFilter+="&to_date="+formatUtil.dateToStringEuropeForAPI(this.setHighMilliseconds(toDate));
         }
 
         if(excludeBots || excludeCharities || excludeCoilSettlement) {
@@ -236,7 +239,7 @@ export class GeneralStatisticsService {
 
             //console.log("excludedAccount: " + JSON.stringify(excludedAccount));
 
-            //console.log("filter: " + optionalDateFilter);
+            console.log("filter: " + optionalDateFilter);
         }
 
         return optionalDateFilter;

@@ -57,12 +57,14 @@ import {DashboardUserComponent} from './components/dashboardUser';
 import {DashboardOverallComponent} from './components/dashboardOverall';
 import {UserTableComponent} from './components/userTable';
 import {TransactionTableComponent} from './components/transactionTable';
+import {TransactionTableDialogComponent} from './components/transactionTableDialog';
 import {TopTipperFullTableComponent} from './components/topTipperFullTable';
 
 //my components
-import {MainComponent} from './pages/main';
+import {InfoComponent} from './pages/info';
 import {UserStatisticsComponent} from './pages/userstatistics';
 import {OverallStatisticsComponent} from './pages/overallstatistics';
+import {FeedComponent} from './pages/feed';
 
 //my services
 import {AppService} from './services/app.service';
@@ -83,10 +85,12 @@ import { ClipboardModule } from 'ngx-clipboard';
     DashboardOverallComponent,
     UserTableComponent,
     TransactionTableComponent,
+    TransactionTableDialogComponent,
     TopTipperFullTableComponent,    
-    MainComponent,
+    InfoComponent,
     UserStatisticsComponent,
-    OverallStatisticsComponent
+    OverallStatisticsComponent,
+    FeedComponent
   ],
   imports: [
     BrowserModule,

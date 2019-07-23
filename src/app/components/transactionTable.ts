@@ -1,47 +1,53 @@
-import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy ,Output, EventEmitter } from "@angular/core";
 import { ApiService } from '../services/api.service';
+import * as formatUtil from '../util/formattingUtil';
 
 @Component({
     selector: "transactionTable",
     templateUrl: "transactionTable.html"
 })
-export class TransactionTableComponent implements OnInit {
+export class TransactionTableComponent implements OnInit, OnDestroy {
 
     @Input()
     transactionFilter:string;
 
-    @Output()
-    closed: EventEmitter<any> = new EventEmitter();
+    @Input()
+    rows:string;
+
+    @Input()
+    paginator:string;
+
+    @Input()
+    useInterval:string;
+
+    @Input()
+    enableSort:string;
 
     data:any[];
+    interval:NodeJS.Timeout;
 
-    constructor(private api: ApiService) {
-
-    }
+    constructor(private api: ApiService) {}
 
     async ngOnInit() {
         //console.log("transactionTable ngOnInit()");
         //console.log("getting transactions");
         this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
         //console.log("got data: " + this.data.length);
+        if(this.useInterval) {
+            this.interval = setInterval(async () => {
+                this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
+            }, 60000);
+        }
     }
 
-    cleanup() {
-        //console.log("transactionTable cleanup()");
+    ngOnDestroy() {
+        clearInterval(this.interval);
         this.transactionFilter = null;
         this.data = null;
-        this.closed.emit(null);
     }
 
-    isDiscordNetwork(tipper:any) {
-        return 'discord'===tipper.network;
-    }
-
-    getXRPTipBotURL(tipper:any) : string {
-        if(this.isDiscordNetwork(tipper))
-            return "https://www.xrptipbot.com/u:"+tipper.id+"/n:"+tipper.network;
-        else
-            return "https://www.xrptipbot.com/u:"+tipper.userName+"/n:"+tipper.network;
+    isDiscordOrCoilNetwork(network:string) {
+        return 'discord'===network || 'coil' === network;
     }
 
     getStatisticsURLFrom(data:any) : string {
@@ -52,27 +58,54 @@ export class TransactionTableComponent implements OnInit {
         return window.location.origin+"/userstatistics?user="+data.to+"&network="+data.to_network;
     }
 
-    getNetworkURL(tipper:any): String {
-        if(tipper.network==='discord') {
-            return 'https://discordapp.com/u/'+tipper.id;
-        } else if(tipper.network ==='reddit') {
-            return 'https://reddit.com/u/'+tipper.userName;
-        } else if(tipper.network ==='coil') {
-            return 'https://coil.com/u/'+tipper.userName;
+    getNetworkURLFrom(data:any) {
+        return this.getNetworkURL(data.user, data.user_id, data.user_network);
+    }
+
+    getNetworkURLTo(data:any) {
+        return this.getNetworkURL(data.to, data.to_id, data.to_network);
+    }
+
+    getNetworkURL(user:string, user_id:string, network: string): String {
+        if(network==='discord') {
+            return 'https://discordapp.com/u/'+user_id;
+        } else if(network ==='reddit') {
+            return 'https://reddit.com/u/'+user;
+        } else if(network ==='coil') {
+            return 'https://coil.com/u/'+user;
         } else {
-            return 'https://twitter.com/'+tipper.userName;
+            return 'https://twitter.com/'+user;
         }
     }
 
-    resolveIconName(tipper:any): string {
-        if('discord'===tipper.network)
+    resolveIconName(network:any): string {
+        if('discord'===network)
             return 'albert';
-        else if('reddit'===tipper.network)
+        else if('reddit'===network)
             return 'berta'
-        else if('coil'===tipper.network)
+        else if('coil'===network)
             return 'coil'
-        else if('twitter'===tipper.network)
+        else if('twitter'===network)
             return 'emil'
         else return 'emil';
+    }
+
+    formatStringDate(date:string) {
+        return formatUtil.dateToStringForLocale(formatUtil.initializeStringDateAsGMT2(date));
+    }
+
+    shortenContext(network:string, context: string) {
+        if('btn'===network)
+            return context.substring(0,context.indexOf(' '));
+        else
+            return context;
+    }
+
+    getIconName(network: string) {
+        if('app' === network)
+            return 'phonelink_ring';
+        else if('btn' === network)
+            return 'touch_app';
+        else return '';
     }
 }

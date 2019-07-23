@@ -6,6 +6,7 @@ import { ApiService } from '../services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
+import * as formatUtil from '../util/formattingUtil';
 
 @Component({
     selector: "dashboardUser",
@@ -231,9 +232,9 @@ export class DashboardUserComponent implements OnInit {
                 let to = new Date(jsonDate.to);
 
                 if(this.selectedDayOrWeek==1)
-                    labelsX.push(to.getUTCDate()+"."+(to.getUTCMonth()+1)+"."+to.getUTCFullYear());
+                    labelsX.push(to.getDate()+"."+(to.getMonth()+1)+"."+to.getFullYear());
                 else
-                    labelsX.push(from.getUTCDate()+"."+(from.getUTCMonth()+1)+"."+from.getUTCFullYear() + " - \n" + to.getUTCDate()+"."+(to.getUTCMonth()+1)+"."+to.getUTCFullYear());
+                    labelsX.push(from.getDate()+"."+(from.getMonth()+1)+"."+from.getFullYear() + " - \n" + to.getDate()+"."+(to.getMonth()+1)+"."+to.getFullYear());
             })
         
             this.chartData = {
@@ -378,8 +379,8 @@ export class DashboardUserComponent implements OnInit {
     openAllTransactions(filter:string) {
         let optionalDateFilter = "";
             if(this.fromDate && this.toDate) {
-                optionalDateFilter+="&from_date="+this.generalStats.setZeroMilliseconds(this.fromDate).toUTCString();
-                optionalDateFilter+="&to_date="+this.generalStats.setHighMilliseconds(this.toDate).toUTCString();
+                optionalDateFilter+="&from_date="+formatUtil.dateToStringEuropeForAPI(this.generalStats.setZeroMilliseconds(this.fromDate));
+                optionalDateFilter+="&to_date="+formatUtil.dateToStringEuropeForAPI(this.generalStats.setHighMilliseconds(this.toDate));
             }
         //console.log("userTable openTransactions()");
         //console.log("tipper: " + JSON.stringify(tipper));
@@ -422,5 +423,9 @@ export class DashboardUserComponent implements OnInit {
             this.clipboard.copyFromContent(url+params.toString());
             this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
         }
+    }
+
+    dateToLocaleStringEuropeTime(date: Date): string {
+        return formatUtil.dateToStringEuropeForLocale(date) + " GMT+2";
     }
 }

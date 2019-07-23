@@ -49,7 +49,7 @@
                                     <p-calendar [disabled]="!useDateRange" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
                                 <div style="width: 80%">
-                                    <label style="font-size: 9px;"><b>DB timestamps are in UTC, so your selected time will be converted into UTC as well!</b></label>
+                                    <label style="font-size: 9px;"><b>DB timestamps are in GMT+2, so your selected time will be converted into GMT+2 as well!</b></label>
                                 </div>
                             </div>
                         </p-card>
@@ -96,8 +96,8 @@
                             </div>
                         </h2>
                         <div *ngIf="useDateRange" class="ui-g-12">
-                            <label>From: {{fromDate ? fromDate.toUTCString():''}}</label><br>
-                            <label>To: {{toDate ? toDate.toUTCString():''}}</label>
+                            <label>From: {{fromDate ? dateToLocaleStringEuropeTime(fromDate):''}}</label><br>
+                            <label>To: {{toDate ? dateToLocaleStringEuropeTime(toDate):''}}</label>
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 25%">
@@ -145,4 +145,4 @@
     </div>
 </div>
 
-<transactionTable *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter" (closed)="closedAll()"></transactionTable>
+<transactionTableDialog *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter" (closed)="closedAll()"></transactionTableDialog>

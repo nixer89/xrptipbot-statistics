@@ -5,13 +5,16 @@
     </div>
 </mat-toolbar>
 <mat-toolbar id="secondarybar" color="secondary" class="mat-elevation-z6">
-    <button mat-button [routerLink]="['/']" matTooltip="Home">
-        <i class="material-icons topbar-menu-icon">home</i> Home
+    <button mat-button [routerLink]="['/feed']" matTooltip="Feed">
+        <i class="material-icons topbar-menu-icon">format_list_bulleted</i> Feed
     </button>
     <button mat-button [routerLink]="['/overallstatistics']" matTooltip="Overall Statistics">
         <i class="material-icons topbar-menu-icon">public</i> Overall Statistics
     </button>
     <button mat-button [routerLink]="['/userstatistics']" matTooltip="User Statistics">
         <i class="material-icons topbar-menu-icon">show_chart</i> User Statistics
+    </button>
+    <button mat-button [routerLink]="['/info']" matTooltip="Info">
+        <i class="material-icons topbar-menu-icon">info</i> Info
     </button>
 </mat-toolbar>
