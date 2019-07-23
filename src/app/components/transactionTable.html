@@ -36,9 +36,10 @@
             <td *ngIf="data.network != 'app' && data.network != 'btn'" style="text-align: center"><img src="../../assets/networks/{{resolveIconName(data.network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
             <td style="text-align: center"><img *ngIf="data.type != 'deposit' && data.type != 'withdraw' && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
             <td style="text-align: center"><img *ngIf="data.to_network && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
-            <td *ngIf="(data.network != 'twitter' && data.network != 'btn') || data.type != 'tip'" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
+            <td *ngIf="(data.network != 'twitter' && data.network != 'reddit' && data.network != 'btn') || data.type != 'tip'" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
             <td *ngIf="data.network === 'btn' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="{{shortenContext(data.network,data.context)}}">{{shortenContext(data.network,data.context)}}</a></td>
             <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="https://twitter.com{{data.context}}">{{data.context}}</a></td>
+            <td *ngIf="data.network === 'reddit' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="https://reddit.com{{data.context}}">{{data.context}}</a></td>
         </tr>
     </ng-template>
 </p-table>

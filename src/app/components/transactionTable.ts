@@ -91,7 +91,7 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
     }
 
     formatStringDate(date:string) {
-        return formatUtil.dateToStringForLocale(formatUtil.initializeStringDateAsGMT2(date));
+        return formatUtil.dateToStringEuropeForLocale(formatUtil.initializeStringDateAsGMT2(date));
     }
 
     shortenContext(network:string, context: string) {
