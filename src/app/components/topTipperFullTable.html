@@ -3,5 +3,5 @@
         <b>{{foundUser ? foundUser.name : ''}}</b>
     </p-header>
     <p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
-    <userTable *ngIf="data" [data]="data" [headline]="headline" [columnName1]="columnName1" [columnName2]="columnName2" [columnField2]="columnField2" isDetailsView="true"></userTable>
+    <userTable *ngIf="data" [data]="data" [headline]="headline" [columnName1]="columnName1" [columnName2]="columnName2" [columnField2]="columnField2" isDetailsView="true" (closeIt)="onHide()"></userTable>
 </p-dialog>

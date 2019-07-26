@@ -33,6 +33,7 @@ export class TopTipperFullTableComponent implements OnInit {
 
     onHide() {
         //console.log("tipTipperFullTable onHide()");
+        this.data = null;
         this.closed.emit(null);
     }
 }

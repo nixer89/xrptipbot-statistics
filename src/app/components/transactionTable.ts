@@ -23,6 +23,9 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
     @Input()
     enableSort:string;
 
+    @Output()
+    closeIt: EventEmitter<any> = new EventEmitter();
+
     data:any[];
     interval:NodeJS.Timeout;
 
@@ -48,14 +51,6 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
 
     isDiscordOrCoilNetwork(network:string) {
         return 'discord'===network || 'coil' === network;
-    }
-
-    getStatisticsURLFrom(data:any) : string {
-        return window.location.origin+"/userstatistics?user="+data.user+"&network="+data.user_network;
-    }
-
-    getStatisticsURLTo(data:any) : string {
-        return window.location.origin+"/userstatistics?user="+data.to+"&network="+data.to_network;
     }
 
     getNetworkURLFrom(data:any) {
@@ -107,5 +102,9 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
         else if('btn' === network)
             return 'touch_app';
         else return '';
+    }
+
+    close() {
+        this.closeIt.emit(null);
     }
 }

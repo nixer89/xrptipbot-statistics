@@ -1,14 +1,25 @@
 <p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
-<p-table *ngIf="data" [value]="data" [paginator]="paginator" [rows]="rows" [autoLayout]="true">
+<p-table #dt *ngIf="data" [value]="data" [paginator]="paginator" [rows]="rows" [autoLayout]="true">
     <ng-template pTemplate="header">
         <tr>
-            <th *ngIf="enableSort" [pSortableColumn]="'momentAsDate'">Date (GMT+2)<p-sortIcon [field]="'momentAsDate'"></p-sortIcon></th>
+            <th *ngIf="enableSort" [pSortableColumn]="'momentAsDate'">Date (GMT+2)<p-sortIcon [field]="'momentAsDate'"></p-sortIcon>
+            </th>
             <th *ngIf="!enableSort">Date (GMT+2)</th>
             <th>Type</th>
             <th *ngIf="enableSort" [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
             <th *ngIf="!enableSort">XRP</th>
-            <th>From</th>
-            <th>To</th>
+            <th>
+                From
+                <div style="font-size:0.8em;display:flex;align-items: center;">
+                    Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
+                </div>
+            </th>
+            <th>
+                To
+                <div style="font-size:0.8em;display:flex;align-items: center;">
+                    Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'to', 'contains')">
+                </div>
+            </th>
             <th>Network</th>
             <th>From</th>
             <th>To</th>
@@ -21,13 +32,13 @@
             <td style="text-align: center">{{data.type}}</td>
             <td style="text-align: center">{{data.xrp}}</td>
             <td style="text-align: left;">
-                <a href="{{getStatisticsURLFrom(data)}}">{{data.user}} </a>
+                <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.user, network: data.user_network}" (click)="close()">{{data['user']}} </a>
                 <a *ngIf="!isDiscordOrCoilNetwork(data.user_network)" target="_blank" href="{{getNetworkURLFrom(data)}}"><img src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
                 <img *ngIf="isDiscordOrCoilNetwork(data.user_network)" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;">
             </td>
             <td style="text-align: left">
                 <div *ngIf="data.type === 'tip'">
-                    <a href="{{getStatisticsURLTo(data)}}">{{data.to}} </a>
+                    <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.to, network: data.to_network}" (click)="close()">{{data['to']}} </a>
                     <a *ngIf="!isDiscordOrCoilNetwork(data.to_network)" target="_blank" href="{{getNetworkURLTo(data)}}"><img src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
                     <img *ngIf="isDiscordOrCoilNetwork(data.to_network)" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;">
                 </div>

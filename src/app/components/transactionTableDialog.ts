@@ -20,4 +20,8 @@ export class TransactionTableDialogComponent {
         this.useInterval = null;
         this.closed.emit(null);
     }
+
+    closeIt() {
+        this.cleanup();
+    }
 }

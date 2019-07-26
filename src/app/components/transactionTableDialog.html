@@ -1,3 +1,3 @@
 <p-dialog [style]="{width: '90%', height: '90%'}" [(visible)]="transactionFilter" [modal]="true" (onHide)="cleanup()">
-    <transactionTable [transactionFilter]="transactionFilter" [rows]="15" [paginator]="true"></transactionTable>
+    <transactionTable [transactionFilter]="transactionFilter" [rows]="15" [paginator]="true" [enableSort]="true" (closeIt)="closeIt()"></transactionTable>
 </p-dialog>

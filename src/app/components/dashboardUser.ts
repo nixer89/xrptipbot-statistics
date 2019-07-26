@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserStatisticsService } from '../services/userstatistics.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 import { ApiService } from '../services/api.service';
@@ -64,6 +64,7 @@ export class DashboardUserComponent implements OnInit {
                 private api: ApiService,
                 private generalStats: GeneralStatisticsService,
                 private route: ActivatedRoute,
+                private router: Router,
                 private snackBar: MatSnackBar,
                 private clipboard: ClipboardService) {
 
@@ -85,38 +86,44 @@ export class DashboardUserComponent implements OnInit {
 
     async ngOnInit() {
 
-        let userParam = this.route.snapshot.queryParamMap.get('user');
-        let networkParam = this.route.snapshot.queryParamMap.get('network');
-        let fromDateParam = this.route.snapshot.queryParamMap.get('from_date');
-        let toDateParam = this.route.snapshot.queryParamMap.get('to_date');
-        let excludeBotsParam = this.route.snapshot.queryParamMap.get('excludeBots');
-        let excludeCharitiesParam = this.route.snapshot.queryParamMap.get('excludeCharities');
-        //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
-        if((userParam && userParam.trim().length>0) || fromDateParam || fromDateParam) {
-            if(userParam)
-                this.selectedUser = userParam.trim();
+        this.route.queryParams.subscribe(params => {
+            let userParam = params.user;
+            let networkParam = params.network;
+            let fromDateParam = params.from_date;
+            let toDateParam = params.to_date;
+            let excludeBotsParam = params.excludeBots;
+            let excludeCharitiesParam = params.excludeCharities;
+            //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
+            if((userParam && userParam.trim().length>0) || fromDateParam || fromDateParam) {
+                this.selectedUser = null;
+                this.foundUser = null;
+                this.initWithZeroValues();
 
-            if(networkParam && networkParam.trim().length>0)
-                this.selectedNetwork = networkParam.trim();
+                if(userParam)
+                    this.selectedUser = userParam.trim();
 
-            if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
-                this.fromDate = new Date(fromDateParam);
+                if(networkParam && networkParam.trim().length>0)
+                    this.selectedNetwork = networkParam.trim();
 
-            if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
-                this.toDate = new Date(toDateParam);
-            
-            if(this.fromDate && this.toDate)
-                this.useDateRange = true;
-            
-            this.excludeBots = (excludeBotsParam == 'true');
-            this.excludeCharities = (excludeCharitiesParam == 'true');
+                if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
+                    this.fromDate = new Date(fromDateParam);
 
-            if(this.selectedUser)
-                this.refreshAll();
+                if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
+                    this.toDate = new Date(toDateParam);
                 
-        } else {
-            this.initWithZeroValues();        
-        }
+                if(this.fromDate && this.toDate)
+                    this.useDateRange = true;
+                
+                this.excludeBots = (excludeBotsParam == 'true');
+                this.excludeCharities = (excludeCharitiesParam == 'true');
+
+                if(this.selectedUser)
+                    this.refreshAll();
+                    
+            } else {
+                this.initWithZeroValues();        
+            }
+        });
     }
 
     refreshAllWithTimeout() {
@@ -288,6 +295,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     initWithZeroValues() {
+        //console.log("initStatsWithZeroValues()");
 
         this.initStatsWithZeroValues();
         let currentDate = new Date();
@@ -329,10 +337,6 @@ export class DashboardUserComponent implements OnInit {
 
     getXRPTipBotURL(tipper:any) : string {
         return "https://www.xrptipbot.com/u:"+(tipper.network==='discord' ? tipper.id : tipper.name)+"/n:"+tipper.network;
-    }
-
-    getStatisticsURL(tipper:any) : string {
-        return window.location.origin+"/userstatistics?user="+tipper.name+"&network="+tipper.network;
     }
 
     getNetworkURL(tipper:any): String {

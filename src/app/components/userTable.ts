@@ -1,4 +1,5 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 
@@ -49,6 +50,9 @@ export class UserTableComponent {
     @Input()
     isDetailsView?:string;
 
+    @Output()
+    closeIt: EventEmitter<any> = new EventEmitter();
+
     overlayUsedTransactionFilter:string;
     openOverlayTable:string;
     openAllClicked:boolean = false;
@@ -56,7 +60,7 @@ export class UserTableComponent {
     foundUserForward:string;
     hideLinks = false;
 
-    constructor(private api: ApiService, private generalStats: GeneralStatisticsService) {}
+    constructor(private router: Router, private api: ApiService, private generalStats: GeneralStatisticsService) {}
 
     isDiscordOrCoilNetwork(tipper:any) {
         return 'discord'===tipper.network || 'coil' === tipper.network;
@@ -67,10 +71,6 @@ export class UserTableComponent {
             return "https://www.xrptipbot.com/u:"+tipper.id+"/n:"+tipper.network;
         else
             return "https://www.xrptipbot.com/u:"+tipper.userName+"/n:"+tipper.network;
-    }
-
-    getStatisticsURL(tipper:any) : string {
-        return window.location.origin+"/userstatistics?user="+tipper.userName+"&network="+tipper.network;
     }
 
     getNetworkURL(tipper:any): String {
@@ -98,9 +98,12 @@ export class UserTableComponent {
     }
 
     openAllTransactions(tipper:any) {
+        //console.log("userTable openAllTransactions")
         //console.log("userTable openTransactions()");
         //console.log("tipper: " + JSON.stringify(tipper));
-        this.overlayUsedTransactionFilter = "type=tip"+this.transactionTableFilter.trim()+(this.isReceivingTips || this.isReceivingXRP ? "&user=": "&to=")+tipper['userName'];
+        this.overlayUsedTransactionFilter = "type=tip"
+        this.overlayUsedTransactionFilter+= this.transactionTableFilter ? this.transactionTableFilter.trim():"";
+        this.overlayUsedTransactionFilter+=(this.isReceivingTips || this.isReceivingXRP ? "&user=": "&to=")+tipper['userName'];
         //console.log("filter: " + this.overlayUsedTransactionFilter);
         this.openOverlayTable = "true";
     }
@@ -121,6 +124,7 @@ export class UserTableComponent {
     }
 
     async openAllTopTipper() {
+        //console.log("userTable openAllTopTipper")
         //console.log("userTable openAll()");
         if(!this.openAllClicked) {
             this.openAllClicked = true;
@@ -146,5 +150,15 @@ export class UserTableComponent {
             return tipper.userName.substring(0,tipper.userName.lastIndexOf('_')+1) + ' ' + tipper.userName.substring(tipper.userName.lastIndexOf('_')+1)
         else
             return tipper.userName;
+    }
+
+    closeFullList() {
+        //console.log("userTable closeFullList()");
+        if(this.isDetailsView) {
+            //console.log("userTable closeFullList() reset");
+            this.topTipperAllData = null;
+            this.openAllClicked = false;
+            this.closeIt.emit(null);
+        }
     }
 }
