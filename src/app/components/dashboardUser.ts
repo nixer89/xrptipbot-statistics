@@ -372,10 +372,11 @@ export class DashboardUserComponent implements OnInit {
         else
             filter = "type=tip";
         
-        if(userStats.isReceiving)        
-            filter+= "&to="+this.foundUser.name;
+        if(userStats.isReceiving)
+            filter+= "&to="+this.foundUser.name+"&to_network="+this.foundUser.network;
         else
-            filter+= "&user="+this.foundUser.name;
+            filter+= "&user="+this.foundUser.name+"&user_network="+this.foundUser.network;
+
         
         this.openAllTransactions(filter);
     }

@@ -1,2 +1,6 @@
-<p-card [style]="{'margin-bottom': '1em'}"><b>This pages automatically updates every 60 seconds to keep you up to date. No need to refresh!</b></p-card>
-<transactionTable transactionFilter="limit=100" [rows]="100" [useInterval]="true"></transactionTable>
+<p-card [style]="{'margin-bottom': '1em'}">
+        &nbsp;<b>This pages automatically updates every 60 seconds to keep you up to date. No need to refresh!</b><!--br/>
+        exclude Users: <input type="text" pInputText [(ngModel)]="excludeUsers"/>-->
+</p-card>
+        
+<transactionTable transactionFilter="limit=100{{getExcludeUsers()}}" [rows]="100" [useInterval]="true"></transactionTable>
