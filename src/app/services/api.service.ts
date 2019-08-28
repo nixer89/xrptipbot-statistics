@@ -6,7 +6,7 @@ export class ApiService {
     constructor(private app: AppService) {}
 
     isTestMode = false;
-    baseUrlToUse = this.isTestMode ? 'http://localhost:4000' : 'https://xrptipbot-api.siedentopf.xyz';
+    baseUrlToUse = this.isTestMode ? 'http://localhost:4000' : 'https://api.xrptipbot-stats.com';
 
     //################################# CALL API METHODS #################################
     async callTipBotPublicPage(user: string): Promise<any> {
@@ -22,7 +22,7 @@ export class ApiService {
         let receivedTips: any[]
 
         try {
-            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
+            //console.log("calling API: " + "https://api.xrptipbot-stats.com/feed?"+queryParams)
             let tipbotFeed = await this.app.get(this.baseUrlToUse+"/feed?"+queryParams);
             //console.log("feed length: " + tipbotFeed.feed.length);
             receivedTips = tipbotFeed.feed;
@@ -38,7 +38,7 @@ export class ApiService {
         let receivedTips: any[]
 
         try {
-            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
+            //console.log("calling API: " + "https://api.xrptipbot-stats.com/feed?"+queryParams)
             let tipbotFeed = await this.app.get(this.baseUrlToUse+"/ilp-feed?"+queryParams);
             //console.log("feed length: " + tipbotFeed.feed.length);
             receivedTips = tipbotFeed.feed;
@@ -54,7 +54,7 @@ export class ApiService {
         let receivedTips: any[]
 
         try {
-            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/feed?"+queryParams)
+            //console.log("calling API: " + "https://api.xrptipbot-stats.com/feed?"+queryParams)
             let tipbotFeed = await this.app.get(this.baseUrlToUse+"/std-feed?"+queryParams);
             //console.log("feed length: " + tipbotFeed.feed.length);
             receivedTips = tipbotFeed.feed;
@@ -68,7 +68,7 @@ export class ApiService {
 
     private async callTipBotCountApi(path: string, queryParams: string): Promise<any> {
         try {
-            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/count"+path+"?"+queryParams)
+            //console.log("calling API: " + "https://api.xrptipbot-stats.com/count"+path+"?"+queryParams)
             return this.app.get(this.baseUrlToUse+"/count"+path+"?"+queryParams);
         } catch(err) {
             console.log(JSON.stringify(err))
@@ -79,7 +79,7 @@ export class ApiService {
     
     private async callTipBotAggregateApi(path:string, queryParams: string): Promise<any> {
         try {
-            //console.log("calling API: " + "https://xrptipbot-api.siedentopf.xyz/aggregate"+path+"?"+queryParams)
+            //console.log("calling API: " + "https://api.xrptipbot-stats.com/aggregate"+path+"?"+queryParams)
             return this.app.get(this.baseUrlToUse+"/aggregate"+path+"?"+queryParams);
         } catch(err) {
             console.log(JSON.stringify(err))
