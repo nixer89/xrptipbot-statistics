@@ -107,9 +107,13 @@ export class DashboardUserComponent implements OnInit {
 
                 if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
                     this.fromDate = new Date(fromDateParam);
+                else if(!this.useDateRange)
+                    this.fromDate = null;
 
                 if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
                     this.toDate = new Date(toDateParam);
+                else if(!this.useDateRange)
+                    this.toDate = null;
                 
                 if(this.fromDate && this.toDate)
                     this.useDateRange = true;
@@ -127,7 +131,6 @@ export class DashboardUserComponent implements OnInit {
     }
 
     refreshAllWithTimeout() {
-        this.initStatsWithZeroValues();
         if(Number.isInteger(this.daysToReceive)) {
             if(this.executionTimeoutAll) clearTimeout(this.executionTimeoutAll);
             
@@ -150,7 +153,9 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async refreshAll() {
+        this.initWithZeroValues();
         if(this.selectedUser) {
+            console.time("refreshUser");
             this.processingAll = true;
             this.foundUser = await this.api.getUser(this.selectedUser.trim(), this.selectedNetwork);
             if(this.foundUser) {
@@ -162,20 +167,26 @@ export class DashboardUserComponent implements OnInit {
                 let promises:any[] = [this.refreshStats(), this.refreshChart()]
                 await Promise.all(promises); 
 
-            } else {
-                this.initStatsWithZeroValues();
             }
             
             this.processingAll = false;
+            console.timeEnd("refreshUser");
         }
     }
 
     async refreshStats() {
+        this.initStatsWithZeroValues();
         if(this.selectedUser && this.selectedUser.trim().length>0 &&
             (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
                 this.processingStats = true;
-                let stats:number[] = await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim());
-                let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 10, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim());
+                console.time("callUserStatsApi")
+                let promises:any[] = []
+                promises.push(await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim()));
+                promises.push(await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 10, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim()));
+                let promResult = await Promise.all(promises);
+                let stats:number[] = promResult[0];
+                let topTipper:any = promResult[1];
+                console.timeEnd("callUserStatsApi")
 
                 //console.log("tipTipper: " + JSON.stringify(topTipper));
 
@@ -205,8 +216,6 @@ export class DashboardUserComponent implements OnInit {
                 //console.log(JSON.stringify(this.topSentTips));
 
                 this.processingStats = false;
-        } else {
-            this.initStatsWithZeroValues();
         }
     }
 
@@ -215,7 +224,9 @@ export class DashboardUserComponent implements OnInit {
             this.processingChart=true;
             //console.log("include deposits? " + this.includeDeposits);
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
+            console.time("callUserChartsApi")
             let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.selectedUser.trim());
+            console.timeEnd("callUserChartsApi")
             
             
             if(this.includeDeposits) {

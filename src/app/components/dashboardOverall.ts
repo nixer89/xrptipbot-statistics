@@ -104,16 +104,25 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     async refreshAll() {
+        console.time("refreshAll");
         let promises:any[] = [this.refreshStats(), this.refreshChart()]
-        await Promise.all(promises);    
+        await Promise.all(promises);
+        console.timeEnd("refreshAll");
     }
 
     async refreshStats() {
         this.processingStats = true;
         if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
-            let stats:number[] = await this.overAllStatistics.getOverallStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement);
-            let statsByNetwork:number[] = await this.overAllStatistics.getOverallStatsByNetwork(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement);
-            let topTipper:any = await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 10, null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement);
+            let promises:any[] = [];
+            promises.push(this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 10, null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement));
+            promises.push(this.overAllStatistics.getOverallStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement));
+            promises.push(this.overAllStatistics.getOverallStatsByNetwork(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.excludeBots, this.excludeCharities,this.excludeCoilSettlement));
+
+            let promiseResult = await Promise.all(promises);
+
+            let topTipper:any = promiseResult[0];
+            let stats:number[] = promiseResult[1];
+            let statsByNetwork:number[] = promiseResult[2];
 
             //console.log("user stats result in dashboard: " + JSON.stringify(stats));
             if(stats) {
