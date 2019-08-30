@@ -155,9 +155,10 @@ export class DashboardUserComponent implements OnInit {
     async refreshAll() {
         this.initWithZeroValues();
         if(this.selectedUser) {
+            this.selectedUser = this.selectedUser.trim()
             console.time("refreshUser");
             this.processingAll = true;
-            this.foundUser = await this.api.getUser(this.selectedUser.trim(), this.selectedNetwork);
+            this.foundUser = await this.api.getUser(this.selectedUser, this.selectedNetwork);
             if(this.foundUser) {
                 console.log("selectedUser: " + this.selectedUser)
                 console.log("found user: " + JSON.stringify(this.foundUser));
