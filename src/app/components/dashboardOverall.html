@@ -6,9 +6,15 @@
                     <div>
                         <p-card>
                             <div>
-                                <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
-                                <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
-                                <p-checkbox binary="true" label="Exclude Coil-Settlement" [(ngModel)]="excludeCoilSettlement" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                <div>
+                                    <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                </div>
+                                <div>
+                                    <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                </div>
+                                <div>
+                                    <p-checkbox binary="true" label="Exclude Coil-Settlement" [(ngModel)]="excludeCoilSettlement" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                </div>
                             </div>
                             <h2>
                                 Choose Date (optional):
@@ -29,7 +35,7 @@
                                     <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
                                 <div class="floatleft" style="width: 80%">
-                                    <label style="font-size: 9px;"><b>DB timestamps are in GMT+2, so your selected time will be converted into GMT+2 as well!</b></label>
+                                    <label style="font-size: 9px;"><b>Your selected time will be converted into GMT+2!</b></label>
                                 </div>
                             </div>
                         </p-card>

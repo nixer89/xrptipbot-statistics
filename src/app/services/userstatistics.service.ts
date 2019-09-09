@@ -7,7 +7,7 @@ export class UserStatisticsService {
 
     constructor(private api: ApiService, private generalStats: GeneralStatisticsService) {}
 
-    async getUserStats(fromDate: Date, toDate: Date, network:string, excludeBots?:boolean, excludeCharities?:boolean, excludeCoilSettlement?: boolean, userName?:string): Promise<number[]> {
+    async getUserStats(fromDate: Date, toDate: Date, network:string, excludeBots?:boolean, excludeCharities?:boolean, excludeCoilSettlement?: boolean, userName?:string, userId?: string): Promise<any[]> {
         //console.log("getUserStats")
         try {
             let userFilter = "user="+userName;
@@ -38,6 +38,8 @@ export class UserStatisticsService {
             //ILP-Deposits XRP
             let ilpOptionalFilter = optionalDateFilter.includes("&excludeUser") ? optionalDateFilter.substring(0, optionalDateFilter.indexOf("&excludeUser")) : optionalDateFilter;
             promises.push(this.api.getILPDepositXRP(userFilter+"&type=ILP deposit&network="+network+ilpOptionalFilter));
+            //current balance
+            promises.push(this.api.getCurrentBalance(network != 'discord' ? userName : userId, network));
 
             return Promise.all(promises);
         } catch(err) {

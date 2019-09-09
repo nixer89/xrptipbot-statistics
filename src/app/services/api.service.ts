@@ -9,9 +9,9 @@ export class ApiService {
     baseUrlToUse = this.isTestMode ? 'http://localhost:4000' : 'https://api.xrptipbot-stats.com';
 
     //################################# CALL API METHODS #################################
-    async callTipBotPublicPage(user: string): Promise<any> {
+    async callTipBotPublicPage(user: string, network: string): Promise<any> {
         try {
-            return this.app.get('https://www.xrptipbot.com/u:'+user+'/n:twitter/f:json');
+            return this.app.get('https://www.xrptipbot.com/u:'+user+'/n:'+network+'/f:json');
         } catch(err) {
             console.log(JSON.stringify(err))
             return [];
@@ -135,6 +135,18 @@ export class ApiService {
         } else {
             return 0;
         }
+    }
+
+    async getCurrentBalance(user: string, network: string): Promise<number> {
+        let currentBalance = null;
+        if(user && user.trim().length>0 && network && network.trim().length >0) {
+            let publicFeed = await this.callTipBotPublicPage(user, network);
+            if(publicFeed && publicFeed.stats && publicFeed.stats.balance) {
+                currentBalance = publicFeed.stats.balance.amount+"";
+            }
+        }
+
+        return currentBalance;
     }
 
     //################################# WRAPPER METHODS END #################################

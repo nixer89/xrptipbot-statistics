@@ -44,6 +44,7 @@ export class DashboardUserComponent implements OnInit {
     //stats
     executionTimeoutStats;
     processingStats = false;
+    userBalance:string;
     userStats:any[]=[
         {label: "Received Tips", count: 0, xrp: 0, showTrx: true, isReceiving: true},
         {label: "Sent Tips", count: 0, xrp: 0, showTrx: true, isReceiving: false},
@@ -182,10 +183,10 @@ export class DashboardUserComponent implements OnInit {
                 this.processingStats = true;
                 console.time("callUserStatsApi")
                 let promises:any[] = []
-                promises.push(await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim()));
+                promises.push(await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim(), this.foundUser ? this.foundUser.id : null));
                 promises.push(await this.generalStats.getTopTipper(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, 10, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim()));
                 let promResult = await Promise.all(promises);
-                let stats:number[] = promResult[0];
+                let stats:any[] = promResult[0];
                 let topTipper:any = promResult[1];
                 console.timeEnd("callUserStatsApi")
 
@@ -202,6 +203,7 @@ export class DashboardUserComponent implements OnInit {
                     this.userStats[3].count = stats[6] ? stats[6] : 0;
                     this.userStats[3].xrp = stats[7] ? stats[7].toFixed(6) : 0;
                     this.userStats[4].xrp = stats[8] ? stats[8].toFixed(6) : 0;
+                    this.userBalance = stats[9];
                 }
 
                 //console.log("top tipper result in dashboard: " + JSON.stringify(topTipper));
@@ -292,6 +294,7 @@ export class DashboardUserComponent implements OnInit {
         if(this.foundUser != null && (!this.selectedUser || this.selectedUser.trim().length <= 0 || this.selectedUser.toLocaleLowerCase() != this.foundUser.name.toLocaleLowerCase()))
             this.foundUser = null;
         
+        this.userBalance = null;
         this.userStats = [
             {label: "Received Tips", count: 0, xrp: 0, showTrx: true, isReceiving: true},
             {label: "Sent Tips", count: 0, xrp: 0, showTrx: true, isReceiving: false},

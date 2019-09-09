@@ -2,10 +2,6 @@
     <div>
         <p-card>
             <div class="ui-g-12">
-                <div style='padding-bottom: 1em'>
-                    <b>Pro tip:</b> You can also generate a <b>direct link</b> (for bookmarks) to each users statistics page (or your own) by appending "?user=USERNAME&network=NETWORK" to the above URL. The website will then open with the preselected values.
-                    <br>Example: <a href="https://xrptipbot-stats.com/userstatistics?user=Hodor&network=twitter">https://xrptipbot-stats.com/userstatistics?user=Hodor&network=twitter</a>
-                </div>
                 <div class="floatleft" style="width:20%">
                     <div>
                         <p-card header="Choose user:">
@@ -35,6 +31,8 @@
                             <div style="padding-top: 2em;">
                                 <div>
                                     <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                </div>
+                                <div>
                                     <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                                 </div>
                                 <div>
@@ -49,7 +47,7 @@
                                     <p-calendar [disabled]="!useDateRange" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
                                 <div style="width: 80%">
-                                    <label style="font-size: 9px;"><b>DB timestamps are in GMT+2, so your selected time will be converted into GMT+2 as well!</b></label>
+                                    <label style="font-size: 9px;"><b>Your selected time will be converted into GMT+2!</b></label>
                                 </div>
                             </div>
                         </p-card>
@@ -80,8 +78,8 @@
                 <div class="floatright" style="width: 80%;padding-left: 1em;">
                     <p-card>
                         <h2 *ngIf="!selectedUser || (selectedUser && !foundUser)">Top Activities for {{selectedUser}}</h2>
-                        <h2 *ngIf="selectedUser && foundUser">
-                            <div class="floatleft">
+                        <h2 *ngIf="selectedUser && foundUser" style="margin-bottom: 0px;">
+                            <div class="floatleft" style="line-height: 40px">
                                 Top Activities for {{foundUser.name}}
                                 <a *ngIf="!isDiscordOrCoilNetwork(foundUser)" target="_blank" href="{{getNetworkURL(foundUser)}}" style="vertical-align: middle;"><img src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20"></a>
                                 <img *ngIf="isDiscordOrCoilNetwork(foundUser)" src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20" style="vertical-align: middle;">
@@ -95,6 +93,9 @@
                                 </button>
                             </div>
                         </h2>
+                        <div *ngIf="userBalance" class="floatLeft">
+                            Current balance: {{userBalance}} XRP
+                        </div>
                         <div *ngIf="useDateRange" class="ui-g-12">
                             <label>From: {{fromDate ? dateToLocaleStringEuropeTime(fromDate):''}}</label><br>
                             <label>To: {{toDate ? dateToLocaleStringEuropeTime(toDate):''}}</label>
