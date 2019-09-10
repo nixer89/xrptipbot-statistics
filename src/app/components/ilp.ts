@@ -78,22 +78,21 @@ export class ILPOverallComponent implements OnInit {
         this.overallStats[index].count = filteredArray.length;
 
         filteredArray.forEach(user => networkXrp+=parseInt(user.amount))
-        this.overallStats[index].xrp = networkXrp;
+        this.overallStats[index].xrp = (networkXrp/1000000).toFixed(3);
     }
 
     async refreshStats() {
         this.processingStats = true;
         if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
             
-            let allReceivers = await this.overAllStatistics.getOverallStatsILP(this.fromDate, this.toDate);
+            let allReceivers = await this.overAllStatistics.getOverallStatsILP(this.useDateRange ? this.fromDate : null, this.useDateRange ? this.toDate : null);
 
             if(allReceivers) {
-                console.log("allReceivers: " +JSON.stringify(allReceivers[0]));
 
                 let overallReceived = 0;
-                allReceivers.forEach(user => overallReceived+=parseInt(user.amount))
+                allReceivers.forEach(user => overallReceived+=user.amount);
 
-                this.overallStats[0].xrp = overallReceived.toFixed(0);
+                this.overallStats[0].xrp = (overallReceived/1000000).toFixed(3);
                 this.overallStats[0].count = allReceivers.length;
 
                 this.fillData(1, 'twitter', allReceivers);
@@ -101,18 +100,25 @@ export class ILPOverallComponent implements OnInit {
                 this.fillData(3, 'reddit', allReceivers);
                 this.fillData(4, 'discord', allReceivers);
 
+                allReceivers = this.changeDropsToXrp(allReceivers);
                 this.topIlpReceived = allReceivers.slice(0,9);
-                this.topIlpReceivedCoil = allReceivers.filter(user => user.network === 'coil').slice(0,9);
-                this.topIlpReceivedDiscord = allReceivers.filter(user => user.network === 'discord').slice(0,9);
-                this.topIlpReceivedReddit = allReceivers.filter(user => user.network === 'reddit').slice(0,9);
-                this.topIlpReceivedTwitter = allReceivers.filter(user => user.network === 'twitter').slice(0,9);
-
-                console.log(JSON.stringify(this.topIlpReceivedDiscord[0]));
+                this.topIlpReceivedCoil = allReceivers.filter(user => user.network === 'coil' && user.amount > 0).slice(0,9);
+                this.topIlpReceivedDiscord = allReceivers.filter(user => user.network === 'discord' && user.amount > 0).slice(0,9);
+                this.topIlpReceivedReddit = allReceivers.filter(user => user.network === 'reddit' && user.amount > 0).slice(0,9);
+                this.topIlpReceivedTwitter = allReceivers.filter(user => user.network === 'twitter' && user.amount > 0).slice(0,9);
             }
         } else {
             this.initWithZeroValues();
         }
         this.processingStats = false;
+    }
+
+    changeDropsToXrp(tipper:any[]): any[] {
+        for(let i = 0; i < tipper.length; i++) {
+            tipper[i].amount = (tipper[i].amount/1000000).toFixed(3);
+        }
+
+        return tipper;
     }
 
     initStatsWithZeroValues() {

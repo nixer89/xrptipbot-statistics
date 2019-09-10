@@ -63,10 +63,6 @@ export class GeneralStatisticsService {
             } else {
                 numbersResult[k]['xrp'] = 0;
             }
-
-            if(numbersResult[k]['amount']) {
-                numbersResult[k]['amount'] = (parseInt(numbersResult[k]['amount'])/1000000).toFixed(2);
-            }
         }
 
         return numbersResult;
