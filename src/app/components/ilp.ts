@@ -123,11 +123,11 @@ export class ILPOverallComponent implements OnInit {
 
     initStatsWithZeroValues() {
         this.overallStats=[
-            {label: "All networks", count:0, xrp: 0},
-            {label: "On Twitter", count:0, xrp:0},
-            {label: "On Coil", count:0, xrp:0},
-            {label: "On Reddit", count:0, xrp:0},
-            {label: "On Discord", count:0, xrp:0},
+            {label: "All XRPTipBot 'networks'", count:0, xrp: 0},
+            {label: "Twitter", count:0, xrp:0},
+            {label: "Coil", count:0, xrp:0},
+            {label: "Reddit", count:0, xrp:0},
+            {label: "Discord", count:0, xrp:0},
         ];
     }
 
