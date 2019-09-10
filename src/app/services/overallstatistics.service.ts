@@ -74,4 +74,21 @@ export class OverallStatisticsService {
             return emptyResult;
         }
     }
+
+    async getOverallStatsILP(fromDate: Date, toDate: Date): Promise<any[]> {
+        let emptyResult:any[];
+        //console.log("getOverallStats")
+        try {
+            let optionalDateFilter = this.generalStats.constructOptionalFilter(fromDate, toDate);
+
+            let receiver:any[] = await this.api.getAggregatedILPResult('/xrp/mostReceived',optionalDateFilter);
+
+            receiver = this.generalStats.changeToCorrectNetworkAndFixedXRP(receiver);
+
+            return receiver;
+        } catch(err) {
+            console.log(err);
+            return emptyResult;
+        }
+    }
 }

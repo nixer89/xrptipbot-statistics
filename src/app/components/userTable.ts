@@ -40,6 +40,9 @@ export class UserTableComponent {
     @Input()
     isSentXRP?:string;
 
+    @Input()
+    isILP?:string;
+
     //sidebar overlay
     @Input()
     transactionTableFilter:string;
@@ -118,6 +121,8 @@ export class UserTableComponent {
             this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getCountResult("/mostSentTo","type=tip"+this.transactionTableFilter));
         } else if(this.isSentXRP) {
             this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostSentTo","type=tip"+this.transactionTableFilter));
+        } else if(this.isILP) {
+            this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedILPResult("/xrp/mostReceived",this.transactionTableFilter));
         }
 
         //console.log("tipTipperAll loaded: " + this.topTipperAllData.length);
@@ -148,6 +153,8 @@ export class UserTableComponent {
     getUserName(tipper): string {
         if('COIL_SETTLED_ILP_BALANCE' === tipper.userName || 'COIL_SETTLEMENT_ACCOUNT' === tipper.userName)
             return tipper.userName.substring(0,tipper.userName.lastIndexOf('_')+1) + ' ' + tipper.userName.substring(tipper.userName.lastIndexOf('_')+1)
+        else if(tipper.network && tipper.network === 'coil')
+            return tipper.userName.substring(0,21)+'...';
         else
             return tipper.userName;
     }

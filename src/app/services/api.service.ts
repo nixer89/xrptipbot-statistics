@@ -39,7 +39,7 @@ export class ApiService {
 
         try {
             //console.log("calling API: " + "https://api.xrptipbot-stats.com/feed?"+queryParams)
-            let tipbotFeed = await this.app.get(this.baseUrlToUse+"/ilp-feed?"+queryParams);
+            let tipbotFeed = await this.app.get(this.baseUrlToUse+"/std-ilp-feed?"+queryParams);
             //console.log("feed length: " + tipbotFeed.feed.length);
             receivedTips = tipbotFeed.feed;
         } catch(err) {
@@ -81,6 +81,16 @@ export class ApiService {
         try {
             //console.log("calling API: " + "https://api.xrptipbot-stats.com/aggregate"+path+"?"+queryParams)
             return this.app.get(this.baseUrlToUse+"/aggregate"+path+"?"+queryParams);
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
+    private async callTipBotAggregateILPApi(path:string, queryParams: string): Promise<any> {
+        try {
+            console.log("calling API: " + this.baseUrlToUse+"/aggregate-ilp"+path+(queryParams ? "?"+queryParams : ""))
+            return this.app.get(this.baseUrlToUse+"/aggregate-ilp"+path+(queryParams ? "?"+queryParams : ""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -135,6 +145,20 @@ export class ApiService {
         } else {
             return 0;
         }
+    }
+
+    async getAggregatedXRPILP(queryParams: string): Promise<number> {
+        let aggregateResult = await this.callTipBotAggregateILPApi("/xrp", queryParams);
+
+        if(aggregateResult) return aggregateResult.amount;
+        else return 0;
+    }
+
+    async getAggregatedILPResult(path:string, queryParams: string): Promise<[]> {
+        let aggregateResult = await this.callTipBotAggregateILPApi(path, queryParams);
+
+        if(aggregateResult) return aggregateResult.result;
+        else return [];
     }
 
     async getCurrentBalance(user: string, network: string): Promise<number> {
