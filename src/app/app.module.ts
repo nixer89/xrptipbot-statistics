@@ -63,6 +63,8 @@ import {ILPOverallComponent} from './components/ilp';
 
 //my components
 import {InfoComponent} from './pages/info';
+import {TermsComponent} from './pages/terms';
+import {PrivacyComponent} from './pages/privacy';
 import {UserStatisticsComponent} from './pages/userstatistics';
 import {OverallStatisticsComponent} from './pages/overallstatistics';
 import {FeedComponent} from './pages/feed';
@@ -91,6 +93,8 @@ import { ClipboardModule } from 'ngx-clipboard';
     TopTipperFullTableComponent,
     ILPOverallComponent,
     InfoComponent,
+    TermsComponent,
+    PrivacyComponent,
     UserStatisticsComponent,
     OverallStatisticsComponent,
     FeedComponent,
