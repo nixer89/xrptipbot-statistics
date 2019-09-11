@@ -100,17 +100,17 @@
                             <label>From: {{fromDate ? dateToLocaleStringEuropeTime(fromDate):''}}</label><br>
                             <label>To: {{toDate ? dateToLocaleStringEuropeTime(toDate):''}}</label>
                         </div>
-                        <div class="ui-g-12">
-                            <div class="floatleft" style="width: 25%">
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topReceivedTips" headline="Most tips received from" columnName1="User" columnName2="Tips" columnField2="count" transactionTableFilter="{{toFilter}}" showAllButton="true" isReceiving="true" [foundUser]="foundUser" isReceivingTips="true"></userTable>
                             </div>
-                            <div class="floatleft" style="width: 25%">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topReceivedXRP" headline="Most XRP received from" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{toFilter}}" showAllButton="true" isReceiving="true" [foundUser]="foundUser" isReceivingXRP="true"></userTable>
                             </div>
-                            <div class="floatleft" style="width: 25%">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topSentTips" headline="Most tips sent to" columnName1="User" columnName2="Tips" columnField2="count" transactionTableFilter="{{userFilter}}" showAllButton="true" [foundUser]="foundUser" isSentTips="true"></userTable>
                             </div>
-                            <div class="floatleft" style="width: 25%">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topSentXRP" headline="Most XRP sent to (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp" transactionTableFilter="{{userFilter}}" showAllButton="true" [foundUser]="foundUser" isSentXRP="true"></userTable>
                             </div>
                         </div>

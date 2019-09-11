@@ -101,17 +101,17 @@
                                 <label>To: {{toDate ? dateToLocaleStringEuropeTime(toDate):''}}</label>
                             </div>
                         </div>
-                        <div class="ui-g-12">
-                            <div class="floatleft" style="width: 25%">
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topTipperReceived" headline="Most tips received" columnName1="User" columnName2="Tips" columnField2="count"></userTable>
                             </div>
-                            <div class="floatleft" style="width: 25%">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topXRPReceived" headline="Most XRP received (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp"></userTable>
                             </div>
-                            <div class="floatleft" style="width: 25%">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topTipperSent" headline="Most tips sent" columnName1="User" columnName2="Tips" columnField2="count"></userTable>
                             </div>
-                            <div class="floatleft" style="width: 25%">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <userTable [data]="topXRPSent" headline="Most XRP sent (via tip)" columnName1="User" columnName2="XRP" columnField2="xrp"></userTable>
                             </div>
                         </div>
