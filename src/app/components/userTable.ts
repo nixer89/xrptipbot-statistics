@@ -123,6 +123,10 @@ export class UserTableComponent {
             this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedResult("/xrp/mostSentTo","type=tip"+this.transactionTableFilter));
         } else if(this.isILP) {
             this.topTipperAllData = await this.resolveNamesAndChangeNetwork(await this.api.getAggregatedILPResult("/xrp/mostReceived",this.transactionTableFilter));
+
+            //convert drops to XRP
+            if(this.topTipperAllData)
+                this.topTipperAllData.forEach(user => user.amount = user.amount/1000000);
         }
 
         //console.log("tipTipperAll loaded: " + this.topTipperAllData.length);
