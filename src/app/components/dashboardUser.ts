@@ -6,6 +6,7 @@ import { ApiService } from '../services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
+import { LocalStorageService } from 'angular-2-local-storage';
 import * as formatUtil from '../util/formattingUtil';
 
 @Component({
@@ -67,7 +68,8 @@ export class DashboardUserComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private snackBar: MatSnackBar,
-                private clipboard: ClipboardService) {
+                private clipboard: ClipboardService,
+                private localStorage: LocalStorageService) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -86,6 +88,9 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async ngOnInit() {
+
+        this.excludeBots = this.localStorage.get("excludeBots");
+        this.excludeCharities = this.localStorage.get("excludeCharities");
 
         this.route.queryParams.subscribe(params => {
             let userParam = params.user;

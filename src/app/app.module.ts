@@ -60,6 +60,7 @@ import {TransactionTableComponent} from './components/transactionTable';
 import {TransactionTableDialogComponent} from './components/transactionTableDialog';
 import {TopTipperFullTableComponent} from './components/topTipperFullTable';
 import {ILPOverallComponent} from './components/ilp';
+import {SettingsDialogComponent} from './pages/settings';
 
 //my components
 import {InfoComponent} from './pages/info';
@@ -79,6 +80,7 @@ import {GeneralStatisticsService} from './services/generalstatistics.service'
 
 //Special
 import { ClipboardModule } from 'ngx-clipboard';
+import { LocalStorageModule } from 'angular-2-local-storage';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,8 @@ import { ClipboardModule } from 'ngx-clipboard';
     UserStatisticsComponent,
     OverallStatisticsComponent,
     FeedComponent,
-    ILPStatisticsComponent
+    ILPStatisticsComponent,
+    SettingsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -148,7 +151,8 @@ import { ClipboardModule } from 'ngx-clipboard';
     SidebarModule,
     DialogModule,
     TooltipModule,
-    ClipboardModule
+    ClipboardModule,
+    LocalStorageModule.forRoot({ prefix: 'xrptipbot-stats', storageType: 'localStorage' }),
   ],
   providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService],
   bootstrap: [AppComponent]

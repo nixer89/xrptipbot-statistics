@@ -5,20 +5,29 @@
     </div>
 </mat-toolbar>
 <mat-toolbar id="secondarybar" color="secondary" class="mat-elevation-z6">
-    <button mat-button [routerLink]="['/feed']" matTooltip="Feed">
-        <i class="material-icons topbar-menu-icon">format_list_bulleted</i> Feed
-    </button>
-    <button mat-button [routerLink]="['/overallstatistics']" matTooltip="Overall Statistics">
-        <i class="material-icons topbar-menu-icon">public</i> Overall Statistics
-    </button>
-    <button mat-button [routerLink]="['/userstatistics']" matTooltip="User Statistics">
-        <i class="material-icons topbar-menu-icon">show_chart</i> User Statistics
-    </button>
-    <button mat-button [routerLink]="['/ilp']" matTooltip="ILP">
-        <!--img src="../../assets/networks/coil.png" width="20" height="20" style="vertical-align: middle;"-->
-        <i class="material-icons topbar-menu-icon">link</i> ILP
-    </button>
-    <button mat-button [routerLink]="['/info']" matTooltip="Info">
-        <i class="material-icons topbar-menu-icon">info</i> Info
-    </button>
+    <div class="ui-g-12">
+        <div class="floatleft">
+            <button mat-button [routerLink]="['/feed']" matTooltip="Feed">
+                <i class="material-icons topbar-menu-icon">format_list_bulleted</i> Feed
+            </button>
+            <button mat-button [routerLink]="['/overallstatistics']" matTooltip="Overall Statistics">
+                <i class="material-icons topbar-menu-icon">public</i> Overall Statistics
+            </button>
+            <button mat-button [routerLink]="['/userstatistics']" matTooltip="User Statistics">
+                <i class="material-icons topbar-menu-icon">show_chart</i> User Statistics
+            </button>
+            <button mat-button [routerLink]="['/ilp']" matTooltip="ILP">
+                <!--img src="../../assets/networks/coil.png" width="20" height="20" style="vertical-align: middle;"-->
+                <i class="material-icons topbar-menu-icon">link</i> ILP
+            </button>
+            <button mat-button [routerLink]="['/info']" matTooltip="Info">
+                <i class="material-icons topbar-menu-icon">info</i> Info
+            </button>
+        </div>
+        <div class="floatright" style="vertical-align: right;">
+            <button mat-button [routerLink]="['/settings']" matTooltip="Settings">
+                Settings <i class="material-icons topbar-menu-icon">settings_applications</i>
+            </button>
+        </div>
+    </div>
 </mat-toolbar>

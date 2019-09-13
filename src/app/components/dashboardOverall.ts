@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
+import { LocalStorageService } from 'angular-2-local-storage';
 import * as formatUtil from '../util/formattingUtil';
 
 @Component({
@@ -17,8 +18,8 @@ export class DashboardOverallComponent implements OnInit {
     executionTimeoutAll;
     excludeBots:boolean = false;
     excludeCharities:boolean = false;
-    excludeCoilSettlement:boolean = true;
-    excludeCoilSettlementChart: boolean = true;
+    excludeCoilSettlement:boolean = false;
+    excludeCoilSettlementChart: boolean = false;
 
     //chart
     chartData: any;
@@ -63,7 +64,8 @@ export class DashboardOverallComponent implements OnInit {
         private generalStats: GeneralStatisticsService,
         private route: ActivatedRoute,
         private snackBar: MatSnackBar,
-        private clipboard: ClipboardService) {
+        private clipboard: ClipboardService,
+        private localStorage: LocalStorageService) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -75,26 +77,45 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     async ngOnInit() {
-        let fromDateParam = this.route.snapshot.queryParamMap.get('from_date');
-        let toDateParam = this.route.snapshot.queryParamMap.get('to_date');
-        let excludeBotsParam = this.route.snapshot.queryParamMap.get('excludeBots');
-        let excludeCharitiesParam = this.route.snapshot.queryParamMap.get('excludeCharities');
-        let excludeCoilParam = this.route.snapshot.queryParamMap.get('excludeCoilSettlement');
 
-        if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
-                this.fromDate = new Date(fromDateParam);
+        this.excludeBots = this.localStorage.get("excludeBots");
+        this.excludeCharities = this.localStorage.get("excludeCharities");
+        this.excludeCoilSettlement = this.localStorage.get("excludeCoil");
+        this.excludeCoilSettlementChart = this.localStorage.get("excludeCoil");
 
-        if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
-            this.toDate = new Date(toDateParam)
+        this.route.queryParams.subscribe(params => {
+            let fromDateParam = params.from_date;
+            let toDateParam = params.to_date;
+            let excludeBotsParam = params.excludeBots;
+            let excludeCharitiesParam = params.excludeCharities;
+            let excludeCoil = params.excludeCoilSettlement;
+            //console.log("param map: " + JSON.stringify(this.route.snapshot.queryParamMap));
+            if(fromDateParam || toDateParam || excludeBotsParam || excludeCharitiesParam || excludeCoil) {
+                this.initWithZeroValues();
 
-        if(this.fromDate && this.toDate)
-            this.useDateRange = true;
+                if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
+                    this.fromDate = new Date(fromDateParam);
+                else if(!this.useDateRange)
+                    this.fromDate = null;
 
-        this.excludeBots = (excludeBotsParam == 'true');
-        this.excludeCharities = (excludeCharitiesParam == 'true');
-        this.excludeCoilSettlement = (excludeCoilParam == 'true');
-            
-        await this.refreshAll();
+                if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
+                    this.toDate = new Date(toDateParam);
+                else if(!this.useDateRange)
+                    this.toDate = null;
+                
+                if(this.fromDate && this.toDate)
+                    this.useDateRange = true;
+                
+                this.excludeBots = (excludeBotsParam == 'true');
+                this.excludeCharities = (excludeCharitiesParam == 'true');
+                this.excludeCoilSettlement = (excludeCoil == 'true');
+
+                
+                    
+            }
+
+            this.refreshAll();
+        });
     }
 
     refreshStatsWithTimeout() {

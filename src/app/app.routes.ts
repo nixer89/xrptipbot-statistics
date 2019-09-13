@@ -8,6 +8,7 @@ import {UserStatisticsComponent} from './pages/userstatistics';
 import {OverallStatisticsComponent} from './pages/overallstatistics';
 import {FeedComponent} from './pages/feed';
 import {ILPStatisticsComponent} from './pages/ilpstatistics'
+import {SettingsDialogComponent} from './pages/settings';
 
 export const routes:Routes = [
     {path: '', redirectTo: 'feed', pathMatch: 'full'},
@@ -19,6 +20,7 @@ export const routes:Routes = [
     {path: 'info', component: InfoComponent},
     {path: 'terms', component: TermsComponent},
     {path: 'privacy', component: PrivacyComponent},
+    {path: 'settings', component: SettingsDialogComponent},
     {path: '**', component: FeedComponent}
 ];
 

@@ -35,6 +35,9 @@
                                 <div>
                                     <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                                 </div>
+                                <h4>
+                                    Choose Date (optional):
+                                </h4>
                                 <div>
                                     <p-checkbox binary="true" label="Choose specific Time" [(ngModel)]="useDateRange" [disabled]="processingAll || processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>
                                 </div>
