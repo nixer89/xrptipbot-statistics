@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "xrpcharities-info": {
+    "xrptipbot-statistics": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -60,18 +60,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "xrpcharities-info:build"
+            "browserTarget": "xrptipbot-statistics:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "xrpcharities-info:build:production"
+              "browserTarget": "xrptipbot-statistics:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "xrpcharities-info:build"
+            "browserTarget": "xrptipbot-statistics:build"
           }
         },
         "test": {
@@ -108,7 +108,7 @@
         }
       }
     },
-    "xrpcharities-info-e2e": {
+    "xrptipbot-statistics-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -117,11 +117,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "xrpcharities-info:serve"
+            "devServerTarget": "xrptipbot-statistics:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "xrpcharities-info:serve:production"
+              "devServerTarget": "xrptipbot-statistics:serve:production"
             }
           }
         },
@@ -137,5 +137,5 @@
       }
     }
   },
-  "defaultProject": "xrpcharities-info"
+  "defaultProject": "xrptipbot-statistics"
 }

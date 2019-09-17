@@ -10,6 +10,7 @@ export class SettingsDialogComponent implements OnInit {
     excludeBots: boolean;
     excludeCharities: boolean;
     excludeCoil: boolean;
+    darkMode: boolean;
 
     constructor(private localStorage: LocalStorageService) {
 
@@ -19,7 +20,8 @@ export class SettingsDialogComponent implements OnInit {
         //load data from storage
         this.excludeBots = this.localStorage.get("excludeBots") || false;
         this.excludeCharities = this.localStorage.get("excludeCharities") || false;
-        this.excludeCoil = this.localStorage.get("excludeCoil") || false;;
+        this.excludeCoil = this.localStorage.get("excludeCoil") || false;
+        this.darkMode = this.localStorage.get("darkMode") || false;
     }
 
     toogleBots(e:any) {
@@ -32,5 +34,15 @@ export class SettingsDialogComponent implements OnInit {
 
     toogleCoil(e:any) {
         this.localStorage.set("excludeCoil", e.checked);
+    }
+
+    toogleDarkMode(e:any) {
+        var bodyStyles = document.body.style;
+        if(e.checked)
+            bodyStyles.setProperty('--background-color', '#222222');
+        else
+            bodyStyles.setProperty('--background-color', '#f7f7f7');
+
+        this.localStorage.set("darkMode", e.checked);
     }
 }
