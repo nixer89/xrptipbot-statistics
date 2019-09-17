@@ -1,0 +1,15 @@
+<p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+<p-table *ngIf="data" [value]="data" [autoLayout]="true">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>XRPTipBot Button enabled website</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-url>
+        <tr style="white-space: nowrap;">
+            <td>
+                <a style="text-align: center" target="_blank" href="{{url}}">{{url}}</a>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

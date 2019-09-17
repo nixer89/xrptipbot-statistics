@@ -1,5 +1,10 @@
 <p-progressSpinner *ngIf="!data" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
-<p-table #dt *ngIf="data" [value]="data" [paginator]="paginator" [rows]="rows" [autoLayout]="true">
+<p-table #dt *ngIf="data" [value]="data" [paginator]="paginator" [rows]="rows" [autoLayout]="true" csvSeparator=";">
+    <ng-template pTemplate="caption">
+        <div class="ui-helper-clearfix">
+                <button type="button" pButton icon="fa-file" iconPos="left" label="Export All Data" (click)="dt.exportCSV()" style="float:left"></button>
+        </div>
+    </ng-template>
     <ng-template pTemplate="header">
         <tr>
             <th *ngIf="enableSort" [pSortableColumn]="'momentAsDate'">Date (GMT+2)<p-sortIcon [field]="'momentAsDate'"></p-sortIcon>

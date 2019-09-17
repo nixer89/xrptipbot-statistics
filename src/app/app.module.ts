@@ -70,6 +70,7 @@ import {UserStatisticsComponent} from './pages/userstatistics';
 import {OverallStatisticsComponent} from './pages/overallstatistics';
 import {FeedComponent} from './pages/feed';
 import {ILPStatisticsComponent} from './pages/ilpstatistics';
+import {ButtonURLsComponent} from './pages/buttonURLs'
 
 //my services
 import {AppService} from './services/app.service';
@@ -101,7 +102,8 @@ import { LocalStorageModule } from 'angular-2-local-storage';
     OverallStatisticsComponent,
     FeedComponent,
     ILPStatisticsComponent,
-    SettingsDialogComponent
+    SettingsDialogComponent,
+    ButtonURLsComponent
   ],
   imports: [
     BrowserModule,

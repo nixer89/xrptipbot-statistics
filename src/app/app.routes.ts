@@ -9,6 +9,7 @@ import {OverallStatisticsComponent} from './pages/overallstatistics';
 import {FeedComponent} from './pages/feed';
 import {ILPStatisticsComponent} from './pages/ilpstatistics'
 import {SettingsDialogComponent} from './pages/settings';
+import {ButtonURLsComponent} from './pages/buttonURLs'
 
 export const routes:Routes = [
     {path: '', redirectTo: 'feed', pathMatch: 'full'},
@@ -21,6 +22,7 @@ export const routes:Routes = [
     {path: 'terms', component: TermsComponent},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'settings', component: SettingsDialogComponent},
+    {path: 'buttonURLs', component: ButtonURLsComponent},
     {path: '**', component: FeedComponent}
 ];
 
