@@ -38,10 +38,14 @@ export class SettingsDialogComponent implements OnInit {
 
     toogleDarkMode(e:any) {
         var bodyStyles = document.body.style;
-        if(e.checked)
+        if(e.checked) {
             bodyStyles.setProperty('--background-color', '#222222');
-        else
+            document.getElementById('themeAsset').setAttribute('href','./assets/themes/luna-amber/theme.css');
+        }
+        else {
             bodyStyles.setProperty('--background-color', '#f7f7f7');
+            document.getElementById('themeAsset').setAttribute('href','./assets/themes/nova-light/theme.css');
+        }
 
         this.localStorage.set("darkMode", e.checked);
     }
