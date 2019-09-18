@@ -1,13 +1,24 @@
 <p-card header="Default Settings">
-    <h4>Exclude Bots: {{excludeBots}}</h4>
-    <p-inputSwitch [(ngModel)]="excludeBots" (onChange)="toogleBots($event)"></p-inputSwitch>
-    <br/><br/>
-    <h4 class="first">Exclude Charities: {{excludeCharities}}</h4>
-    <p-inputSwitch [(ngModel)]="excludeCharities" (onChange)="toogleCharities($event)"></p-inputSwitch>
-    <br/><br/>
-    <h4 class="first">Exclude Coil Settlement: {{excludeCoil}}</h4>
-    <p-inputSwitch [(ngModel)]="excludeCoil" (onChange)="toogleCoil($event)"></p-inputSwitch>
-
-    <h4 class="first">DarkMode: {{darkMode}}</h4>
-    <p-inputSwitch [(ngModel)]="darkMode" (onChange)="toogleDarkMode($event)"></p-inputSwitch>
+    <table class="settings-table">
+        <tr >
+            <th>Option</th>
+            <th>Off/On</th>
+        </tr>
+        <tr>
+            <td>Exclude Bots</td>
+            <td><p-inputSwitch [(ngModel)]="excludeBots" (onChange)="toogleBots($event)"></p-inputSwitch></td>
+        </tr>
+        <tr>
+            <td>Exclude Charities</td>
+            <td><p-inputSwitch [(ngModel)]="excludeCharities" (onChange)="toogleCharities($event)"></p-inputSwitch></td>
+        </tr>
+        <tr>
+            <td>Coil Settlement</td>
+            <td><p-inputSwitch [(ngModel)]="excludeCoil" (onChange)="toogleCoil($event)"></p-inputSwitch></td>
+        </tr>
+        <tr>
+            <td>DarkMode</td>
+            <td><p-inputSwitch [(ngModel)]="darkMode" (onChange)="toogleDarkMode($event)"></p-inputSwitch></td>
+        </tr>
+    </table>
 </p-card>

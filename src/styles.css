@@ -166,7 +166,7 @@ label.xrpraised {
 
 .tipbotheader {
     margin: 0 auto;
-    margin-right: 0;
+    margin-right: 1.5em;
     margin-top: 0.6em;
 }
 
@@ -197,3 +197,19 @@ label.xrpraised {
     justify-content: center;
     width: 99%;    
 }
+
+.settings-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 20%;
+  }
+  
+  .settings-table th {
+    border: 1px solid black;
+    padding-left: 1em;
+  }
+
+  .settings-table td {
+    border: 1px solid black;
+    text-align: center;
+  }
