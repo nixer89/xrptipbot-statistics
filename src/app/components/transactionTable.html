@@ -9,13 +9,9 @@
             <th *ngIf="enableSort" [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
             <th *ngIf="!enableSort">XRP</th>
             <th>
-                <div style="display:flex;align-items: center;">
-                    <div>
-                        From
-                    </div>
-                    <div style="font-size:0.8em;display:flex;align-items: center;">
-                        Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
-                    </div>
+                From
+                <div style="font-size:0.8em;display:flex;align-items: center;">
+                    Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
                 </div>
             </th>
             <th>
