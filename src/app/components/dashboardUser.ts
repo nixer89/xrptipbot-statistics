@@ -166,6 +166,7 @@ export class DashboardUserComponent implements OnInit {
             this.processingAll = true;
             this.foundUser = await this.api.getUser(this.selectedUser, this.selectedNetwork);
             if(this.foundUser) {
+                this.selectedUser = this.foundUser.name;
                 console.log("selectedUser: " + this.selectedUser)
                 console.log("found user: " + JSON.stringify(this.foundUser));
                 this.user_id = this.foundUser.id;

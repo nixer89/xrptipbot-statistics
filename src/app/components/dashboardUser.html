@@ -29,11 +29,13 @@
                                 </div>
                             </div>
                             <div style="padding-top: 2em;">
-                                <div>
-                                    <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                <div style="display:flex">
+                                    <p-checkbox binary="true" label="Exclude Bots" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;
+                                    <i class="material-icons" pTooltip="GoodXrp, allinxrp, XRP_Tap, XrpTipper, xrpcharities, demludi, GoodXrp_Test, ArcadeXrp">info</i>
                                 </div>
-                                <div>
-                                    <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                <div style="display:flex">
+                                    <p-checkbox binary="true" label="Exclude Charities" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;
+                                    <i class="material-icons" pTooltip="StJude, WanderingWare, bigbuckor, onemorehome, cote_uk, cranders71">info</i>
                                 </div>
                                 <h4>
                                     Choose Date (optional):
