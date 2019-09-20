@@ -51,7 +51,7 @@ export class DashboardOverallComponent implements OnInit {
         {label: "Button", count: 0, xrp:0},
     ];
     statsHeader:string = "Top active Users";
-    useDateRange:boolean = false;
+    useDateRange:boolean = true;
     fromDate:Date;
     toDate:Date;
 
@@ -77,6 +77,12 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     async ngOnInit() {
+
+        this.toDate = new Date();
+
+        this.fromDate = new Date();
+        this.fromDate.setDate(1);
+        this.fromDate = this.generalStats.setZeroTime(this.fromDate)
 
         this.excludeBots = this.localStorage.get("excludeBots");
         this.excludeCharities = this.localStorage.get("excludeCharities");
@@ -104,7 +110,7 @@ export class DashboardOverallComponent implements OnInit {
                     this.toDate = null;
                 
                 if(this.fromDate && this.toDate)
-                    this.useDateRange = true;
+                    this.useDateRange = (this.fromDate != null && this.toDate != null);
                 
                 this.excludeBots = (excludeBotsParam == 'true');
                 this.excludeCharities = (excludeCharitiesParam == 'true');
