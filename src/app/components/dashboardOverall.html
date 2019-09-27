@@ -130,7 +130,7 @@
                         <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refreshChartWithTimeout()"></p-dropdown>
                     </div>
                     <div class="floatcenter" style="padding-left: 1em;">
-                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="10" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
+                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
                     </div>
                     <div class="floatright">
                         <p-progressSpinner *ngIf="processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>

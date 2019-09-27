@@ -73,7 +73,8 @@ export class DashboardUserComponent implements OnInit {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
-            {label:'Weeks', value:7}
+            {label:'Weeks', value:7},
+            {label:'Months', value:31}
         ];
 
         this.networkDropdown = [
@@ -154,7 +155,7 @@ export class DashboardUserComponent implements OnInit {
         if(Number.isInteger(this.daysToReceive)) {
             if(this.executionTimeoutChart) clearTimeout(this.executionTimeoutChart);
             
-            this.executionTimeoutChart = setTimeout(()=> this.refreshChart(),300);
+            this.executionTimeoutChart = setTimeout(()=> this.refreshChart(),1000);
         }
     }
 
@@ -229,6 +230,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async refreshChart() {
+        console.log("refresh Charts");
         if(this.selectedUser && this.selectedUser.trim().length>0) {
             this.processingChart=true;
             //console.log("include deposits? " + this.includeDeposits);

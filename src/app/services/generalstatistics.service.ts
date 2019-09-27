@@ -111,6 +111,9 @@ export class GeneralStatisticsService {
         if(multiplier==7) {
             nextLowDate.setDate(nextLowDate.getDate() - daysToMonday);
             lowestDate.setDate(lowestDate.getDate() - daysToMonday);
+        } else if(multiplier==31) {
+            nextLowDate.setDate(1);
+            lowestDate.setDate(1);
         }
         
         nextLowDate = this.setZeroTime(nextLowDate);   
@@ -139,7 +142,11 @@ export class GeneralStatisticsService {
             upperDate.setDate(upperDate.getDate()-1)
             upperDate = this.setHigherTime(upperDate);
 
-            nextLowDate.setDate(nextLowDate.getDate()-multiplier);
+            if(multiplier==31)
+                nextLowDate.setMonth(nextLowDate.getMonth()-1)
+            else
+                nextLowDate.setDate(nextLowDate.getDate()-multiplier);
+
             nextLowDate = this.setZeroTime(nextLowDate);
         }
 

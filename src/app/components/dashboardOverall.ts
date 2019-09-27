@@ -69,7 +69,8 @@ export class DashboardOverallComponent implements OnInit {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
-            {label:'Weeks', value:7}
+            {label:'Weeks', value:7},
+            {label:'Months', value: 31}
         ];
 
         this.selectedDayOrWeek = this.daysOrWeeksDropDown[0].value;
