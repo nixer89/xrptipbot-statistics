@@ -230,7 +230,6 @@ export class DashboardUserComponent implements OnInit {
     }
 
     async refreshChart() {
-        console.log("refresh Charts");
         if(this.selectedUser && this.selectedUser.trim().length>0) {
             this.processingChart=true;
             //console.log("include deposits? " + this.includeDeposits);
