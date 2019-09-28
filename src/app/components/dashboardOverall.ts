@@ -194,7 +194,7 @@ export class DashboardOverallComponent implements OnInit {
         if(Number.isInteger(this.daysToReceive)) {
             if(this.executionTimeoutChart) clearTimeout(this.executionTimeoutChart);
             
-            this.executionTimeoutChart = setTimeout(()=> this.refreshChart(),300);
+            this.executionTimeoutChart = setTimeout(()=> this.refreshChart(),1000);
         }
     }
 
