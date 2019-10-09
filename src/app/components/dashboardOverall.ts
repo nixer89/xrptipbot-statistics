@@ -70,7 +70,8 @@ export class DashboardOverallComponent implements OnInit {
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
             {label:'Weeks', value:7},
-            {label:'Months', value: 31}
+            {label:'Months', value: 31},
+            {label:'Years', value: 366}
         ];
 
         this.selectedDayOrWeek = this.daysOrWeeksDropDown[0].value;
@@ -218,32 +219,34 @@ export class DashboardOverallComponent implements OnInit {
 
             if(this.selectedDayOrWeek==1)
                 labelsX.push(to.getDate()+"."+(to.getMonth()+1)+"."+to.getFullYear());
+            else if(this.selectedDayOrWeek==366)
+                labelsX.push(to.getFullYear());
             else
                 labelsX.push(from.getDate()+"."+(from.getMonth()+1)+"."+from.getFullYear() + " - \n" + to.getDate()+"."+(to.getMonth()+1)+"."+to.getFullYear());
         })
     
         this.chartData = {
-        labels: labelsX,
-        datasets: [
-            {
-                label: 'Sent tips',
-                data: dataSet[0].length > 1 ? dataSet[0] : [0,0,0,0,0,0,0,0,0,0,100],
-                backgroundColor: '#42A5F5',
-                borderColor: '#1E88E5',
-            },
-            {
-                label: 'Sent XRP',
-                data: dataSet[1].length > 1 ? dataSet[1] : [0,0,0,0,0,0,0,0,0,0,100],
-                backgroundColor: '#9CCC65',
-                borderColor: '#7CB342',
-            },
-            ]
+            labels: labelsX,
+            datasets: [
+                {
+                    label: 'Sent tips',
+                    data: dataSet[0].length > 1 ? dataSet[0] : [0,0,0,0,0,0,0,0,0,0,100],
+                    backgroundColor: '#42A5F5',
+                    borderColor: '#1E88E5',
+                },
+                {
+                    label: 'Sent XRP',
+                    data: dataSet[1].length > 1 ? dataSet[1] : [0,0,0,0,0,0,0,0,0,0,100],
+                    backgroundColor: '#9CCC65',
+                    borderColor: '#7CB342',
+                },
+                ]
         }
 
         this.options = {
             title: {
                 display: true,
-                text: 'Overall statistics for last ' + (dataSet[2].length) + (this.selectedDayOrWeek===1 ? ' Days' : ' Weeks'),
+                text: 'Overall statistics for last ' + (dataSet[2].length) +' '+ this.getChartTextSelection(),
                 fontSize: 16
             },
             legend: {
@@ -251,6 +254,13 @@ export class DashboardOverallComponent implements OnInit {
             }
         };
         this.processingChart=false;
+    }
+
+    getChartTextSelection(): string {
+        if(this.selectedDayOrWeek==1) return "Days";
+        else if(this.selectedDayOrWeek==7) return "Weeks";
+        else if(this.selectedDayOrWeek==31) return "Months";
+        else if(this.selectedDayOrWeek==366) return "Years";
     }
 
     initStatsWithZeroValues() {

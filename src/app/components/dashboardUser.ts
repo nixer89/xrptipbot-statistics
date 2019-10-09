@@ -74,7 +74,8 @@ export class DashboardUserComponent implements OnInit {
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
             {label:'Weeks', value:7},
-            {label:'Months', value:31}
+            {label:'Months', value:31},
+            {label:'Years', value: 366}
         ];
 
         this.networkDropdown = [
@@ -286,7 +287,7 @@ export class DashboardUserComponent implements OnInit {
             this.options = {
                 title: {
                     display: true,
-                    text: 'Statistics of ' + this.selectedUser + ' for last ' + (dataSet[2].length) + (this.selectedDayOrWeek===1 ? ' Days' : ' Weeks'),
+                    text: 'Statistics of ' + this.selectedUser + ' for last ' + (dataSet[2].length) +' '+ this.getChartTextSelection(),
                     fontSize: 16
                 },
                 legend: {
@@ -295,6 +296,13 @@ export class DashboardUserComponent implements OnInit {
             };
             this.processingChart=false;
         }
+    }
+
+    getChartTextSelection(): string {
+        if(this.selectedDayOrWeek==1) return "Days";
+        else if(this.selectedDayOrWeek==7) return "Weeks";
+        else if(this.selectedDayOrWeek==31) return "Months";
+        else if(this.selectedDayOrWeek==366) return "Years";
     }
 
     initStatsWithZeroValues() {
