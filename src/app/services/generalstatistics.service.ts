@@ -8,7 +8,7 @@ export class GeneralStatisticsService {
     constructor(private api: ApiService, @Inject(LOCALE_ID) public locale: string) {}
 
     coilAccounts:string[] = ['COIL_SETTLED_ILP_BALANCE', 'COIL_SETTLEMENT_ACCOUNT'];
-    bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792','52249814', '1027600504304619522'];
+    bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792','52249814', '1027600504304619522', '1172963893322440704'];
     charities:string[] = ['9624042', '3443786712', '951179206104403968', '21855719', '970803226470531072', '1080843472129658880'];
 
     async getTopTipper(fromDate: Date, toDate: Date, limit: number, network: string, excludeBots?: boolean, excludeCharities?: boolean, excludeCoilSettlement?: boolean, userName?: string): Promise<any[]> {

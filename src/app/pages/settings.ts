@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { LocalStorageService } from 'angular-2-local-storage';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
     selector: "settings",
@@ -12,11 +13,14 @@ export class SettingsDialogComponent implements OnInit {
     excludeCoil: boolean;
     darkMode: boolean;
 
-    constructor(private localStorage: LocalStorageService) {
+    constructor(private localStorage: LocalStorageService,private titleService: Title, private meta: Meta) {
 
     }
 
     ngOnInit(){
+        this.titleService.setTitle("XRPTipBot Settings");
+        this.meta.updateTag({name: 'twitter:title', content: 'XRPTipBot Settings'});
+        this.meta.updateTag({name: 'twitter:image', content: 'https://xrptipbot-stats.com/assets/XRPTipBotStats_Wallpaper.png'});
         //load data from storage
         this.excludeBots = this.localStorage.get("excludeBots") || false;
         this.excludeCharities = this.localStorage.get("excludeCharities") || false;

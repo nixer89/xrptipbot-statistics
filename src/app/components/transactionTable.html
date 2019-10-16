@@ -9,15 +9,23 @@
             <th *ngIf="enableSort" [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
             <th *ngIf="!enableSort">XRP</th>
             <th>
-                From
-                <div style="font-size:0.8em;display:flex;align-items: center;">
-                    Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
+                <div>
+                    <div>
+                        From
+                    </div>
+                    <div style="font-size:0.8em;">
+                        Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
+                    </div>
                 </div>
             </th>
             <th>
-                To
-                <div style="font-size:0.8em;display:flex;align-items: center;">
-                    Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'to', 'contains')">
+                <div>
+                    <div>
+                        To
+                    </div>
+                    <div style="font-size:0.8em;">
+                        Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'to', 'contains')">
+                    </div>
                 </div>
             </th>
             <th>Network</th>
