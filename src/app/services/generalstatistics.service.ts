@@ -102,9 +102,9 @@ export class GeneralStatisticsService {
         let directDepositsXRP:any[] = [];
         let dateTimes:any[] = [];
 
-        let upperDate = this.setHigherTime(new Date(formatUtil.initializeDateAsGMT2(new Date())));;
-        let nextLowDate = new Date(formatUtil.initializeDateAsGMT2(new Date()));
-        let lowestDate = new Date(formatUtil.initializeDateAsGMT2(new Date()))
+        let upperDate = this.setHigherTime(new Date(formatUtil.initializeDateAsGMT1(new Date())));;
+        let nextLowDate = new Date(formatUtil.initializeDateAsGMT1(new Date()));
+        let lowestDate = new Date(formatUtil.initializeDateAsGMT1(new Date()))
 
         //next low day should be last monday if we calculate weeks
         let daysToMonday = nextLowDate.getDay()-1;

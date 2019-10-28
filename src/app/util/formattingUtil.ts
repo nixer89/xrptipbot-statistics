@@ -10,10 +10,10 @@ export function dateToStringEuropeForAPI(dateToFormat: Date): string {
     return dateToFormat.toLocaleString("en-US", {timeZone: 'Europe/Berlin'} );
 }
 
-export function initializeDateAsGMT2(date: Date): Date {    
-    return new Date(date.toUTCString() + '+0200');
+export function initializeDateAsGMT1(date: Date): Date {    
+    return new Date(date.toUTCString() + '+0100');
 }
 
-export function initializeStringDateAsGMT2(date: string): Date {    
-    return new Date(new Date(date).toUTCString() + '+0200');
+export function initializeStringDateAsGMT1(date: string): Date {    
+    return new Date(new Date(date).toUTCString() + '+0100');
 }

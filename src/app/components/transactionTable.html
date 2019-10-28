@@ -2,9 +2,9 @@
 <p-table #dt *ngIf="data" [value]="data" [paginator]="paginator" [rows]="rows" [autoLayout]="true">
     <ng-template pTemplate="header">
         <tr>
-            <th *ngIf="enableSort" [pSortableColumn]="'momentAsDate'">Date (GMT+2)<p-sortIcon [field]="'momentAsDate'"></p-sortIcon>
+            <th *ngIf="enableSort" [pSortableColumn]="'momentAsDate'">Date (GMT+1)<p-sortIcon [field]="'momentAsDate'"></p-sortIcon>
             </th>
-            <th *ngIf="!enableSort">Date (GMT+2)</th>
+            <th *ngIf="!enableSort">Date (GMT+1)</th>
             <th>Type</th>
             <th *ngIf="enableSort" [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
             <th *ngIf="!enableSort">XRP</th>

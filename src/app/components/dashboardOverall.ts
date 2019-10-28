@@ -352,6 +352,6 @@ export class DashboardOverallComponent implements OnInit {
     }
 
     dateToLocaleStringEuropeTime(date: Date): string {
-        return formatUtil.dateToStringEuropeForLocale(date) + " GMT+2";
+        return formatUtil.dateToStringEuropeForLocale(date) + " GMT+1";
     }
 }
