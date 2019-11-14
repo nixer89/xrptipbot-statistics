@@ -98,8 +98,14 @@
                                 </button>
                             </div>
                         </h2>
-                        <div *ngIf="userBalance" class="floatLeft">
+                        <div *ngIf="userBalance" class="floatLeft" style="color: darkorange">
                             Current balance: {{userBalance}} XRP
+                        </div>
+                        <div *ngIf="tipbotAccountInfo && tipbotAccountInfo['tipbot_created']" class="floatLeft" style="color: green">
+                            XRPTipBot account since: {{tipbotAccountInfo['tipbot_created']}}
+                        </div>
+                        <div *ngIf="tipbotAccountInfo && tipbotAccountInfo['rejecttips']" class="floatLeft" style="color: red;">
+                            XRPTipBot account disabled since: {{tipbotAccountInfo['rejecttips']}}
                         </div>
                         <div *ngIf="useDateRange" class="ui-g-12">
                             <label>From: {{fromDate ? dateToLocaleStringEuropeTime(fromDate):''}}</label><br>

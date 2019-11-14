@@ -173,6 +173,23 @@ export class ApiService {
         return currentBalance;
     }
 
+    async getTipbotAccountInfo(user: string, network: string): Promise<any> {
+        let tipbotCreated = {};
+        if(user && user.trim().length>0 && network && network.trim().length >0) {
+            let publicFeed = await this.callTipBotPublicPage(user, network);
+            if(publicFeed && publicFeed.user) {
+
+                if(publicFeed.user.rejecttips)
+                    tipbotCreated['rejecttips'] = publicFeed.user.tipbot_created;
+                    
+                if(publicFeed.user.tipbot_created)
+                    tipbotCreated['tipbot_created'] = publicFeed.user.tipbot_created;
+            }
+        }
+
+        return tipbotCreated;
+    }
+
     //################################# WRAPPER METHODS END #################################
 
     async getUser(userHandle:string, network:string): Promise<any> {

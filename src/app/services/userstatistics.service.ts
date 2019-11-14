@@ -40,6 +40,7 @@ export class UserStatisticsService {
             promises.push(this.api.getILPDepositXRP(userFilter+"&type=ILP deposit&network="+network+ilpOptionalFilter));
             //current balance
             promises.push(this.api.getCurrentBalance(network != 'discord' ? userName : userId, network));
+            promises.push(this.api.getTipbotAccountInfo(network != 'discord' ? userName : userId, network));
 
             return Promise.all(promises);
         } catch(err) {
