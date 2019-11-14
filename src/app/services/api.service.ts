@@ -180,7 +180,7 @@ export class ApiService {
             if(publicFeed && publicFeed.user) {
 
                 if(publicFeed.user.rejecttips)
-                    tipbotCreated['rejecttips'] = publicFeed.user.tipbot_created;
+                    tipbotCreated['rejecttips'] = publicFeed.user.rejecttips;
                     
                 if(publicFeed.user.tipbot_created)
                     tipbotCreated['tipbot_created'] = publicFeed.user.tipbot_created;

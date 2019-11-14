@@ -57,7 +57,7 @@ export class GeneralStatisticsService {
             
             if(numbersResult[k]['xrp']) {
                 if(userName)
-                    numbersResult[k]['xrp'] = numbersResult[k]['xrp']*1000000/1000000;
+                    numbersResult[k]['xrp'] = numbersResult[k]['xrp'].toFixed(6);
                 else
                     numbersResult[k]['xrp'] = numbersResult[k]['xrp'].toFixed(2);
             } else {
@@ -65,6 +65,7 @@ export class GeneralStatisticsService {
             }
         }
 
+        console.log(JSON.stringify(numbersResult));
         return numbersResult;
     }
 
