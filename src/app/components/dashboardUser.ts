@@ -204,14 +204,14 @@ export class DashboardUserComponent implements OnInit {
                 //console.log("user stats result in dashboard: " + JSON.stringify(stats));
                 if(stats) {
                     this.userStats[0].count = stats[0] ? stats[0] : 0;
-                    this.userStats[0].xrp = stats[1] ? stats[1]*1000000/1000000 : 0;
+                    this.userStats[0].xrp = stats[1] ? stats[1].toFixed(6) : 0;
                     this.userStats[1].count = stats[2] ? stats[2] : 0;
-                    this.userStats[1].xrp = stats[3] ? stats[3]*1000000/1000000 : 0;
+                    this.userStats[1].xrp = stats[3] ? stats[3].toFixed(6) : 0;
                     this.userStats[2].count = stats[4] ? stats[4] : 0;
-                    this.userStats[2].xrp = stats[5] ? stats[5]*1000000/1000000 : 0;
+                    this.userStats[2].xrp = stats[5] ? stats[5].toFixed(6) : 0;
                     this.userStats[3].count = stats[6] ? stats[6] : 0;
-                    this.userStats[3].xrp = stats[7] ? stats[7]*1000000/1000000 : 0;
-                    this.userStats[4].xrp = stats[8] ? stats[8]*1000000/1000000 : 0;
+                    this.userStats[3].xrp = stats[7] ? stats[7].toFixed(6) : 0;
+                    this.userStats[4].xrp = stats[8] ? stats[8].toFixed(6) : 0;
                     this.userBalance = stats[9];
                     this.tipbotAccountInfo = stats[10] || 'no account yet';
                 }
