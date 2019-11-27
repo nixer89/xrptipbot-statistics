@@ -16,10 +16,10 @@
                                     <div class="floatleft" style="align-items: left;">
                                         <p-dropdown [options]="networkDropdown" [(ngModel)]="selectedNetwork" [disabled]="processingAll || processingStats" (onChange)="refreshAllWithTimeout()" [style]="{'width':'60px','height':'40px'}">
                                             <ng-template let-item pTemplate="selectedItem">
-                                                <img src="../../assets/networks/{{item.label}}.png" width="18" height="18" />
+                                                <img src="../../assets/networks/{{item.label}}.png" width="18" height="18" alt="Social Network"/>
                                             </ng-template>
                                             <ng-template let-network pTemplate="item">
-                                                <img src="../../assets/networks/{{network.label}}.png" width="18" height="18"/>
+                                                <img src="../../assets/networks/{{network.label}}.png" width="18" height="18" alt="Social Network"/>
                                             </ng-template>
                                         </p-dropdown>
                                     </div>
@@ -86,9 +86,9 @@
                         <h2 *ngIf="selectedUser && foundUser" style="margin-bottom: 0px;">
                             <div class="floatleft" style="line-height: 40px">
                                 Top Activities for {{foundUser.name}}
-                                <a *ngIf="!isDiscordOrCoilNetwork(foundUser)" target="_blank" href="{{getNetworkURL(foundUser)}}" style="vertical-align: middle;"><img src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20"></a>
-                                <img *ngIf="isDiscordOrCoilNetwork(foundUser)" src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20" style="vertical-align: middle;">
-                                <a target="_blank" href="{{getXRPTipBotURL(foundUser)}}" style="vertical-align: middle;"><img src="../../assets/networks/xrptipbot.png" width="20" height="20"></a>
+                                <a *ngIf="!isDiscordOrCoilNetwork(foundUser)" target="_blank" href="{{getNetworkURL(foundUser)}}" style="vertical-align: middle;" rel="noreferrer" aria-label="Social media account"><img src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20" alt="Social Network"></a>
+                                <img *ngIf="isDiscordOrCoilNetwork(foundUser)" src="../../assets/networks/{{resolveIconName(foundUser)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network">
+                                <a target="_blank" href="{{getXRPTipBotURL(foundUser)}}" style="vertical-align: middle;" rel="noreferrer" aria-label="XRPTipBot account"><img src="../../assets/networks/xrptipbot.png" width="20" height="20" alt="XRPTipBot Page"></a>
                             </div>
                             <div class="floatright">
                                 <button mat-icon-button pTooltip="Share this statistic" tooltipPosition="left" (click)="copy2Clipboard()">
@@ -98,13 +98,13 @@
                                 </button>
                             </div>
                         </h2>
-                        <div *ngIf="userBalance" class="floatLeft" style="color: darkorange">
+                        <div *ngIf="userBalance" class="floatLeft current-balance">
                             Current balance: {{userBalance}} XRP
                         </div>
-                        <div *ngIf="tipbotAccountInfo && tipbotAccountInfo['tipbot_created']" class="floatLeft" style="color: green">
+                        <div *ngIf="tipbotAccountInfo && tipbotAccountInfo['tipbot_created']" class="floatLeft account-since">
                             XRPTipBot account since: {{tipbotAccountInfo['tipbot_created']}}
                         </div>
-                        <div *ngIf="tipbotAccountInfo && tipbotAccountInfo['rejecttips']" class="floatLeft" style="color: red;">
+                        <div *ngIf="tipbotAccountInfo && tipbotAccountInfo['rejecttips']" class="floatLeft account-deleted">
                             XRPTipBot account disabled since: {{tipbotAccountInfo['rejecttips']}}
                         </div>
                         <div *ngIf="useDateRange" class="ui-g-12">
@@ -138,7 +138,7 @@
                         <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refreshChartWithTimeout()"></p-dropdown>
                     </div>
                     <div class="floatcenter" style="padding-left: 1em;">
-                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
+                        <p-spinner aria-label="Select timeframe" size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
                     </div>
                     <div class="floatright">
                         <p-progressSpinner *ngIf="!processingAll && processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>

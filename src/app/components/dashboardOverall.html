@@ -7,15 +7,15 @@
                         <p-card>
                             <div>
                                 <div style="display: flex;">
-                                    <p-checkbox binary="true" label="Exclude Bots" pTooltip="Share this statistic" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                    <p-checkbox aria-label="Exclude Bots" binary="true" label="Exclude Bots" pTooltip="Share this statistic" [(ngModel)]="excludeBots" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                                     <i class="material-icons" pTooltip="GoodXrp, allinxrp, XRP_Tap, XrpTipper, xrpcharities, demludi, GoodXrp_Test, ArcadeXrp">info</i>
                                 </div>
                                 <div style="display: flex;">
-                                    <p-checkbox binary="true" label="Exclude Charities" pTooltip="StJude, WanderingWare, bigbuckor, onemorehome, cote_uk, cranders71" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                    <p-checkbox aria-label="Exclude Charities" binary="true" label="Exclude Charities" pTooltip="StJude, WanderingWare, bigbuckor, onemorehome, cote_uk, cranders71" [(ngModel)]="excludeCharities" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                                     <i class="material-icons" pTooltip="StJude, WanderingWare, bigbuckor, onemorehome, cote_uk, cranders71">info</i>
                                 </div>
                                 <div>
-                                    <p-checkbox binary="true" label="Exclude Coil Settlement" [(ngModel)]="excludeCoilSettlement" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                                    <p-checkbox aria-label="Exclude Coil Settlement" binary="true" label="Exclude Coil Settlement" [(ngModel)]="excludeCoilSettlement" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                                 </div>
                             </div>
                             <h4>
@@ -23,18 +23,18 @@
                             </h4>
                             <div style="padding-top: 0.5em;">
                                 <div class="floatleft">
-                                    <p-checkbox binary="true" label="Choose specific Time" [(ngModel)]="useDateRange" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>
+                                    <p-checkbox aria-label="Choose specific time" binary="true" label="Choose specific Time" [(ngModel)]="useDateRange" [disabled]="processingStats" (onChange)="refreshStatsWithTimeout()"></p-checkbox>
                                 </div>
                                 <div class="floatright" style="vertical-align: middle">
                                     <p-progressSpinner *ngIf="processingStats" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
                                 </div>
                                 <div class="floatleft" style="width: 80%">
                                     <label disabled="!useDateRange"><b>From</b></label>
-                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="fromDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
+                                    <p-calendar aria-label="From date" [disabled]="!useDateRange || processingStats" [(ngModel)]="fromDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
                                 <div class="floatleft" style="width: 80%">
                                     <label><b>To</b></label>
-                                    <p-calendar [disabled]="!useDateRange || processingStats" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
+                                    <p-calendar aria-label="To date" [disabled]="!useDateRange || processingStats" [(ngModel)]="toDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2017:2030" [showTime]="true" showSeconds="true" dateFormat="dd.mm.yy" (onSelect)="refreshStatsWithTimeout()" (onInput)="refreshStatsWithTimeout()"></p-calendar>
                                 </div>
                                 <div class="floatleft" style="width: 80%">
                                     <label style="font-size: 9px;"><b>Your selected time will be converted into GMT+1!</b></label>
@@ -130,14 +130,14 @@
                         <p-dropdown [options]="daysOrWeeksDropDown" [(ngModel)]="selectedDayOrWeek" (onChange)="refreshChartWithTimeout()"></p-dropdown>
                     </div>
                     <div class="floatcenter" style="padding-left: 1em;">
-                        <p-spinner size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
+                        <p-spinner name="Select timeframe" aria-label="Select timeframe" size="3" [(ngModel)]="daysToReceive" [min]="1" [max]="20" [maxlength]="2" (input)="refreshChartWithTimeout()" (onChange)="refreshChartWithTimeout()"></p-spinner>
                     </div>
                     <div class="floatright">
                         <p-progressSpinner *ngIf="processingChart" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
                     </div>
                 </div>
                 <div>
-                    <p-checkbox binary="true" label="Exclude Coil Settlement" [(ngModel)]="excludeCoilSettlementChart" [disabled]="processingChart" (onChange)="refreshChartWithTimeout()"></p-checkbox>&nbsp;&nbsp;
+                    <p-checkbox aria-label="Exclude Coil Settlement"  binary="true" label="Exclude Coil Settlement" [(ngModel)]="excludeCoilSettlementChart" [disabled]="processingChart" (onChange)="refreshChartWithTimeout()"></p-checkbox>&nbsp;&nbsp;
                 </div>
             </p-card>
         </div>

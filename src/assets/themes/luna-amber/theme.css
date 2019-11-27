@@ -3468,3 +3468,14 @@ body .ui-fluid .ui-inplace.ui-inplace-closable .ui-inplace-content > :first-chil
 }
 
 /* Add your customizations of theme here */
+.current-balance {
+  color: darkorange
+}
+
+.account-since {
+  color: #00B300
+}
+
+.account-deleted {
+  color: #FF6B6B;
+}

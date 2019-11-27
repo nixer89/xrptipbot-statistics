@@ -14,7 +14,7 @@
                         From
                     </div>
                     <div style="font-size:0.8em;">
-                        Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
+                        Filter:&nbsp;<input aria-label="From" style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
                     </div>
                 </div>
             </th>
@@ -24,7 +24,7 @@
                         To
                     </div>
                     <div style="font-size:0.8em;">
-                        Filter:&nbsp;<input style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'to', 'contains')">
+                        Filter:&nbsp;<input aria-label="To" style="height: 2em;" pInputText type="text" (input)="dt.filter($event.target.value, 'to', 'contains')">
                     </div>
                 </div>
             </th>
@@ -41,24 +41,24 @@
             <td style="text-align: center">{{data.xrp}}</td>
             <td style="text-align: left;">
                 <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.user, network: data.user_network}" (click)="close()">{{data['user']}} </a>
-                <a *ngIf="!isDiscordOrCoilNetwork(data.user_network)" target="_blank" href="{{getNetworkURLFrom(data)}}"><img src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
-                <img *ngIf="isDiscordOrCoilNetwork(data.user_network)" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;">
+                <a *ngIf="!isDiscordOrCoilNetwork(data.user_network)" target="_blank" rel="noreferrer" href="{{getNetworkURLFrom(data)}}" aria-label="Open social media account"><img src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network"></a>
+                <img *ngIf="isDiscordOrCoilNetwork(data.user_network)" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network">
             </td>
             <td style="text-align: left">
                 <div *ngIf="data.type === 'tip'">
                     <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.to, network: data.to_network}" (click)="close()">{{data['to']}} </a>
-                    <a *ngIf="!isDiscordOrCoilNetwork(data.to_network)" target="_blank" href="{{getNetworkURLTo(data)}}"><img src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;"></a>
-                    <img *ngIf="isDiscordOrCoilNetwork(data.to_network)" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;">
+                    <a *ngIf="!isDiscordOrCoilNetwork(data.to_network)" target="_blank" rel="noreferrer" href="{{getNetworkURLTo(data)}}" aria-label="Social media account"><img src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network"></a>
+                    <img *ngIf="isDiscordOrCoilNetwork(data.to_network)" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network">
                 </div>
             </td>
             <td *ngIf="data.network === 'app' || data.network === 'btn'" style="text-align: center"><i class="material-icons">{{getIconName(data.network)}}</i></td>
-            <td *ngIf="data.network != 'app' && data.network != 'btn'" style="text-align: center"><img src="../../assets/networks/{{resolveIconName(data.network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
-            <td style="text-align: center"><img *ngIf="data.type != 'deposit' && data.type != 'withdraw' && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
-            <td style="text-align: center"><img *ngIf="data.to_network && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;"></td>
+            <td *ngIf="data.network != 'app' && data.network != 'btn'" style="text-align: center"><img src="../../assets/networks/{{resolveIconName(data.network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Tip Network"></td>
+            <td style="text-align: center"><img *ngIf="data.type != 'deposit' && data.type != 'withdraw' && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="User Network"></td>
+            <td style="text-align: center"><img *ngIf="data.to_network && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="To Network"></td>
             <td *ngIf="(data.network != 'twitter' && data.network != 'reddit' && data.network != 'btn') || data.type != 'tip'" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
-            <td *ngIf="data.network === 'btn' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="{{shortenContext(data.network,data.context)}}">{{shortenContext(data.network,data.context)}}</a></td>
-            <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="https://twitter.com{{data.context}}">{{data.context}}</a></td>
-            <td *ngIf="data.network === 'reddit' && data.type === 'tip'" style="text-align: center"><a target="_blank" href="https://reddit.com{{data.context}}">{{data.context}}</a></td>
+            <td *ngIf="data.network === 'btn' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="{{shortenContext(data.network,data.context)}}" aria-label="Open website">{{shortenContext(data.network,data.context)}}</a></td>
+            <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="https://twitter.com{{data.context}}" aria-label="Open tweet">{{data.context}}</a></td>
+            <td *ngIf="data.network === 'reddit' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="https://reddit.com{{data.context}}" aria-label="Open reddit post">{{data.context}}</a></td>
         </tr>
     </ng-template>
 </p-table>

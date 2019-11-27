@@ -42,12 +42,12 @@ body .ui-widget-content p {
 }
 
 .mat-toolbar.mat-primary {
-    background: royalblue;
+    background: #1744A1;
     color: white;
 }
 
 .mat-toolbar.mat-secondary {
-    background: #507fe4fd;
+    background: #1E52BD;
     color: white;
 }
 
