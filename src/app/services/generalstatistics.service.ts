@@ -65,7 +65,6 @@ export class GeneralStatisticsService {
             }
         }
 
-        console.log(JSON.stringify(numbersResult));
         return numbersResult;
     }
 

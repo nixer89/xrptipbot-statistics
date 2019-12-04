@@ -419,10 +419,10 @@ export class DashboardUserComponent implements OnInit {
 
     openAllTransactions(filter:string) {
         let optionalDateFilter = "";
-            if(this.fromDate && this.toDate) {
-                optionalDateFilter+="&from_date="+formatUtil.dateToStringEuropeForAPI(this.generalStats.setZeroMilliseconds(this.fromDate));
-                optionalDateFilter+="&to_date="+formatUtil.dateToStringEuropeForAPI(this.generalStats.setHighMilliseconds(this.toDate));
-            }
+        if(this.useDateRange && this.fromDate && this.toDate) {
+            optionalDateFilter+="&from_date="+formatUtil.dateToStringEuropeForAPI(this.generalStats.setZeroMilliseconds(this.fromDate));
+            optionalDateFilter+="&to_date="+formatUtil.dateToStringEuropeForAPI(this.generalStats.setHighMilliseconds(this.toDate));
+        }
         //console.log("userTable openTransactions()");
         //console.log("tipper: " + JSON.stringify(tipper));
         this.overlayUsedTransactionFilter = filter + optionalDateFilter;
