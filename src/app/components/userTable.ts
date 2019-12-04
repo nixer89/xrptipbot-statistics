@@ -66,7 +66,7 @@ export class UserTableComponent {
     constructor(private router: Router, private api: ApiService, private generalStats: GeneralStatisticsService) {}
 
     isDiscordOrCoilNetwork(tipper:any) {
-        return 'discord'===tipper.network || 'coil' === tipper.network;
+        return 'discord'===tipper.network || 'coil' === tipper.network || 'internal'===tipper.network;
     }
 
     getXRPTipBotURL(tipper:any) : string {
@@ -92,11 +92,13 @@ export class UserTableComponent {
         if('discord'===tipper.network)
             return 'albert';
         else if('reddit'===tipper.network)
-            return 'berta'
+            return 'berta';
         else if('coil'===tipper.network)
-            return 'coil'
+            return 'coil';
         else if('twitter'===tipper.network)
-            return 'emil'
+            return 'emil';
+        else if('internal'===tipper.network)
+            return 'paper';
         else return 'emil';
     }
 
@@ -157,8 +159,13 @@ export class UserTableComponent {
     getUserName(tipper): string {
         if('COIL_SETTLED_ILP_BALANCE' === tipper.userName || 'COIL_SETTLEMENT_ACCOUNT' === tipper.userName)
             return tipper.userName.substring(0,tipper.userName.lastIndexOf('_')+1) + ' ' + tipper.userName.substring(tipper.userName.lastIndexOf('_')+1)
-        else if(tipper.network && tipper.network === 'coil')
-            return tipper.userName.substring(0,21)+'...';
+        else if(tipper.network && ( tipper.network === 'coil' || tipper.network === 'internal')) {
+            if(this.isILP)
+                return tipper.userName.substring(0,21)+'...';
+            else
+                return tipper.userName.substring(0,10)+'...';
+        }
+            
         else
             return tipper.userName;
     }

@@ -83,7 +83,8 @@ export class DashboardUserComponent implements OnInit {
             {label:'emil', value:'twitter'},
             {label:'berta', value:'reddit'},
             {label:'albert', value:'discord'},
-            {label: 'coil', value: 'coil'}
+            {label: 'coil', value: 'coil'},
+            {label: 'paper', value: 'internal'}
         ];
 
         this.selectedDayOrWeek = this.daysOrWeeksDropDown[0].value;
@@ -365,7 +366,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     isDiscordOrCoilNetwork(tipper:any) {
-        return 'discord'===tipper.network || 'coil'===tipper.network;
+        return 'discord'===tipper.network || 'coil'===tipper.network ||'internal'===tipper.network;
     }
 
     getXRPTipBotURL(tipper:any) : string {
@@ -388,11 +389,13 @@ export class DashboardUserComponent implements OnInit {
         if('discord'===tipper.network)
             return 'albert';
         else if('reddit'===tipper.network)
-            return 'berta'
+            return 'berta';
         else if('coil'===tipper.network)
-            return 'coil'
+            return 'coil';
         else if('twitter'===tipper.network)
-            return 'emil'
+            return 'emil';
+        else if('internal' === tipper.network)
+            return 'paper';
         else return 'emil';
     }
 

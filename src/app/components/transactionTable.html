@@ -40,13 +40,13 @@
             <td style="text-align: center">{{data.type}}</td>
             <td style="text-align: center">{{data.xrp}}</td>
             <td style="text-align: left;">
-                <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.user, network: data.user_network}" (click)="close()">{{data['user']}} </a>
+                <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.user, network: data.user_network}" (click)="close()">{{getUserNameFrom(data)}} </a>
                 <a *ngIf="!isDiscordOrCoilNetwork(data.user_network)" target="_blank" rel="noreferrer" href="{{getNetworkURLFrom(data)}}" aria-label="Open social media account"><img src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network"></a>
                 <img *ngIf="isDiscordOrCoilNetwork(data.user_network)" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network">
             </td>
             <td style="text-align: left">
                 <div *ngIf="data.type === 'tip'">
-                    <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.to, network: data.to_network}" (click)="close()">{{data['to']}} </a>
+                    <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.to, network: data.to_network}" (click)="close()">{{getUserNameTo(data)}} </a>
                     <a *ngIf="!isDiscordOrCoilNetwork(data.to_network)" target="_blank" rel="noreferrer" href="{{getNetworkURLTo(data)}}" aria-label="Social media account"><img src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network"></a>
                     <img *ngIf="isDiscordOrCoilNetwork(data.to_network)" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network">
                 </div>

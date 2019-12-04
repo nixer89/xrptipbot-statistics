@@ -50,7 +50,7 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
     }
 
     isDiscordOrCoilNetwork(network:string) {
-        return 'discord'===network || 'coil' === network;
+        return 'discord'===network || 'coil' === network || 'internal'=== network;
     }
 
     getNetworkURLFrom(data:any) {
@@ -77,11 +77,13 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
         if('discord'===network)
             return 'albert';
         else if('reddit'===network)
-            return 'berta'
+            return 'berta';
         else if('coil'===network)
-            return 'coil'
+            return 'coil';
         else if('twitter'===network)
-            return 'emil'
+            return 'emil';
+        else if('internal'===network)
+            return 'paper';
         else return 'emil';
     }
 
@@ -102,6 +104,20 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
         else if('btn' === network)
             return 'touch_app';
         else return '';
+    }
+
+    getUserNameFrom(tipper:any): string {
+        if(tipper.user_network && ( tipper.user_network === 'coil' || tipper.user_network === 'internal'))
+            return tipper.user.substring(0,21)+'...';
+        else
+            return tipper.user;
+    }
+
+    getUserNameTo(tipper:any): string {
+        if(tipper.to_network && ( tipper.to_network === 'coil' || tipper.to_network === 'internal'))
+            return tipper.to.substring(0,21)+'...';
+        else
+            return tipper.to;
     }
 
     close() {
