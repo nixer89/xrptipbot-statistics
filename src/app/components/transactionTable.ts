@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnDestroy ,Output, EventEmitter } from "@angular/core";
+import { LocalStorageService } from 'angular-2-local-storage';
 import { ApiService } from '../services/api.service';
 import * as formatUtil from '../util/formattingUtil';
 
@@ -29,7 +30,7 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
     data:any[];
     interval:NodeJS.Timeout;
 
-    constructor(private api: ApiService) {}
+    constructor(private api: ApiService, private localStorage: LocalStorageService) {}
 
     async ngOnInit() {
         //console.log("transactionTable ngOnInit()");
@@ -78,12 +79,20 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
             return 'albert';
         else if('reddit'===network)
             return 'berta';
-        else if('coil'===network)
-            return 'coil';
+        else if('coil'===network) {
+            if(this.localStorage.get("darkMode"))
+                return 'coil_reversed';
+            else
+                return 'coil';
+        }
         else if('twitter'===network)
             return 'emil';
-        else if('internal'===network)
-            return 'paper';
+        else if('internal'===network) {
+            if(this.localStorage.get("darkMode"))
+                return 'paper_reversed';
+            else
+                return 'paper';
+        }
         else return 'emil';
     }
 

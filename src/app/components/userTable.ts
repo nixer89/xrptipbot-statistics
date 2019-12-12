@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { Router } from '@angular/router';
+import { LocalStorageService } from 'angular-2-local-storage';
 import { ApiService } from '../services/api.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
 
@@ -63,7 +64,7 @@ export class UserTableComponent {
     foundUserForward:string;
     hideLinks = false;
 
-    constructor(private router: Router, private api: ApiService, private generalStats: GeneralStatisticsService) {}
+    constructor(private api: ApiService, private generalStats: GeneralStatisticsService, private localStorage: LocalStorageService) {}
 
     isDiscordOrCoilNetwork(tipper:any) {
         return 'discord'===tipper.network || 'coil' === tipper.network || 'internal'===tipper.network;
@@ -93,12 +94,20 @@ export class UserTableComponent {
             return 'albert';
         else if('reddit'===tipper.network)
             return 'berta';
-        else if('coil'===tipper.network)
-            return 'coil';
+        else if('coil'===tipper.network) {
+            if(this.localStorage.get("darkMode"))
+                return 'coil_reversed';
+            else
+                return 'coil';
+        }
         else if('twitter'===tipper.network)
             return 'emil';
-        else if('internal'===tipper.network)
-            return 'paper';
+        else if('internal'===tipper.network) {
+            if(this.localStorage.get("darkMode"))
+                return 'paper_reversed';
+            else
+                return 'paper';
+        }
         else return 'emil';
     }
 

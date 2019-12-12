@@ -83,8 +83,8 @@ export class DashboardUserComponent implements OnInit {
             {label:'emil', value:'twitter'},
             {label:'berta', value:'reddit'},
             {label:'albert', value:'discord'},
-            {label: 'coil', value: 'coil'},
-            {label: 'paper', value: 'internal'}
+            {label: this.localStorage.get("darkMode") ? 'coil_reversed' : 'coil', value: 'coil'},
+            {label: this.localStorage.get("darkMode") ? 'paper_reversed' : 'paper', value: 'internal'}
         ];
 
         this.selectedDayOrWeek = this.daysOrWeeksDropDown[0].value;
@@ -390,12 +390,21 @@ export class DashboardUserComponent implements OnInit {
             return 'albert';
         else if('reddit'===tipper.network)
             return 'berta';
-        else if('coil'===tipper.network)
-            return 'coil';
+        else if('coil'===tipper.network) {
+            if(this.localStorage.get("darkMode"))
+                return 'coil_reversed'
+            else
+                return 'coil'
+        }
         else if('twitter'===tipper.network)
             return 'emil';
-        else if('internal' === tipper.network)
-            return 'paper';
+        else if('internal' === tipper.network) {
+            if(this.localStorage.get("darkMode"))
+                return 'paper_reversed';
+            else
+                return 'paper'
+        }
+            
         else return 'emil';
     }
 
