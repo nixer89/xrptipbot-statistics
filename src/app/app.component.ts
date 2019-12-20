@@ -15,13 +15,33 @@ export class AppComponent implements OnInit {
     constructor(private localStorage: LocalStorageService, private router: Router) {
       this.router.events.subscribe(event => {
         if(event instanceof NavigationEnd) {
+            let path = (event.urlAfterRedirects.includes('?') ? event.urlAfterRedirects.substring(0, event.urlAfterRedirects.indexOf('?')) : event.urlAfterRedirects);
             gtag('config', 'UA-154868577-1', 
                   {
-                    'page_path': (event.urlAfterRedirects.includes('?') ? event.urlAfterRedirects.substring(0, event.urlAfterRedirects.indexOf('?')) : event.urlAfterRedirects)
+                    'page_title': this.getPageTitle(path),
+                    'page_path': path
                   }
                 );
          }
       });
+    }
+
+    getPageTitle(page_path:string): string {
+      let title = "XRPTipBotStats";
+
+      switch(page_path) {
+        case '/feed': title = "XRPTipBot Feed"; break;
+        case '/overallstatistics': title = "XRPTipBot OverallStats"; break;
+        case '/userstatistics': title = "XRPTipBot User Stats"; break;
+        case '/ilp': title = "XRPTipBot ILP Stats"; break;
+        case '/info': title = "XRPTipBotStats Info"; break;
+        case '/settings': title = "XRPTipBotStats Settings"; break;
+        case '/terms': title = "XRPTipBotStats Terms"; break;
+        case '/privacy': title = "XRPTipBotStats Privacy"; break;
+        default: title = "XRPTipBot Stats"; break;
+      }
+
+      return title;
     }
 
     ngOnInit(){

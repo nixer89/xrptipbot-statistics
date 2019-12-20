@@ -20,8 +20,8 @@ export class SettingsDialogComponent implements OnInit {
                 private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit(){
-        this.titleService.setTitle("XRPTipBot Settings");
-        this.meta.updateTag({name: 'twitter:title', content: 'XRPTipBot Settings'});
+        this.titleService.setTitle("XRPTipBotStats Settings");
+        this.meta.updateTag({name: 'twitter:title', content: 'XRPTipBotStats Settings'});
         this.meta.updateTag({name: 'twitter:image', content: 'https://xrptipbot-stats.com/assets/XRPTipBotStats_Wallpaper.png'});
         //load data from storage
         this.excludeBots = this.localStorage.get("excludeBots") || false;
