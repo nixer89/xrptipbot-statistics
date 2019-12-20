@@ -15,7 +15,6 @@ export const routes:Routes = [
     {path: 'feed', component: FeedComponent},
     {path: 'overallstatistics', component: OverallStatisticsComponent},
     {path: 'userstatistics', component: UserStatisticsComponent},
-    {path: 'userstatistics', component: UserStatisticsComponent},
     {path: 'ilp', component: ILPStatisticsComponent},
     {path: 'info', component: InfoComponent},
     {path: 'terms', component: TermsComponent},
