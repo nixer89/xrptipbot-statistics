@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
       this.router.events.subscribe(event => {
         if(event instanceof NavigationEnd) {
             let path = (event.urlAfterRedirects.includes('?') ? event.urlAfterRedirects.substring(0, event.urlAfterRedirects.indexOf('?')) : event.urlAfterRedirects);
-            gtag('config', 'UA-154868577-1', 
+            gtag('config', 'UA-154892282-1', 
                   {
                     'page_title': this.getPageTitle(path),
                     'page_path': path
