@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Title, Meta } from '@angular/platform-browser';
+import{ GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "settings",
@@ -13,9 +14,10 @@ export class SettingsDialogComponent implements OnInit {
     excludeCoil: boolean;
     darkMode: boolean;
 
-    constructor(private localStorage: LocalStorageService,private titleService: Title, private meta: Meta) {
-
-    }
+    constructor(private localStorage: LocalStorageService,
+                private titleService: Title,
+                private meta: Meta,
+                private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit(){
         this.titleService.setTitle("XRPTipBot Settings");
@@ -30,14 +32,17 @@ export class SettingsDialogComponent implements OnInit {
 
     toogleBots(e:any) {
         this.localStorage.set("excludeBots", e.checked);
+        this.googleAnalytics.analyticsEventEmitter("toogleBots", "settings");
     }
 
     toogleCharities(e:any) {
         this.localStorage.set("excludeCharities", e.checked);
+        this.googleAnalytics.analyticsEventEmitter("toogleCharities", "settings");
     }
 
     toogleCoil(e:any) {
         this.localStorage.set("excludeCoil", e.checked);
+        this.googleAnalytics.analyticsEventEmitter("toogleCoil", "settings");
     }
 
     toogleDarkMode(e:any) {
@@ -52,5 +57,6 @@ export class SettingsDialogComponent implements OnInit {
         }
 
         this.localStorage.set("darkMode", e.checked);
+        this.googleAnalytics.analyticsEventEmitter("toogleDarkMode", "settings");
     }
 }

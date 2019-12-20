@@ -7,6 +7,7 @@ import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
 import { LocalStorageService } from 'angular-2-local-storage';
 import * as formatUtil from '../util/formattingUtil';
+import{ GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "dashboardOverall",
@@ -65,7 +66,8 @@ export class DashboardOverallComponent implements OnInit {
         private route: ActivatedRoute,
         private snackBar: MatSnackBar,
         private clipboard: ClipboardService,
-        private localStorage: LocalStorageService) {
+        private localStorage: LocalStorageService,
+        private googleAnalytics: GoogleAnalyticsService) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -118,8 +120,7 @@ export class DashboardOverallComponent implements OnInit {
                 this.excludeCharities = (excludeCharitiesParam == 'true');
                 this.excludeCoilSettlement = (excludeCoil == 'true');
 
-                
-                    
+                this.googleAnalytics.analyticsEventEmitter("direct_link", "overall");
             }
 
             this.refreshAll();
@@ -189,6 +190,7 @@ export class DashboardOverallComponent implements OnInit {
             this.initWithZeroValues();
         }
         this.processingStats = false;
+        this.googleAnalytics.analyticsEventEmitter("refresh_stats", "overall");
     }
 
     refreshChartWithTimeout() {
@@ -254,6 +256,7 @@ export class DashboardOverallComponent implements OnInit {
             }
         };
         this.processingChart=false;
+        this.googleAnalytics.analyticsEventEmitter("refresh_chart", "overall");
     }
 
     getChartTextSelection(): string {
@@ -349,6 +352,8 @@ export class DashboardOverallComponent implements OnInit {
             this.clipboard.copyFromContent(url+params.toString());
             this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
         }
+
+        this.googleAnalytics.analyticsEventEmitter("copy_link", "overall");
     }
 
     dateToLocaleStringEuropeTime(date: Date): string {

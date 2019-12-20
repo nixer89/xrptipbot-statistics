@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { Router } from '@angular/router';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { ApiService } from '../services/api.service';
 import { GeneralStatisticsService } from '../services/generalstatistics.service';
+import{ GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "userTable",
@@ -64,7 +64,10 @@ export class UserTableComponent {
     foundUserForward:string;
     hideLinks = false;
 
-    constructor(private api: ApiService, private generalStats: GeneralStatisticsService, private localStorage: LocalStorageService) {}
+    constructor(private api: ApiService,
+                private generalStats: GeneralStatisticsService,
+                private localStorage: LocalStorageService,
+                private googleAnalytics: GoogleAnalyticsService) {}
 
     isDiscordOrCoilNetwork(tipper:any) {
         return 'discord'===tipper.network || 'coil' === tipper.network || 'internal'===tipper.network;
@@ -120,6 +123,7 @@ export class UserTableComponent {
         this.overlayUsedTransactionFilter+=(this.isReceivingTips || this.isReceivingXRP ? "&user=": "&to=")+tipper['userName'];
         //console.log("filter: " + this.overlayUsedTransactionFilter);
         this.openOverlayTable = "true";
+        this.googleAnalytics.analyticsEventEmitter("open_transactions", "userTable");
     }
 
     async getAllTopTipperData(): Promise<any> {
@@ -150,6 +154,7 @@ export class UserTableComponent {
             this.openAllClicked = true;
             await this.getAllTopTipperData();
             this.openAllClicked = false;
+            this.googleAnalytics.analyticsEventEmitter("show_all_tippers", "userTable");
         }
     }
 

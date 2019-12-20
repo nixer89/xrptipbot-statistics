@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
 import * as formatUtil from '../util/formattingUtil';
+import{ GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "ilp",
@@ -36,10 +37,10 @@ export class ILPOverallComponent implements OnInit {
     topIlpReceivedCoil:any[] = [];
 
     constructor(private overAllStatistics: OverallStatisticsService,
-        private generalStatistics: GeneralStatisticsService,
         private route: ActivatedRoute,
         private snackBar: MatSnackBar,
-        private clipboard: ClipboardService) {
+        private clipboard: ClipboardService,
+        private googleAnalytics: GoogleAnalyticsService) {
 
         this.initWithZeroValues();        
     }
@@ -49,13 +50,15 @@ export class ILPOverallComponent implements OnInit {
         let toDateParam = this.route.snapshot.queryParamMap.get('to_date');
 
         if(fromDateParam && fromDateParam.trim().length>0 && Date.parse(fromDateParam)>0)
-                this.fromDate = new Date(fromDateParam);
+            this.fromDate = new Date(fromDateParam);
 
         if(toDateParam && toDateParam.trim().length>0 && Date.parse(toDateParam)>0)
             this.toDate = new Date(toDateParam)
 
-        if(this.fromDate && this.toDate)
+        if(this.fromDate && this.toDate) {
             this.useDateRange = true;
+            this.googleAnalytics.analyticsEventEmitter("direct_link", "ilp");
+        }
             
         await this.refreshAll();
     }
@@ -70,6 +73,7 @@ export class ILPOverallComponent implements OnInit {
         console.time("refreshAll");
         await this.refreshStats();
         console.timeEnd("refreshAll");
+        this.googleAnalytics.analyticsEventEmitter("refresh_ilp", "ilp");
     }
 
     fillData(index:number, filter:string, receivers:any[]) {
@@ -155,6 +159,8 @@ export class ILPOverallComponent implements OnInit {
             this.clipboard.copyFromContent(url+params.toString());
             this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
         }
+
+        this.googleAnalytics.analyticsEventEmitter("copy_link", "ilp");
     }
 
     dateToLocaleStringEuropeTime(date: Date): string {

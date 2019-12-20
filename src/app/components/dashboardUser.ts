@@ -8,6 +8,7 @@ import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
 import { LocalStorageService } from 'angular-2-local-storage';
 import * as formatUtil from '../util/formattingUtil';
+import{ GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "dashboardUser",
@@ -67,10 +68,10 @@ export class DashboardUserComponent implements OnInit {
                 private api: ApiService,
                 private generalStats: GeneralStatisticsService,
                 private route: ActivatedRoute,
-                private router: Router,
                 private snackBar: MatSnackBar,
                 private clipboard: ClipboardService,
-                private localStorage: LocalStorageService) {
+                private localStorage: LocalStorageService,
+                private googleAnalytics: GoogleAnalyticsService) {
 
         this.daysOrWeeksDropDown = [
             {label:'Days', value:1},
@@ -131,8 +132,10 @@ export class DashboardUserComponent implements OnInit {
                 this.excludeBots = (excludeBotsParam == 'true');
                 this.excludeCharities = (excludeCharitiesParam == 'true');
 
-                if(this.selectedUser)
+                if(this.selectedUser) {
                     this.refreshAll();
+                    this.googleAnalytics.analyticsEventEmitter("direct_link", "user", this.selectedUser.trim().toLowerCase()+'|'+this.selectedNetwork.trim().toLowerCase());
+                }
                     
             } else {
                 this.initWithZeroValues();        
@@ -158,7 +161,10 @@ export class DashboardUserComponent implements OnInit {
         if(Number.isInteger(this.daysToReceive)) {
             if(this.executionTimeoutChart) clearTimeout(this.executionTimeoutChart);
             
-            this.executionTimeoutChart = setTimeout(()=> this.refreshChart(),1000);
+            this.executionTimeoutChart = setTimeout(()=> {
+                this.refreshChart();
+                this.googleAnalytics.analyticsEventEmitter("refresh_chart_only", "user", this.foundUser.name.toLowerCase()+'|'+this.foundUser.network);
+            },1000);
         }
     }
 
@@ -191,6 +197,7 @@ export class DashboardUserComponent implements OnInit {
         if(this.selectedUser && this.selectedUser.trim().length>0 &&
             (!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
                 this.processingStats = true;
+                this.googleAnalytics.analyticsEventEmitter("search_user", "user", this.foundUser.name.toLowerCase()+'|'+this.foundUser.network);
                 console.time("callUserStatsApi")
                 let promises:any[] = []
                 promises.push(await this.userStatistics.getUserStats(this.useDateRange ? this.fromDate:null, this.useDateRange ? this.toDate:null, this.selectedNetwork, this.excludeBots, this.excludeCharities, false, this.selectedUser.trim(), this.foundUser ? this.foundUser.id : null));
@@ -410,18 +417,26 @@ export class DashboardUserComponent implements OnInit {
 
     openAllTransactionsClick(userStats: any) {
         let filter = "";
-        if(userStats.isDeposit)
+        if(userStats.isDeposit) {
             filter = "type=deposit";
-        else if(userStats.isWithdrawal)
+            this.googleAnalytics.analyticsEventEmitter("show_deposits", "user", this.foundUser.name.toLowerCase()+'|'+this.foundUser.network);
+        }
+        else if(userStats.isWithdrawal) {
             filter = "type=withdraw"
-        else
+            this.googleAnalytics.analyticsEventEmitter("show_withdrawals", "user", this.foundUser.name.toLowerCase()+'|'+this.foundUser.network);
+        }
+        else {
             filter = "type=tip";
+            if(userStats.isReceiving)
+                this.googleAnalytics.analyticsEventEmitter("show_received", "user", this.foundUser.name.toLowerCase()+'|'+this.foundUser.network);
+            else
+                this.googleAnalytics.analyticsEventEmitter("show_sent", "user", this.foundUser.name.toLowerCase()+'|'+this.foundUser.network);
+        }
         
         if(userStats.isReceiving)
             filter+= "&to="+this.foundUser.name+"&to_network="+this.foundUser.network;
         else
             filter+= "&user="+this.foundUser.name+"&user_network="+this.foundUser.network;
-
         
         this.openAllTransactions(filter);
     }
@@ -473,6 +488,8 @@ export class DashboardUserComponent implements OnInit {
             this.clipboard.copyFromContent(url+params.toString());
             this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
         }
+
+        this.googleAnalytics.analyticsEventEmitter("copy_link", "user", this.foundUser.name.toLowerCase()+'|'+this.foundUser.network);
     }
 
     dateToLocaleStringEuropeTime(date: Date): string {

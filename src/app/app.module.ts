@@ -76,7 +76,8 @@ import {AppService} from './services/app.service';
 import {ApiService} from './services/api.service';
 import {UserStatisticsService} from './services/userstatistics.service';
 import {OverallStatisticsService} from './services/overallstatistics.service';
-import {GeneralStatisticsService} from './services/generalstatistics.service'
+import {GeneralStatisticsService} from './services/generalstatistics.service';
+import {GoogleAnalyticsService} from './services/google-analytics.service';
 
 //Special
 import { ClipboardModule } from 'ngx-clipboard';
@@ -154,7 +155,7 @@ import { LocalStorageModule } from 'angular-2-local-storage';
     ClipboardModule,
     LocalStorageModule.forRoot({ prefix: 'xrptipbot-stats', storageType: 'localStorage' }),
   ],
-  providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService],
+  providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService, GoogleAnalyticsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import{ Router, NavigationEnd } from '@angular/router';
 import {LocalStorageService} from 'angular-2-local-storage'
+
+declare let gtag: Function;
 
 @Component({
   selector: 'app-root',
@@ -9,7 +12,17 @@ import {LocalStorageService} from 'angular-2-local-storage'
 export class AppComponent implements OnInit {
     title = 'XRPTipBot Statistics';
 
-    constructor(private localStorage: LocalStorageService) {}
+    constructor(private localStorage: LocalStorageService, private router: Router) {
+      this.router.events.subscribe(event => {
+        if(event instanceof NavigationEnd) {
+            gtag('config', 'UA-154868577-1', 
+                  {
+                    'page_path': (event.urlAfterRedirects.includes('?') ? event.urlAfterRedirects.substring(0, event.urlAfterRedirects.indexOf('?')) : event.urlAfterRedirects)
+                  }
+                );
+         }
+      });
+    }
 
     ngOnInit(){
       var bodyStyles = document.body.style;
