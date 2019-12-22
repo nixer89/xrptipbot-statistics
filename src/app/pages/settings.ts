@@ -32,17 +32,17 @@ export class SettingsDialogComponent implements OnInit {
 
     toogleBots(e:any) {
         this.localStorage.set("excludeBots", e.checked);
-        this.googleAnalytics.analyticsEventEmitter("toogleBots", "settings");
+        this.googleAnalytics.analyticsEventEmitter("toogleBots", "settings", "settings_toogleBots");
     }
 
     toogleCharities(e:any) {
         this.localStorage.set("excludeCharities", e.checked);
-        this.googleAnalytics.analyticsEventEmitter("toogleCharities", "settings");
+        this.googleAnalytics.analyticsEventEmitter("toogleCharities", "settings", "settings_toogleCharities");
     }
 
     toogleCoil(e:any) {
         this.localStorage.set("excludeCoil", e.checked);
-        this.googleAnalytics.analyticsEventEmitter("toogleCoil", "settings");
+        this.googleAnalytics.analyticsEventEmitter("toogleCoil", "settings", "settings_toogleCoil");
     }
 
     toogleDarkMode(e:any) {
@@ -57,6 +57,6 @@ export class SettingsDialogComponent implements OnInit {
         }
 
         this.localStorage.set("darkMode", e.checked);
-        this.googleAnalytics.analyticsEventEmitter("toogleDarkMode", "settings");
+        this.googleAnalytics.analyticsEventEmitter("toogleDarkMode", "settings", "settings_toogleDarkMode");
     }
 }

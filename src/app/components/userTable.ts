@@ -123,7 +123,7 @@ export class UserTableComponent {
         this.overlayUsedTransactionFilter+=(this.isReceivingTips || this.isReceivingXRP ? "&user=": "&to=")+tipper['userName'];
         //console.log("filter: " + this.overlayUsedTransactionFilter);
         this.openOverlayTable = "true";
-        this.googleAnalytics.analyticsEventEmitter("open_transactions", "userTable");
+        this.googleAnalytics.analyticsEventEmitter("open_transactions", "userTable", "userTable_open_transactions");
     }
 
     async getAllTopTipperData(): Promise<any> {
@@ -154,7 +154,7 @@ export class UserTableComponent {
             this.openAllClicked = true;
             await this.getAllTopTipperData();
             this.openAllClicked = false;
-            this.googleAnalytics.analyticsEventEmitter("show_all_tippers", "userTable");
+            this.googleAnalytics.analyticsEventEmitter("show_all_tippers", "userTable", "userTable_show_all_tippers");
         }
     }
 

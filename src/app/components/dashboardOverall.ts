@@ -120,7 +120,7 @@ export class DashboardOverallComponent implements OnInit {
                 this.excludeCharities = (excludeCharitiesParam == 'true');
                 this.excludeCoilSettlement = (excludeCoil == 'true');
 
-                this.googleAnalytics.analyticsEventEmitter("direct_link", "overall");
+                this.googleAnalytics.analyticsEventEmitter("direct_link", "overall", "overall_direct_link");
             }
 
             this.refreshAll();
@@ -190,7 +190,7 @@ export class DashboardOverallComponent implements OnInit {
             this.initWithZeroValues();
         }
         this.processingStats = false;
-        this.googleAnalytics.analyticsEventEmitter("refresh_stats", "overall");
+        this.googleAnalytics.analyticsEventEmitter("refresh_stats", "overall", "overall_refresh_stats");
     }
 
     refreshChartWithTimeout() {
@@ -256,7 +256,7 @@ export class DashboardOverallComponent implements OnInit {
             }
         };
         this.processingChart=false;
-        this.googleAnalytics.analyticsEventEmitter("refresh_chart", "overall");
+        this.googleAnalytics.analyticsEventEmitter("refresh_chart", "overall", "overall_refresh_chart");
     }
 
     getChartTextSelection(): string {
@@ -353,7 +353,7 @@ export class DashboardOverallComponent implements OnInit {
             this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
         }
 
-        this.googleAnalytics.analyticsEventEmitter("copy_link", "overall");
+        this.googleAnalytics.analyticsEventEmitter("copy_link", "overall", "overall_copy_link");
     }
 
     dateToLocaleStringEuropeTime(date: Date): string {

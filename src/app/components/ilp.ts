@@ -57,7 +57,7 @@ export class ILPOverallComponent implements OnInit {
 
         if(this.fromDate && this.toDate) {
             this.useDateRange = true;
-            this.googleAnalytics.analyticsEventEmitter("direct_link", "ilp");
+            this.googleAnalytics.analyticsEventEmitter("direct_link", "ilp", "ilp_direct_link");
         }
             
         await this.refreshAll();
@@ -73,7 +73,7 @@ export class ILPOverallComponent implements OnInit {
         console.time("refreshAll");
         await this.refreshStats();
         console.timeEnd("refreshAll");
-        this.googleAnalytics.analyticsEventEmitter("refresh_ilp", "ilp");
+        this.googleAnalytics.analyticsEventEmitter("refresh_ilp", "ilp", "ilp_refresh_ilp");
     }
 
     fillData(index:number, filter:string, receivers:any[]) {
@@ -160,7 +160,7 @@ export class ILPOverallComponent implements OnInit {
             this.snackBar.open("The link to this statistics page has been copied to your clipboard.", null, {duration: 3000});
         }
 
-        this.googleAnalytics.analyticsEventEmitter("copy_link", "ilp");
+        this.googleAnalytics.analyticsEventEmitter("copy_link", "ilp", "ilp_copy_link");
     }
 
     dateToLocaleStringEuropeTime(date: Date): string {

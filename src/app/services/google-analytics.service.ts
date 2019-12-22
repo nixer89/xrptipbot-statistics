@@ -9,7 +9,7 @@ export class GoogleAnalyticsService {
 
   constructor() { }
 
-  public analyticsEventEmitter(eventAction: string, eventCategory: string, eventLabel: string = null,  eventValue: number = null ) { 
+  public analyticsEventEmitter(eventAction: string, eventCategory: string, eventLabel: string,  eventValue: number = null ) { 
          gtag('event', eventAction, { 
                  event_category: eventCategory, 
                  event_label: eventLabel, 
