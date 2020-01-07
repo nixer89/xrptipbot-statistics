@@ -313,4 +313,8 @@ export class ApiService {
             return "";
         }
     }
+
+    async isApiReachable(): Promise<boolean> {
+        return this.app.isAvailable(this.baseUrlToUse);        
+    }
 }

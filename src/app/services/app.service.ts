@@ -1,4 +1,4 @@
-import { Injectable }    from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders} from "@angular/common/http";
 import { Observable } from 'rxjs';
 
@@ -32,6 +32,10 @@ export class AppService {
 
     delete(url): Promise<any>  {
         return this.handleResponse(this.http.delete(url, this.requestOptions()));
+    }
+
+    isAvailable(url): Promise<any> {
+        return this.handleResponse(this.http.get(url, {responseType: "text"}));
     }
 
     private handleError(error: any): Promise<any> {

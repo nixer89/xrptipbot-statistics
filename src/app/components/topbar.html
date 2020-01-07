@@ -35,3 +35,6 @@
         </div>
     </mat-toolbar>
 </nav>
+<div *ngIf="!isApiReachable" style="background-color: darkred; color: white; text-align: center;">
+    Backend currently not reachable. Please try again later or contact @nixerFFM on Twitter.
+</div>
