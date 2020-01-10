@@ -36,14 +36,19 @@
     </ng-template>
     <ng-template pTemplate="body" let-data>
         <tr style="white-space: nowrap;">
+            <!-- DATE -->
             <td style="text-align: center">{{formatStringDate(data.momentAsDate)}}</td>
+            <!-- TYPE -->
             <td style="text-align: center">{{data.type}}</td>
+            <!-- AMOUNT-->
             <td style="text-align: center">{{data.xrp}}</td>
+            <!-- FROM -->
             <td style="text-align: left;">
                 <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.user, network: data.user_network}" (click)="close()">{{getUserNameFrom(data)}} </a>
                 <a *ngIf="!isDiscordOrCoilNetwork(data.user_network)" target="_blank" rel="noreferrer" href="{{getNetworkURLFrom(data)}}" aria-label="Open social media account"><img src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network"></a>
                 <img *ngIf="isDiscordOrCoilNetwork(data.user_network)" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network">
             </td>
+            <!-- TO -->
             <td style="text-align: left">
                 <div *ngIf="data.type === 'tip'">
                     <a [routerLink]="['/userstatistics']" [queryParams]="{user: data.to, network: data.to_network}" (click)="close()">{{getUserNameTo(data)}} </a>
@@ -51,11 +56,16 @@
                     <img *ngIf="isDiscordOrCoilNetwork(data.to_network)" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Social Network">
                 </div>
             </td>
+            <!-- TIP NETWORK -->
             <td *ngIf="data.network === 'app' || data.network === 'btn'" style="text-align: center"><i class="material-icons">{{getIconName(data.network)}}</i></td>
             <td *ngIf="data.network != 'app' && data.network != 'btn'" style="text-align: center"><img src="../../assets/networks/{{resolveIconName(data.network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Tip Network"></td>
+            <!-- USER NETWORK -->
             <td style="text-align: center"><img *ngIf="data.type != 'deposit' && data.type != 'withdraw' && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="User Network"></td>
+            <!-- TO NETWORK -->
             <td style="text-align: center"><img *ngIf="data.to_network && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="To Network"></td>
-            <td *ngIf="(data.network != 'twitter' && data.network != 'reddit' && data.network != 'btn') || data.type != 'tip'" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
+            <!-- CONTEXT -->
+            <td *ngIf="(data.network != 'twitter' && data.network != 'reddit' && data.network != 'btn') || (data.type != 'tip' && data.type != 'withdraw')" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
+            <td *ngIf="data.type === 'withdraw'" style="text-align: center">{{getEscrowExecutionTime(data.context)}}</td>
             <td *ngIf="data.network === 'btn' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="{{shortenContext(data.network,data.context)}}" aria-label="Open website">{{shortenContext(data.network,data.context)}}</a></td>
             <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="https://twitter.com{{data.context}}" aria-label="Open tweet">{{data.context}}</a></td>
             <td *ngIf="data.network === 'reddit' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="https://reddit.com{{data.context}}" aria-label="Open reddit post">{{data.context}}</a></td>

@@ -32,14 +32,18 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
 
     constructor(private api: ApiService, private localStorage: LocalStorageService) {}
 
-    async ngOnInit() {
+    async loadData() {
+        this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
+    }
+
+    ngOnInit() {
         //console.log("transactionTable ngOnInit()");
         //console.log("getting transactions");
-        this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
+        this.loadData();
         //console.log("got data: " + this.data.length);
         if(this.useInterval) {
             this.interval = setInterval(async () => {
-                this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
+                this.loadData();
             }, 60000);
         }
     }
@@ -97,7 +101,7 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
     }
 
     formatStringDate(date:string) {
-        return formatUtil.dateToStringEuropeForLocale(formatUtil.initializeStringDateAsGMT1(date));
+        return formatUtil.dateToStringEuropeForLocale(new Date(date));
     }
 
     shortenContext(network:string, context: string) {
@@ -117,16 +121,31 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
 
     getUserNameFrom(tipper:any): string {
         if(tipper.user_network && ( tipper.user_network === 'coil' || tipper.user_network === 'internal'))
-            return tipper.user.substring(0,21)+'...';
+            return tipper.user.substring(0,21)+'…';
         else
             return tipper.user;
     }
 
     getUserNameTo(tipper:any): string {
         if(tipper.to_network && ( tipper.to_network === 'coil' || tipper.to_network === 'internal'))
-            return tipper.to.substring(0,21)+'...';
+            return tipper.to.substring(0,21)+'…';
         else
             return tipper.to;
+    }
+
+    getEscrowExecutionTime(escrowFinishAfter: string): string {
+        try {
+            if(escrowFinishAfter && escrowFinishAfter.trim().length>0 && !isNaN(parseInt(escrowFinishAfter))) {
+                let escrowDate:Date = new Date(0);
+                escrowDate.setSeconds(escrowDate.getSeconds()+946684800)//ripple Epoch in miliseconds
+                escrowDate.setSeconds(escrowDate.getSeconds()+parseInt(escrowFinishAfter)); //calculate escrowFinishAfter time
+                return "EscrowFinish after: " +escrowDate.toUTCString();
+            } else {
+                return escrowFinishAfter;
+            }
+        } catch(err) {
+            return (escrowFinishAfter ? escrowFinishAfter : "");
+        }
     }
 
     close() {
