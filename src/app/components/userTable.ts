@@ -175,9 +175,9 @@ export class UserTableComponent {
             return tipper.userName.substring(0,tipper.userName.lastIndexOf('_')+1) + ' ' + tipper.userName.substring(tipper.userName.lastIndexOf('_')+1)
         else if(tipper.network && ( tipper.network === 'coil' || tipper.network === 'internal')) {
             if(this.isILP)
-                return tipper.userName.substring(0,21)+'...';
+                return tipper.userName.substring(0,21)+'…';
             else
-                return tipper.userName.substring(0,10)+'...';
+                return tipper.userName.substring(0,10)+'…';
         }
             
         else
