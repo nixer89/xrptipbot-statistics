@@ -112,10 +112,13 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
     }
 
     shortenContext(network:string, context: string) {
-        if('btn'===network)
-            return context.substring(0,context.indexOf(' '));
-        else
-            return context;
+        if(context) {
+            if('btn'===network)
+                return context.substring(0,context.indexOf(' '));
+            else
+                return context;
+        } else
+            return "";
     }
 
     getIconName(network: string) {

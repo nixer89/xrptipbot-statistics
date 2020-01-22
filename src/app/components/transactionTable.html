@@ -66,14 +66,14 @@
                 </div>
             </td>
             <!-- TIP NETWORK -->
-            <td *ngIf="data.network === 'app' || data.network === 'btn'" style="text-align: center"><i class="material-icons">{{getIconName(data.network)}}</i></td>
+            <td *ngIf="data.network === 'app' || data.network === 'btn' || data.network === 'internal'" style="text-align: center"><i class="material-icons">{{getIconName(data.network)}}</i></td>
             <td *ngIf="data.network != 'app' && data.network != 'btn'" style="text-align: center"><img src="../../assets/networks/{{resolveIconName(data.network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="Tip Network"></td>
             <!-- USER NETWORK -->
             <td style="text-align: center"><img *ngIf="data.type != 'deposit' && data.type != 'withdraw' && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.user_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="User Network"></td>
             <!-- TO NETWORK -->
             <td style="text-align: center"><img *ngIf="data.to_network && (data.network === 'app' || data.network === 'btn')" src="../../assets/networks/{{resolveIconName(data.to_network)}}.png" width="20" height="20" style="vertical-align: middle;" alt="To Network"></td>
             <!-- CONTEXT -->
-            <td *ngIf="(data.network != 'twitter' && data.network != 'reddit' && data.network != 'btn') || (data.type != 'tip' && data.type != 'withdraw')" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
+            <td *ngIf="(data.network != 'twitter' && data.network != 'reddit' && data.network != 'btn' && data.type != 'withdraw')" style="text-align: center">{{shortenContext(data.network,data.context)}}</td>
             <td *ngIf="data.type === 'withdraw'" style="text-align: center">{{getEscrowExecutionTime(data.context)}}</td>
             <td *ngIf="data.network === 'btn' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="{{shortenContext(data.network,data.context)}}" aria-label="Open website">{{shortenContext(data.network,data.context)}}</a></td>
             <td *ngIf="data.network === 'twitter' && data.type === 'tip'" style="text-align: center"><a target="_blank" rel="noreferrer" href="https://twitter.com{{data.context}}" aria-label="Open tweet">{{data.context}}</a></td>

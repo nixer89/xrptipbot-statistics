@@ -27,7 +27,8 @@
               "src/styles.css"
             ],
             "scripts": [
-              "./node_modules/chart.js/dist/Chart.js"
+              "./node_modules/chart.js/dist/Chart.js",
+              "./node_modules/quill/dist/quill.js"
             ]
           },
           "configurations": {
@@ -50,8 +51,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "10mb"
                 }
               ]
             }
