@@ -7,7 +7,7 @@ export function dateToStringEuropeForLocale(dateToFormat: Date): string {
 }
 
 export function dateToStringEuropeForAPI(dateToFormat: Date): string {
-    return dateToFormat.toLocaleString("en-US", {timeZone: 'Europe/Berlin'} );
+    return dateToFormat.toUTCString();
 }
 
 export function initializeDateAsGMT1(date: Date): Date {    

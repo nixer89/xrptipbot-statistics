@@ -29,11 +29,18 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
 
     data:any[];
     interval:NodeJS.Timeout;
+    typeDropDown = [
+        {label:'all', value:'*'},
+        {label:'tip', value:'tip'},
+        {label:'deposit', value:'deposit'},
+        {label:'withdraw', value:'withdraw'},
+    ];
+    selectedTrxType = '*';
 
     constructor(private api: ApiService, private localStorage: LocalStorageService) {}
 
     async loadData() {
-        this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim());
+        this.data = await this.api.callTipBotStandarizedFeedApi(this.transactionFilter.trim()+(this.selectedTrxType!='*' ? "&type="+this.selectedTrxType:""));
     }
 
     ngOnInit() {

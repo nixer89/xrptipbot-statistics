@@ -5,7 +5,16 @@
             <th *ngIf="enableSort" [pSortableColumn]="'momentAsDate'">Date (GMT+1)<p-sortIcon [field]="'momentAsDate'"></p-sortIcon>
             </th>
             <th *ngIf="!enableSort">Date (GMT+1)</th>
-            <th>Type</th>
+            <th>
+                <div>
+                    <div>
+                        Type
+                    </div>
+                    <div *ngIf="useInterval" style="font-size:0.5em;">
+                        <p-dropdown [options]="typeDropDown" [(ngModel)]="selectedTrxType" (onChange)="loadData()"></p-dropdown>
+                    </div>
+                </div>
+            </th>
             <th *ngIf="enableSort" [pSortableColumn]="'xrp'">XRP<p-sortIcon [field]="'xrp'"></p-sortIcon></th>
             <th *ngIf="!enableSort">XRP</th>
             <th>
@@ -14,7 +23,7 @@
                         From
                     </div>
                     <div style="font-size:0.8em;">
-                        Filter:&nbsp;<input aria-label="From" style="height: 2em; width: 60%;" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
+                        <input aria-label="From" pInputText type="text" (input)="dt.filter($event.target.value, 'user', 'contains')">
                     </div>
                 </div>
             </th>
@@ -24,7 +33,7 @@
                         To
                     </div>
                     <div style="font-size:0.8em;">
-                        Filter:&nbsp;<input aria-label="To" style="height: 2em;width:60%" pInputText type="text" (input)="dt.filter($event.target.value, 'to', 'contains')">
+                        <input aria-label="To" pInputText type="text" (input)="dt.filter($event.target.value, 'to', 'contains')">
                     </div>
                 </div>
             </th>
