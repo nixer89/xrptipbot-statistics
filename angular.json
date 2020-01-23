@@ -21,7 +21,9 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/.htaccess"
+              "src/.htaccess",
+              "src/manifest.json",
+              "src/robots.txt"
             ],
             "styles": [
               "src/styles.css"
@@ -54,7 +56,9 @@
                   "maximumWarning": "4mb",
                   "maximumError": "10mb"
                 }
-              ]
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "src/ngsw-config.json"
             }
           }
         },
@@ -91,7 +95,9 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/.htaccess"
+              "src/.htaccess",
+              "src/manifest.json",
+              "src/robots.txt"
             ]
           }
         },

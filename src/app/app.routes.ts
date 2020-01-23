@@ -11,7 +11,7 @@ import {ILPStatisticsComponent} from './pages/ilpstatistics'
 import {SettingsDialogComponent} from './pages/settings';
 
 export const routes:Routes = [
-    {path: '', redirectTo: 'feed', pathMatch: 'full'},
+    {path: '', component: FeedComponent},
     {path: 'feed', component: FeedComponent},
     {path: 'overallstatistics', component: OverallStatisticsComponent},
     {path: 'userstatistics', component: UserStatisticsComponent},
@@ -20,7 +20,6 @@ export const routes:Routes = [
     {path: 'terms', component: TermsComponent},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'settings', component: SettingsDialogComponent},
-    {path: '**', component: FeedComponent}
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

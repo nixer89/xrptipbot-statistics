@@ -15,18 +15,32 @@
   <meta name="Description" content="Statistics page for the @xrptipbot.">
 
   <meta name="viewport" content="width=1680, initial-scale=1">
-  <meta name="monetization" content="$twitter.xrptipbot.com/XRPTipBotStats">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link id="themeAsset" href="./assets/themes/luna-amber/theme.css" rel="stylesheet">
-  <link rel="preload" href="./assets/themes/nova-light/theme.css" as="style">
-  <link rel="icon" type="image/png" size="32x32" href="./assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" size="16x16" href="./assets/favicon-16x16.png">
+  <link id="themeAsset" href="assets/themes/luna-amber/theme.css" rel="stylesheet">
+  <link rel="preload" href="assets/themes/luna-amber/theme.css" as="style">
+  <link rel="icon" type="image/png" size="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" size="32x32" href="assets/favicon-32x32.png">
+  <!-- PWA Settings START -->
+  <meta name="theme-color" content="#1744A1"/>
+  <link rel="manifest" href="manifest.json">
+  <!-- PWA Settings END -->
+  <!-- iOS specific PWA Icons -->
+  <link rel="mask-icon" href="assets/icons/iOS/safari-pinned-tab.svg" color="#2e7d32">
+  <link rel="apple-touch-icon" sizes="60x60" href="assets/icons/iOS/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/icons/iOS/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/icons/iOS/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/iOS/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/iOS/apple-touch-icon-180x180.png">
+  <!-- iOS specific PWA Icons END -->
+  <!-- COIL START -->
+  <meta name="monetization" content="$twitter.xrptipbot.com/XRPTipBotStats">
   <script src="https://cdn.coil.com/counter.js"></script>
   <script>
     if(window && window.WebMonetizationScripts) {
         window.WebMonetizationScripts.createCounter();
     }
   </script>
+  <!-- COIL END -->
   <!-- Twitter stuff to show the website nicely! -->
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:site" content="@XRPTipBotStats" />
@@ -38,5 +52,6 @@
 </head>
 <body>
   <app-root></app-root>
+  <noscript>Please enable JavaScript to use this application.</noscript>
 </body>
 </html>

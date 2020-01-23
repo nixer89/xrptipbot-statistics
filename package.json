@@ -1,11 +1,11 @@
 {
   "name": "xrptipbot-statistics",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
     "build": "ng build --prod",
-    "upload": "ng build --prod & aws s3 --profile myevride cp ./dist/xrptipbot-statistics s3://xrptipbot-stats.com/ --recursive --include '*' --acl public-read --cache-control public,max-age=86400,no-transform",
+    "upload": "ng build --prod & aws s3 --profile myevride cp ./dist/xrptipbot-statistics s3://xrptipbot-stats.com/ --recursive --include '*' --acl public-read --cache-control public,max-age=8640000,no-transform",
     "invalidate": "aws cloudfront --profile myevride create-invalidation --distribution-id ED6BIEU9FCXD7 --paths /*",
     "test": "ng test",
     "lint": "ng lint",
@@ -22,7 +22,9 @@
     "@angular/material": "^8.2.3",
     "@angular/platform-browser": "^8.2.14",
     "@angular/platform-browser-dynamic": "^8.2.14",
+    "@angular/pwa": "^0.803.23",
     "@angular/router": "^8.2.14",
+    "@angular/service-worker": "^8.2.14",
     "angular-2-local-storage": "^3.0.2",
     "chart.js": "^2.9.3",
     "core-js": "^2.6.11",

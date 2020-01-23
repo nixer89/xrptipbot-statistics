@@ -3,6 +3,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule}    from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
 //import {LocationStrategy,HashLocationStrategy} from '@angular/common';
 import {AppRoutes} from './app.routes';
 
@@ -69,6 +70,7 @@ import {UserStatisticsComponent} from './pages/userstatistics';
 import {OverallStatisticsComponent} from './pages/overallstatistics';
 import {FeedComponent} from './pages/feed';
 import {ILPStatisticsComponent} from './pages/ilpstatistics';
+import {environment} from '../environments/environment';
 
 //my services
 import {AppService} from './services/app.service';
@@ -152,6 +154,8 @@ import { LocalStorageModule } from 'angular-2-local-storage';
     TooltipModule,
     ClipboardModule,
     LocalStorageModule.forRoot({ prefix: 'xrptipbot-stats', storageType: 'localStorage' }),
+    //special
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService, GoogleAnalyticsService],
   bootstrap: [AppComponent]

@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
       let title = "XRPTipBotStats";
 
       switch(page_path) {
-        case '/feed': title = "XRPTipBot Feed"; break;
+        case'': case '/': title = "XRPTipBot Feed"; break;
         case '/overallstatistics': title = "XRPTipBot OverallStats"; break;
         case '/userstatistics': title = "XRPTipBot User Stats"; break;
         case '/ilp': title = "XRPTipBot ILP Stats"; break;
@@ -54,5 +54,8 @@ export class AppComponent implements OnInit {
           bodyStyles.setProperty('--background-color', '#f7f7f7');
           document.getElementById('themeAsset').setAttribute('href','./assets/themes/nova-light/theme.css');
       }
+
+      // always scroll to the top of the page on route change:
+      this.router.events.subscribe(e => e instanceof NavigationEnd ? window.scrollTo(0,0) : null);
     }
 }
