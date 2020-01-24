@@ -1,6 +1,6 @@
 {
-  "name": "XRPTipBot-Statistics-Page",
-  "short_name": "XRPTipBot-Stats",
+  "name": "XRPTipBot Statistics",
+  "short_name": "XRPTip Stats",
   "theme_color": "#1744A1",
   "background_color": "#222222",
   "display": "standalone",

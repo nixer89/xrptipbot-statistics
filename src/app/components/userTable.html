@@ -1,5 +1,5 @@
 <h3>{{headline}}
-    <a *ngIf="showAllButton && data.length>0" pTooltip="Full list" tooltipPosition="top" style="cursor: pointer;" (click)="openAllTopTipper()">
+    <a *ngIf="showAllButton && data.length>0" pTooltip="Full list" tooltipPosition="top" [tooltipDisabled]="openAllClicked" style="cursor: pointer;" (click)="openAllTopTipper()">
         <i *ngIf="!openAllClicked" class="material-icons">vertical_align_bottom</i>
         <p-progressSpinner *ngIf="openAllClicked" [style]="{width: '24px', height: '24px'}"></p-progressSpinner>
     </a>

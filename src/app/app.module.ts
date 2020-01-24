@@ -1,6 +1,6 @@
-import {NgModule}      from '@angular/core';
+import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule}    from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -51,8 +51,8 @@ import {TooltipModule} from 'primeng/tooltip';
 
 //App
 import {AppComponent} from './app.component';
-import {AppTopbarComponent}  from './components/topbar';
-import {AppFooterComponent}  from './components/footer';
+import {AppTopbarComponent} from './components/topbar';
+import {AppFooterComponent} from './components/footer';
 import {DashboardUserComponent} from './components/dashboardUser';
 import {DashboardOverallComponent} from './components/dashboardOverall';
 import {UserTableComponent} from './components/userTable';
@@ -155,9 +155,16 @@ import { LocalStorageModule } from 'angular-2-local-storage';
     ClipboardModule,
     LocalStorageModule.forRoot({ prefix: 'xrptipbot-stats', storageType: 'localStorage' }),
     //special
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
   ],
-  providers: [AppService,ApiService,UserStatisticsService,OverallStatisticsService,GeneralStatisticsService, GoogleAnalyticsService],
+  providers: [
+    AppService,
+    ApiService,
+    UserStatisticsService,
+    OverallStatisticsService,
+    GeneralStatisticsService,
+    GoogleAnalyticsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
