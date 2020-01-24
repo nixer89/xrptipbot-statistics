@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-@import "~font-awesome/css/font-awesome.min.css";
 @import '~primeicons/primeicons.css';
 @import "~primeng/resources/primeng.min.css";
 
@@ -24,7 +23,7 @@ body .ui-messages {
 }
 
 body .ui-table .ui-table-tbody > tr.ui-state-highlight, body .ui-table .ui-table-tbody > tr:nth-child(even).ui-state-highlight {
-    background-color: #2E7D32;
+    background-color: #1744A1;
 }
 
 body .ui-widget-content p {
