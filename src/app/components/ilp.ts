@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { GeneralStatisticsService } from '../services/generalstatistics.service'
 import { OverallStatisticsService } from '../services/overallstatistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -7,6 +6,8 @@ import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
 import * as formatUtil from '../util/formattingUtil';
 import{ GoogleAnalyticsService } from '../services/google-analytics.service';
+import { LocalStorageService } from 'angular-2-local-storage';
+import * as io from 'socket.io-client';
 
 @Component({
     selector: "ilp",
@@ -61,6 +62,7 @@ export class ILPOverallComponent implements OnInit {
         }
             
         await this.refreshAll();
+        
     }
 
     refreshStatsWithTimeout() {
