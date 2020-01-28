@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { OverallStatisticsService } from '../services/overallstatistics.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -6,14 +6,15 @@ import { HttpParams } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard'
 import * as formatUtil from '../util/formattingUtil';
 import{ GoogleAnalyticsService } from '../services/google-analytics.service';
-import { LocalStorageService } from 'angular-2-local-storage';
-import * as io from 'socket.io-client';
 
 @Component({
     selector: "ilp",
     templateUrl: "ilp.html"
 })
 export class ILPOverallComponent implements OnInit {
+
+    @Input()
+    allowedToLoad:boolean;
 
     //stats
     executionTimeoutStats;
@@ -62,7 +63,7 @@ export class ILPOverallComponent implements OnInit {
         }
             
         await this.refreshAll();
-        
+
     }
 
     refreshStatsWithTimeout() {
@@ -88,35 +89,37 @@ export class ILPOverallComponent implements OnInit {
     }
 
     async refreshStats() {
-        this.processingStats = true;
-        if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
-            
-            let allReceivers = await this.overAllStatistics.getOverallStatsILP(this.useDateRange ? this.fromDate : null, this.useDateRange ? this.toDate : null);
+        if(this.allowedToLoad) {
+            this.processingStats = true;
+            if((!this.useDateRange || (this.useDateRange && this.fromDate && this.toDate && this.fromDate <= this.toDate))) {
+                
+                let allReceivers = await this.overAllStatistics.getOverallStatsILP(this.useDateRange ? this.fromDate : null, this.useDateRange ? this.toDate : null);
 
-            if(allReceivers) {
+                if(allReceivers) {
 
-                let overallReceived = 0;
-                allReceivers.forEach(user => overallReceived+=user.amount);
+                    let overallReceived = 0;
+                    allReceivers.forEach(user => overallReceived+=user.amount);
 
-                this.overallStats[0].xrp = (overallReceived/1000000).toFixed(3);
-                this.overallStats[0].count = allReceivers.length;
+                    this.overallStats[0].xrp = (overallReceived/1000000).toFixed(3);
+                    this.overallStats[0].count = allReceivers.length;
 
-                this.fillData(1, 'twitter', allReceivers);
-                this.fillData(2, 'coil', allReceivers);
-                this.fillData(3, 'reddit', allReceivers);
-                this.fillData(4, 'discord', allReceivers);
+                    this.fillData(1, 'twitter', allReceivers);
+                    this.fillData(2, 'coil', allReceivers);
+                    this.fillData(3, 'reddit', allReceivers);
+                    this.fillData(4, 'discord', allReceivers);
 
-                allReceivers = this.changeDropsToXrp(allReceivers);
-                this.topIlpReceived = allReceivers.slice(0,9);
-                this.topIlpReceivedCoil = allReceivers.filter(user => user.network === 'coil' && user.amount > 0).slice(0,9);
-                this.topIlpReceivedDiscord = allReceivers.filter(user => user.network === 'discord' && user.amount > 0).slice(0,9);
-                this.topIlpReceivedReddit = allReceivers.filter(user => user.network === 'reddit' && user.amount > 0).slice(0,9);
-                this.topIlpReceivedTwitter = allReceivers.filter(user => user.network === 'twitter' && user.amount > 0).slice(0,9);
+                    allReceivers = this.changeDropsToXrp(allReceivers);
+                    this.topIlpReceived = allReceivers.slice(0,9);
+                    this.topIlpReceivedCoil = allReceivers.filter(user => user.network === 'coil' && user.amount > 0).slice(0,9);
+                    this.topIlpReceivedDiscord = allReceivers.filter(user => user.network === 'discord' && user.amount > 0).slice(0,9);
+                    this.topIlpReceivedReddit = allReceivers.filter(user => user.network === 'reddit' && user.amount > 0).slice(0,9);
+                    this.topIlpReceivedTwitter = allReceivers.filter(user => user.network === 'twitter' && user.amount > 0).slice(0,9);
+                }
+            } else {
+                this.initWithZeroValues();
             }
-        } else {
-            this.initWithZeroValues();
+            this.processingStats = false;
         }
-        this.processingStats = false;
     }
 
     changeDropsToXrp(tipper:any[]): any[] {
@@ -167,5 +170,11 @@ export class ILPOverallComponent implements OnInit {
 
     dateToLocaleStringEuropeTime(date: Date): string {
         return formatUtil.dateToStringEuropeForLocale(date) + " GMT+1";
+    }
+
+    userPaid() {
+        console.log("userPaid");
+        this.allowedToLoad = true;
+        this.refreshAll();
     }
 }

@@ -1,3 +1,62 @@
-<p-dialog [style]="{width: '90%', height: '90%'}" [(visible)]="transactionFilter" [modal]="true" (onHide)="cleanup()">
-    
+<p-dialog [style]="{width: '70%', height: '70%'}" [visible]="showDialog" [modal]="true" [closable]="false" (onHide)="closed()">
+    <p-header style="color: orange">
+        This is just a Proof of Conecpt! #Xumm is still in beta and not available for everyone!
+    </p-header>
+    <div class="ui-g-12">
+        <p-card>
+            <div class="floatcenter">
+                <h3>Hello there!<br/><br/>To view the underlying ILP statistics page, please support this project with a small tip via #Xumm<br/><br/></h3>
+            </div>
+            <div *ngIf="!showError && !waitingForPayment">
+                <div class="floatleft" style="width: 48%;">
+                    <div class="floatright">
+                        <button mat-button pTooltip="Support xrptipbot-stats.com via Xumm" tooltipPosition="left" (click)="supportViaXumm()" style="padding:0px;">
+                            <img src="../../assets/xumm.png" width="120" height="30" style="vertical-align: middle;" alt="Xumm payment">
+                        </button>
+                    </div>
+                </div>
+                <div class="floatright" style="width: 48%;">
+                    <div class="floatleft">
+                        <button mat-button pTooltip="Do not support xrptipbot-stats.com" tooltipPosition="right" (click)="closed()" style="width: 120; height: 30;">
+                            <b>No, I don't want! </b>
+                            <i class="material-icons" style="color: red">
+                                cancel
+                            </i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!showError && waitingForPayment" class="floatcenter">
+                <div *ngIf="qrLink">
+                    <div>
+                        Scan QR code or wait for push notification:
+                    </div>
+                    <br/>
+                    <img [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="Xumm QR">
+                    <br/><br/>
+                </div>
+                <div style="height: 55px; display:flex; align-items: center;">
+                    <div>
+                        Waiting for transaction confirmation...&nbsp;
+                    </div>
+                    <p-progressSpinner [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
+                </div>
+            </div>
+            <div *ngIf="showError && !waitingForPayment" class="floatcenter">
+                <div *ngIf="!requestExpired" style="color: red;">
+                    Sorry, your transaction could not be verfied. Please reload the page and try again!
+                </div>
+                <div *ngIf="requestExpired" style="color: red;">
+                    Sorry, your request has been expired. Please reload the page and try again!
+                </div>
+                <button mat-button pTooltip="Close" tooltipPosition="right" (click)="closed()" style="width: 120; height: 30;">
+                    <b>Close </b>
+                    <i class="material-icons">
+                        cancel
+                    </i>
+                </button>
+            </div>
+
+        </p-card>
+    </div>
 </p-dialog>
