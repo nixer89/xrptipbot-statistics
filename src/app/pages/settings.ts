@@ -27,7 +27,7 @@ export class SettingsDialogComponent implements OnInit {
         this.excludeBots = this.localStorage.get("excludeBots") || false;
         this.excludeCharities = this.localStorage.get("excludeCharities") || false;
         this.excludeCoil = this.localStorage.get("excludeCoil") || false;
-        this.darkMode = this.localStorage.get("darkMode") || false;
+        this.darkMode = this.localStorage.get("darkMode") === null || this.localStorage.get("darkMode") === true;
     }
 
     toogleBots(e:any) {

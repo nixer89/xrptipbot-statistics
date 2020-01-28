@@ -46,13 +46,13 @@ export class AppComponent implements OnInit {
 
     ngOnInit(){
       var bodyStyles = document.body.style;
-      if(this.localStorage && this.localStorage.get("darkMode")) {
-          bodyStyles.setProperty('--background-color', '#222222');
-          document.getElementById('themeAsset').setAttribute('href','./assets/themes/luna-amber/theme.css');
+      if(!this.localStorage || this.localStorage.get("darkMode") === false) {
+        bodyStyles.setProperty('--background-color', '#f7f7f7');
+        document.getElementById('themeAsset').setAttribute('href','./assets/themes/nova-light/theme.css');
       }
       else {
-          bodyStyles.setProperty('--background-color', '#f7f7f7');
-          document.getElementById('themeAsset').setAttribute('href','./assets/themes/nova-light/theme.css');
+        bodyStyles.setProperty('--background-color', '#222222');
+        document.getElementById('themeAsset').setAttribute('href','./assets/themes/luna-amber/theme.css');  
       }
 
       // always scroll to the top of the page on route change:
