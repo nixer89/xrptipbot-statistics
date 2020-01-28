@@ -10,6 +10,9 @@ import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 })
 export class XummPaymentComponent implements OnInit {
 
+    //xummBackendURL = "http://localhost:4001/";
+    xummBackendURL = "https://xumm.xrptipbot-stats.com/";
+
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
     showDialog:boolean = true;
@@ -17,6 +20,7 @@ export class XummPaymentComponent implements OnInit {
     waitingForPayment:boolean = false;
     qrLink:string;
     requestExpired:boolean = false;
+    loading:boolean = false;
 
     @Output()
     userSigned: EventEmitter<any> = new EventEmitter();
@@ -30,7 +34,7 @@ export class XummPaymentComponent implements OnInit {
     }
 
     async supportViaXumm() {
-        this.waitingForPayment = true;
+        this.loading = true;
         let frontendId:string;
         if(!(frontendId= this.storage.get("frontendUserId"))) {
             console.log("genreate new frontendID");
@@ -53,7 +57,7 @@ export class XummPaymentComponent implements OnInit {
             }
         }
 
-        let xummResponse = await this.app.post("https://xumm.xrptipbot-stats.com/payload", xummPayload);
+        let xummResponse = await this.app.post(this.xummBackendURL+"payload", xummPayload);
         console.log(JSON.stringify(xummResponse));
         this.payloadUUID = xummResponse.uuid;
         this.qrLink = xummResponse.refs.qr_png;
@@ -64,10 +68,12 @@ export class XummPaymentComponent implements OnInit {
         // register socket for receiving data:
         console.log("connecting socket to: " + url);
         this.websocket = webSocket(url);
+        this.loading = false;
+        this.waitingForPayment = true;
         this.websocket.asObservable().subscribe(async message => {
             console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
-                let transactionResult = await this.app.get("https://xumm.xrptipbot-stats.com/payload/"+message.payload_uuidv4);
+                let transactionResult = await this.app.get(this.xummBackendURL+"payload/"+message.payload_uuidv4);
                 this.waitingForPayment = false;
                 console.log(transactionResult);
                 if(transactionResult.meta.exists && transactionResult.meta.submit && transactionResult.meta.finished
@@ -79,7 +85,7 @@ export class XummPaymentComponent implements OnInit {
                     this.showError = true;
                 }
                 this.websocket.unsubscribe();
-            } else if(message.expires_in_seconds <= 0) {
+            } else if(message.expired || message.expires_in_seconds <= 0) {
                 this.showError = true;
                 this.waitingForPayment = false;
                 this.requestExpired = true;
