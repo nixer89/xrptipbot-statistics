@@ -93,9 +93,13 @@ export class XummPaymentComponent implements OnInit {
             }
         });
     }
+    
 
     closed() {
         console.log("close dialog");
+        if(this.websocket)
+            this.websocket.unsubscribe();
+            
         this.showDialog = false;
     }
 }
