@@ -3,6 +3,7 @@ import { XummService } from '../services/xumm.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { uuid } from 'uuidv4';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
     selector: "xummSignRequest",
@@ -28,7 +29,8 @@ export class XummSignComponent implements OnInit {
 
     constructor(
         private xummApi: XummService,
-        private storage: LocalStorageService) {
+        private storage: LocalStorageService,
+        private deviceDetector: DeviceDetectorService) {
     }
 
     async ngOnInit() {
@@ -50,16 +52,18 @@ export class XummSignComponent implements OnInit {
             frontendId: frontendId,
             pushDisabled: true,
             options: {
-                expire: 1,
-                return_url: {
-                    app: "https://xrptipbot-stats.com/settings?payloadId={id}",
-                    web: "https://xrptipbot-stats.com/settings?payloadId={id}"
-                }
+                expire: 5,
+                return_url: {}
             },
 	        txjson: {
                 TransactionType: "SignIn"
             }
         }
+
+        if(this.deviceDetector.isDesktop())
+            xummPayload.options.return_url.web = "https://xrptipbot-stats.com/settings?payloadId={id}"
+        else
+            xummPayload.options.return_url.app = "https://xrptipbot-stats.com/settings?payloadId={id}"
 
         let xummResponse = await this.xummApi.submitPayload(xummPayload);
         console.log(JSON.stringify(xummResponse));

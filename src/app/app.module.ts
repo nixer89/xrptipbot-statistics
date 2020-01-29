@@ -87,6 +87,7 @@ import {GoogleAnalyticsService} from './services/google-analytics.service';
 //Special
 import { ClipboardModule } from 'ngx-clipboard';
 import { LocalStorageModule } from 'angular-2-local-storage';
+import { DeviceDetectorModule } from 'ngx-device-detector';
 
 @NgModule({
   declarations: [
@@ -163,6 +164,7 @@ import { LocalStorageModule } from 'angular-2-local-storage';
     LocalStorageModule.forRoot({ prefix: 'xrptipbot-stats', storageType: 'localStorage' }),
     //special
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
+    DeviceDetectorModule.forRoot()
   ],
   providers: [
     AppService,

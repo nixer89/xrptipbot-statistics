@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
     selector: "xummPaymentRequest",
@@ -27,7 +28,8 @@ export class XummPaymentComponent implements OnInit {
 
     constructor(
         private xummApi: XummService,
-        private storage: LocalStorageService) {
+        private storage: LocalStorageService,
+        private deviceDetector: DeviceDetectorService) {
     }
 
     async ngOnInit() {
@@ -45,11 +47,8 @@ export class XummPaymentComponent implements OnInit {
         //setting up xumm payload and waiting for websocket
         let xummPayload:any = {
             options: {
-                expire: 1,
-                return_url: {
-                    app: "https://xrptipbot-stats.com/ilp-pay?payloadId={id}",
-                    web: "https://xrptipbot-stats.com/ilp-pay?payloadId={id}"
-                }
+                expire: 5,
+                return_url: {}
             },
 	        txjson: {
                 TransactionType: "Payment",
@@ -57,6 +56,11 @@ export class XummPaymentComponent implements OnInit {
                 Fee: "12"
             }
         }
+
+        if(this.deviceDetector.isDesktop())
+            xummPayload.options.return_url.web = "https://xrptipbot-stats.com/ilp-pay?payloadId={id}"
+        else
+            xummPayload.options.return_url.app = "https://xrptipbot-stats.com/ilp-pay?payloadId={id}"
 
         if(frontendId && this.storage.get("pushAllowed"))
             xummPayload.frontendId = frontendId;

@@ -11,7 +11,7 @@
                 <div class="floatleft" style="width: 48%;">
                     <div class="floatright">
                         <button mat-button pTooltip="Shut up and take my money!" tooltipPosition="left" (click)="supportViaXumm()" style="padding:0px;">
-                            <img src="../../assets/xumm.png" width="120" height="30" style="vertical-align: middle;" alt="Xumm payment">
+                            <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Pay with Xumm">
                         </button>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
             <div *ngIf="!loading && !showError && waitingForPayment" class="floatcenter">
                 <div *ngIf="qrLink">
                     <div>
-                        Scan QR code or wait for push notification:
+                        Scan QR code{{storage.get('pushAllowed') ? ' or wait for push notification:' : ':'}}
                     </div>
                     <div>
                         <p-progressSpinner *ngIf="!showQR" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
