@@ -1,13 +1,14 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { LocalStorageService } from 'angular-2-local-storage';
+import { uuid } from 'uuidv4';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 
 @Component({
-    selector: "xummPaymentRequest",
-    templateUrl: "xummPaymentRequest.html"
+    selector: "xummSignRequest",
+    templateUrl: "xummSignRequest.html"
 })
-export class XummPaymentComponent implements OnInit {
+export class XummSignComponent implements OnInit {
 
     directLink:string;
     qrLink:string;
@@ -20,7 +21,7 @@ export class XummPaymentComponent implements OnInit {
     showQR:boolean = false;
     requestExpired:boolean = false;
     loading:boolean = false;
-    paymentReceived:boolean = false;
+    transactionSigned:boolean = false;
 
     @Output()
     userSigned: EventEmitter<any> = new EventEmitter();
@@ -35,33 +36,31 @@ export class XummPaymentComponent implements OnInit {
 
     async supportViaXumm() {
         this.loading = true;
-        let frontendId:string;
-
-        if(this.storage.get("pushAllowed")) {
-            frontendId = this.storage.get("frontendUserId")
+        let frontendId:string = this.storage.get("frontendUserId");
+        if(!(frontendId= this.storage.get("frontendUserId"))) {
+            console.log("genreate new frontendID");
+            frontendId = uuid();
             console.log("frontendID: " + frontendId);
+            this.storage.set("frontendUserId", frontendId);
         }
-    
+
+
         //setting up xumm payload and waiting for websocket
         let xummPayload:any = {
+            frontendId: frontendId,
+            pushDisabled: true,
             options: {
                 expire: 1,
                 return_url: {
-                    app: "https://xrptipbot-stats.com/ilp-pay?payloadId={id}",
-                    web: "https://xrptipbot-stats.com/ilp-pay?payloadId={id}"
+                    app: "https://xrptipbot-stats.com/settings?payloadId={id}",
+                    web: "https://xrptipbot-stats.com/settings?payloadId={id}"
                 }
             },
 	        txjson: {
-                TransactionType: "Payment",
-                Destination: "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF",
-                Fee: "12"
+                TransactionType: "SignIn"
             }
         }
 
-        if(frontendId && this.storage.get("pushAllowed"))
-            xummPayload.frontendId = frontendId;
-
-        console.log("sending xumm payload: " + JSON.stringify(xummPayload));
         let xummResponse = await this.xummApi.submitPayload(xummPayload);
         console.log(JSON.stringify(xummResponse));
         this.payloadUUID = xummResponse.uuid;
@@ -79,12 +78,11 @@ export class XummPaymentComponent implements OnInit {
         this.websocket.asObservable().subscribe(async message => {
             console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
-                let transactionResult = await this.xummApi.checkPayment(message.payload_uuidv4);
+                let transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);
                 this.waitingForPayment = false;
                 console.log(transactionResult);
-
                 if(transactionResult && transactionResult.success) {
-                    this.paymentReceived = true;
+                    this.transactionSigned = true;
                     setTimeout(() => this.handleSuccessfullPayment(), 5000);
                 } else {
                     this.showError = true;
@@ -114,6 +112,7 @@ export class XummPaymentComponent implements OnInit {
         if(this.websocket)
             this.websocket.unsubscribe();
             
+        this.userSigned.emit(false);
         this.showDialog = false;
     }
 }

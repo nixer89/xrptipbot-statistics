@@ -61,6 +61,7 @@ import {TransactionTableDialogComponent} from './components/transactionTableDial
 import {TopTipperFullTableComponent} from './components/topTipperFullTable';
 import {ILPOverallComponent} from './components/ilp';
 import {XummPaymentComponent} from './components/xummPaymentRequest';
+import {XummSignComponent} from './components/xummSignRequest';
 import {SettingsDialogComponent} from './pages/settings';
 
 //my components
@@ -77,6 +78,7 @@ import {environment} from '../environments/environment';
 //my services
 import {AppService} from './services/app.service';
 import {ApiService} from './services/api.service';
+import {XummService} from './services/xumm.service';
 import {UserStatisticsService} from './services/userstatistics.service';
 import {OverallStatisticsService} from './services/overallstatistics.service';
 import {GeneralStatisticsService} from './services/generalstatistics.service';
@@ -99,6 +101,7 @@ import { LocalStorageModule } from 'angular-2-local-storage';
     TopTipperFullTableComponent,
     ILPOverallComponent,
     XummPaymentComponent,
+    XummSignComponent,
     InfoComponent,
     TermsComponent,
     PrivacyComponent,
@@ -164,6 +167,7 @@ import { LocalStorageModule } from 'angular-2-local-storage';
   providers: [
     AppService,
     ApiService,
+    XummService,
     UserStatisticsService,
     OverallStatisticsService,
     GeneralStatisticsService,

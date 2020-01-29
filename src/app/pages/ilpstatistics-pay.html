@@ -1,5 +1,5 @@
 <div class="ui-g ui-fluid">
-    <xummPaymentRequest (userSigned)="userSigned($event)"></xummPaymentRequest>
-    <ilp *ngIf="userHasPaid" [allowedToLoad]="userHasPaid"></ilp>
+    <xummPaymentRequest *ngIf="!userHasPaid && !isInit" (userSigned)="userSigned($event)"></xummPaymentRequest>
+    <ilp *ngIf="userHasPaid && !isInit" [allowedToLoad]="userHasPaid"></ilp>
 </div>
 

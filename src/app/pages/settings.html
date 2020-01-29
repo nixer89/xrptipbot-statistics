@@ -20,5 +20,12 @@
             <td>DarkMode</td>
             <td><p-inputSwitch [(ngModel)]="darkMode" (onChange)="toogleDarkMode($event)"></p-inputSwitch></td>
         </tr>
+        <tr>
+            <td>Allow XUMM Push Notifications</td>
+            <td><p-inputSwitch [(ngModel)]="pushAllowed" (onChange)="tooglePushAllowed($event)"></p-inputSwitch></td>
+        </tr>
     </table>
 </p-card>
+<div class="ui-g ui-fluid">
+    <xummSignRequest *ngIf="openSignRequest" (userSigned)="userSigned($event)"></xummSignRequest>
+</div>

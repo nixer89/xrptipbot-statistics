@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Title, Meta } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import{ GoogleAnalyticsService } from '../services/google-analytics.service';
+import { XummService } from '../services/xumm.service';
+import { uuid } from 'uuidv4';
 
 @Component({
     selector: "settings",
@@ -13,11 +16,15 @@ export class SettingsDialogComponent implements OnInit {
     excludeCharities: boolean;
     excludeCoil: boolean;
     darkMode: boolean;
+    pushAllowed: boolean;
+    openSignRequest:boolean = false;
 
     constructor(private localStorage: LocalStorageService,
                 private titleService: Title,
                 private meta: Meta,
-                private googleAnalytics: GoogleAnalyticsService) {}
+                private route: ActivatedRoute,
+                private googleAnalytics: GoogleAnalyticsService,
+                private xummApi: XummService) {}
 
     ngOnInit(){
         this.titleService.setTitle("XRPTipBotStats Settings");
@@ -28,6 +35,18 @@ export class SettingsDialogComponent implements OnInit {
         this.excludeCharities = this.localStorage.get("excludeCharities") || false;
         this.excludeCoil = this.localStorage.get("excludeCoil") || false;
         this.darkMode = this.localStorage.get("darkMode") === null || this.localStorage.get("darkMode") === true;
+        this.pushAllowed = this.localStorage.get("pushAllowed") || false;
+
+        this.route.queryParams.subscribe(async params => {
+            let payloadId = params.payloadId;
+            if(payloadId) {
+              //check if transaction was successfull and redirect user to stats page right away:
+              let transactionResult = await this.xummApi.checkSignIn(payloadId);
+              console.log(transactionResult);
+              if(transactionResult)
+                this.userSigned(transactionResult.success)
+            }
+        });
     }
 
     toogleBots(e:any) {
@@ -58,5 +77,26 @@ export class SettingsDialogComponent implements OnInit {
 
         this.localStorage.set("darkMode", e.checked);
         this.googleAnalytics.analyticsEventEmitter("toogleDarkMode", "settings", "settings_toogleDarkMode");
+    }
+
+    tooglePushAllowed(e:any) {
+        if(e.checked) {
+            //ask user to sign transaction
+            this.openSignRequest = true;
+        } else {
+            this.localStorage.set("pushAllowed", e.checked);
+            this.openSignRequest = false;
+        }
+        this.googleAnalytics.analyticsEventEmitter("tooglePushAllowed", "settings", "settings_tooglePushAllowed");
+    }
+
+    userSigned(event:any) {
+        console.log("user has signed the transaction: " + event);
+        this.pushAllowed = event;
+        this.localStorage.set("pushAllowed", this.pushAllowed);
+        if(this.pushAllowed && !this.localStorage.get("frontendUserId")) {
+            this.localStorage.set("frontendUserId", uuid());
+        }
+        this.openSignRequest = false;
     }
 }
