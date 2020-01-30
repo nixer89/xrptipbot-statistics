@@ -54,6 +54,9 @@ export class XummPaymentComponent {
             }
         }
 
+        if(this.storage.get("xummFixAmount"))
+            xummPayload.txjson.Amount="1000"
+
         if(this.deviceDetector.isDesktop())
             xummPayload.options.return_url.web = "https://xrptipbot-stats.com/ilp-pay?payloadId={id}"
         else
@@ -91,6 +94,10 @@ export class XummPaymentComponent {
 
                 if(transactionResult && transactionResult.success) {
                     this.paymentReceived = true;
+                    
+                    if(this.storage.get("storeLastUsedPayment"))
+                        this.storage.set("lastValidPayloadId", message.payload_uuidv4);
+
                     setTimeout(() => this.handleSuccessfullPayment(), 5000);
                 } else {
                     this.showError = true;

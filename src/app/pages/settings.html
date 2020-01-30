@@ -5,24 +5,32 @@
             <th>Off/On</th>
         </tr>
         <tr>
-            <td>Exclude Bots</td>
-            <td><p-inputSwitch [(ngModel)]="excludeBots" (onChange)="toogleBots($event)"></p-inputSwitch></td>
+            <td class="settings-table-text">Exclude Bots</td>
+            <td class="settings-table-switch"><p-inputSwitch [(ngModel)]="excludeBots" (onChange)="toogleBots($event)"></p-inputSwitch></td>
         </tr>
         <tr>
-            <td>Exclude Charities</td>
-            <td><p-inputSwitch [(ngModel)]="excludeCharities" (onChange)="toogleCharities($event)"></p-inputSwitch></td>
+            <td class="settings-table-text">Exclude Charities</td>
+            <td class="settings-table-switch"><p-inputSwitch [(ngModel)]="excludeCharities" (onChange)="toogleCharities($event)"></p-inputSwitch></td>
         </tr>
         <tr>
-            <td>Exclude Coil Settlement</td>
-            <td><p-inputSwitch [(ngModel)]="excludeCoil" (onChange)="toogleCoil($event)"></p-inputSwitch></td>
+            <td class="settings-table-text">Exclude Coil Settlement</td>
+            <td class="settings-table-switch"><p-inputSwitch [(ngModel)]="excludeCoil" (onChange)="toogleCoil($event)"></p-inputSwitch></td>
         </tr>
         <tr>
-            <td>DarkMode</td>
-            <td><p-inputSwitch [(ngModel)]="darkMode" (onChange)="toogleDarkMode($event)"></p-inputSwitch></td>
+            <td class="settings-table-text">DarkMode</td>
+            <td class="settings-table-switch"><p-inputSwitch [(ngModel)]="darkMode" (onChange)="toogleDarkMode($event)"></p-inputSwitch></td>
         </tr>
         <tr>
-            <td>Allow XUMM Push Notifications</td>
-            <td><p-inputSwitch [(ngModel)]="pushAllowed" (onChange)="tooglePushAllowed($event)"></p-inputSwitch></td>
+            <td class="settings-table-text">Allow XUMM Push Notifications</td>
+            <td class="settings-table-switch"><p-inputSwitch [(ngModel)]="pushAllowed" (onChange)="tooglePushAllowed($event)"></p-inputSwitch></td>
+        </tr>
+        <tr>
+            <td class="settings-table-text">Store last valid XUMM Payment (valid for 24h)</td>
+            <td class="settings-table-switch"><p-inputSwitch [(ngModel)]="storeLastUsedPayment" (onChange)="toogleStoreLastUsedPayment($event)"></p-inputSwitch></td>
+        </tr>
+        <tr>
+            <td class="settings-table-text">Use fix amount for XUMM (0.001 XRP)</td>
+            <td class="settings-table-switch"><p-inputSwitch [(ngModel)]="xummFixAmount" (onChange)="toogleXummFixAmount($event)"></p-inputSwitch></td>
         </tr>
     </table>
 </p-card>

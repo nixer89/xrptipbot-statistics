@@ -200,15 +200,23 @@ label.xrpraised {
 .settings-table {
     border: 1px solid black;
     border-collapse: collapse;
-    width: 20%;
-  }
+    width: 30%;
+}
   
-  .settings-table th {
+.settings-table th {
     border: 1px solid black;
     padding-left: 1em;
-  }
+}
 
-  .settings-table td {
+.settings-table td {
     border: 1px solid black;
+}
+
+.settings-table-text {
+    padding-left: 1em;
+}
+
+.settings-table-switch {
     text-align: center;
-  }
+    padding-top: 8px;
+}
