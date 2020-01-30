@@ -5,11 +5,12 @@
     <div class="ui-g-12">
         <p-card>
             <div *ngIf="!showError && !waitingForPayment && !loading && !transactionSigned" class="floatcenter">
-                <div class="floatcenter">
-                    <h3>Hello there!<br/><br/>To enable push notifications on this website, please click the 'XUMM' button and sign the SignIn request<br/><br/></h3>
+                <div>
+                    <h3>Hello there!<br/><br/>Please sign in using XUMM to enable push notifications<br/><br/></h3>
                 </div>
-                <div class="floatcenter" style="color:red">
-                    <b>Please be careful! Allow push notifications only at non public devices that you trust and only you have access to!</b>
+                <div>
+                    <b style="color:red">Please be careful!</b><br>
+                    Allow push notifications only at <b style="color:orangered">non public devices</b> that you trust and only you have access to!
                 </div>
                 <div style="color:orange">
                     Deleting the browser cache does revoke the push access and you have to enable it again.
@@ -17,9 +18,8 @@
                 </div>
                 <div class="floatleft" style="width: 48%;">
                     <div class="floatright">
-                        Enable push with:&nbsp;
                         <button mat-button pTooltip="Enable push notification on this website." tooltipPosition="left" (click)="supportViaXumm()" style="padding:0px;">
-                            <img src="../../assets/xummSignIn.svg" style="width: 150px; height: 45px;"  alt="Sign in with Xumm">
+                            <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Sign in with Xumm">
                         </button>
                     </div>
                 </div>
