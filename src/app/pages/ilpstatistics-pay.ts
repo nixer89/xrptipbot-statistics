@@ -42,6 +42,8 @@ export class ILPStatisticsPayComponent implements OnInit {
           this.snackBar.open("Sorry, your transaction could not be verified. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
           setTimeout(() => this.isInit = false, 5000);
         }
+      } else {
+        this.isInit = false;
       }
     });
   }
