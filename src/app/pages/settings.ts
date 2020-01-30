@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import{ GoogleAnalyticsService } from '../services/google-analytics.service';
 import { XummService } from '../services/xumm.service';
 import { uuid } from 'uuidv4';
@@ -24,7 +25,8 @@ export class SettingsDialogComponent implements OnInit {
                 private meta: Meta,
                 private route: ActivatedRoute,
                 private googleAnalytics: GoogleAnalyticsService,
-                private xummApi: XummService) {}
+                private xummApi: XummService,
+                private snackBar: MatSnackBar) {}
 
     ngOnInit(){
         this.titleService.setTitle("XRPTipBotStats Settings");
@@ -43,8 +45,16 @@ export class SettingsDialogComponent implements OnInit {
               //check if transaction was successfull and redirect user to stats page right away:
               let transactionResult = await this.xummApi.checkSignIn(payloadId);
               console.log(transactionResult);
-              if(transactionResult)
+              if(transactionResult) {
+                if(transactionResult.success) {
+                    this.snackBar.open("XUMM push notifications enabled!", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+                } else {
+                    this.snackBar.open("Transaction not verified and push disabled. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+                }
+
                 this.userSigned(transactionResult.success)
+              }
+                
             }
         });
     }

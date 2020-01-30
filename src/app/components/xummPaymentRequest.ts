@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, Output, EventEmitter } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
@@ -8,7 +8,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
     selector: "xummPaymentRequest",
     templateUrl: "xummPaymentRequest.html"
 })
-export class XummPaymentComponent implements OnInit {
+export class XummPaymentComponent {
 
     directLink:string;
     qrLink:string;
@@ -30,9 +30,6 @@ export class XummPaymentComponent implements OnInit {
         private xummApi: XummService,
         private storage: LocalStorageService,
         private deviceDetector: DeviceDetectorService) {
-    }
-
-    async ngOnInit() {
     }
 
     async supportViaXumm() {
@@ -70,8 +67,13 @@ export class XummPaymentComponent implements OnInit {
         console.log(JSON.stringify(xummResponse));
         this.payloadUUID = xummResponse.uuid;
         this.directLink = xummResponse.next.always;
-        this.qrLink = xummResponse.refs.qr_png;
-        this.initSocket(xummResponse.refs.websocket_status);
+
+        if(!this.deviceDetector.isDesktop() && this.directLink)
+            window.location.href = this.directLink;
+        else {
+            this.qrLink = xummResponse.refs.qr_png;
+            this.initSocket(xummResponse.refs.websocket_status);
+        }
     }
 
     initSocket(url:string) {

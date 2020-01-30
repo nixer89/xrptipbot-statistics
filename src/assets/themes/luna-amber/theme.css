@@ -3479,3 +3479,17 @@ body .ui-fluid .ui-inplace.ui-inplace-closable .ui-inplace-content > :first-chil
 .account-deleted {
   color: #FF6B6B;
 }
+
+body .snackbar-success {
+  background: #323232;
+  color: #00B300;
+  display: flex;
+  justify-content: center;
+}
+
+body .snackbar-failed {
+  background: #323232;
+  color: #FF6B6B;
+  display: flex;
+  justify-content: center;
+}
