@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
+import { LocalStorageService } from 'angular-2-local-storage'
 
 @Injectable()
 export class XummService {
-    constructor(private app: AppService) {}
+    constructor(private app: AppService, private storage: LocalStorageService) {}
 
     isTestMode = false;
     xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://xumm.xrptipbot-stats.com';
@@ -28,7 +29,7 @@ export class XummService {
 
     async checkPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/checkPayment/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/checkPayment/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -37,7 +38,7 @@ export class XummService {
 
     async checkTimedPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/checkTimedPayment/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/checkTimedPayment/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -46,7 +47,7 @@ export class XummService {
 
     async checkSignIn(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/checkSignIn/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/checkSignIn/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }

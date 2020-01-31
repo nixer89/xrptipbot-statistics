@@ -29,14 +29,6 @@ export class ILPStatisticsPayComponent implements OnInit {
     this.meta.updateTag({name: 'twitter:title', content: 'XRPTipBot ILP Stats'});
     this.meta.updateTag({name: 'twitter:image', content: 'https://xrptipbot-stats.com/assets/XRPTipBotStats_ILPStats.png'});
 
-    //check stored payloadID if it is still valid. If not, remove it!
-    if(this.storage.get("lastValidPayloadId")) {
-      let isStoredPayloadValid = await this.xummApi.checkTimedPayment(this.storage.get("lastValidPayloadId"));
-
-      if(!isStoredPayloadValid.success)
-        this.storage.remove("lastValidPayloadId")
-    }
-
     this.route.queryParams.subscribe(async params => {
       this.isInit = true;
       let payloadIdReceived = params.payloadId;
@@ -46,6 +38,8 @@ export class ILPStatisticsPayComponent implements OnInit {
       if(latestValidPayloadId) {
         //check if transaction was successfull and redirect user to stats page right away:
           //show snackbar only on new payload
+          console.log("calculated latestValidPayloadId: " + latestValidPayloadId);
+          console.log("stored lastValidPayloadId: " + this.storage.get("lastValidPayloadId"));
           if(latestValidPayloadId != this.storage.get("lastValidPayloadId"))
             this.snackBar.open("Thank you for your donation!", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
 
@@ -53,10 +47,11 @@ export class ILPStatisticsPayComponent implements OnInit {
           this.userHasPaid = true;
           this.isInit = false
       } else {
-        if(payloadIdReceived) {
+        if(payloadIdReceived && payloadIdReceived != this.storage.get("lastValidPayloadId")) {
           this.snackBar.open("Sorry, your transaction could not be verified. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
           setTimeout(() => this.isInit = false, 5000);
         } else {
+          this.storage.remove("lastValidPayloadId");
           this.isInit = false;
         }
       }
@@ -69,6 +64,9 @@ export class ILPStatisticsPayComponent implements OnInit {
   }
 
   async getLastValidPayloadId(payloadIdStored: string, payloadIdReceived: string): Promise<string> {
+    if(payloadIdStored === payloadIdReceived)
+      payloadIdReceived = null;
+
     console.log("payloadIdStored: " + payloadIdStored);
     console.log("payloadIdReceived: " + payloadIdReceived);
     let payloadStoredResult:any = (payloadIdStored ? await this.xummApi.checkTimedPayment(payloadIdStored) : null);
@@ -76,13 +74,16 @@ export class ILPStatisticsPayComponent implements OnInit {
 
     if(payloadStoredResult && payloadStoredResult.success && payloadReceivedResult && payloadReceivedResult.success) {
       //calculate latest payload
-      let storedPayloadDate:Date = (await this.xummApi.getPayloadInfo(payloadIdStored)).response.resolved_at;
-      let receivedPayloadDate:Date = (await this.xummApi.getPayloadInfo(payloadIdReceived)).response.resolved_at;
+      let storedPayloadDate:Date = new Date((await this.xummApi.getPayloadInfo(payloadIdStored)).response.resolved_at);
+      let receivedPayloadDate:Date = new Date((await this.xummApi.getPayloadInfo(payloadIdReceived)).response.resolved_at);
+
+      console.log("storedPayloadDate: " + JSON.stringify(storedPayloadDate));
+      console.log("receivedPayloadDate: " + JSON.stringify(receivedPayloadDate));
 
       if(storedPayloadDate.getTime() > receivedPayloadDate.getTime())
         return payloadIdStored;
       else
-        return payloadReceivedResult
+        return payloadIdReceived
       
     } else if(payloadStoredResult && payloadStoredResult.success) {
         return payloadIdStored

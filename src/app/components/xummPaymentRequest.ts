@@ -3,6 +3,7 @@ import { XummService } from '../services/xumm.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { uuid } from 'uuidv4';
 
 @Component({
     selector: "xummPaymentRequest",
@@ -34,15 +35,18 @@ export class XummPaymentComponent {
 
     async supportViaXumm() {
         this.loading = true;
-        let frontendId:string;
-
-        if(this.storage.get("pushAllowed")) {
-            frontendId = this.storage.get("frontendUserId")
+        let frontendId:string = this.storage.get("frontendUserId");
+        if(!(frontendId= this.storage.get("frontendUserId"))) {
+            console.log("genreate new frontendID");
+            frontendId = uuid();
             console.log("frontendID: " + frontendId);
+            this.storage.set("frontendUserId", frontendId);
         }
     
         //setting up xumm payload and waiting for websocket
         let xummPayload:any = {
+            frontendId: frontendId,
+            pushDisabled: !this.storage.get("pushAllowed"),
             options: {
                 expire: 5,
                 return_url: {}
