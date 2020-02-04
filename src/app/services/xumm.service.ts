@@ -7,7 +7,7 @@ export class XummService {
     constructor(private app: AppService, private storage: LocalStorageService) {}
 
     isTestMode = false;
-    xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://xumm.xrptipbot-stats.com';
+    xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xumm.community';
 
     async submitPayload(payload:any): Promise<any> {
         try {
