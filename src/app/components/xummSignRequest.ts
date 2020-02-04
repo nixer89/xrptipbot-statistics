@@ -21,6 +21,7 @@ export class XummSignComponent {
     waitingForPayment:boolean = false;
     showQR:boolean = false;
     requestExpired:boolean = false;
+    backendNotAvailable:boolean = false;
     loading:boolean = false;
     transactionSigned:boolean = false;
 
@@ -57,8 +58,19 @@ export class XummSignComponent {
             }
         }
 
-        let xummResponse = await this.xummApi.submitPayload(xummPayload);
-        console.log(JSON.stringify(xummResponse));
+        let xummResponse:any;
+        try {
+            console.log("sending xumm payload: " + JSON.stringify(xummPayload));
+            let xummResponse = await this.xummApi.submitPayload(xummPayload);
+            console.log(JSON.stringify(xummResponse)); 
+        } catch (err) {
+            console.log(JSON.stringify(err));
+            this.loading = false;
+            this.backendNotAvailable = true;
+            this.showError = true;
+            return;
+        }
+
         this.payloadUUID = xummResponse.uuid;
         this.directLink = xummResponse.next.always;
 

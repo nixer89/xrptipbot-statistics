@@ -1,4 +1,4 @@
-<p-dialog [style]="{width: '70%', height: '70%'}" [visible]="showDialog" [modal]="true" [closable]="false" (onHide)="closed()">
+<p-dialog [style]="{width: '70%', height: '70%'}" [visible]="showDialog" [closable]="false" (onHide)="closed()">
     <p-header style="color: orange">
         This is just a Proof of Concept! #Xumm is still in beta and not available for everyone!
     </p-header>
@@ -67,10 +67,13 @@
                 </div>
             </div>
             <div *ngIf="showError && !waitingForPayment && !loading" class="floatcenter">
-                <div *ngIf="!requestExpired" style="color: red;">
+                <div *ngIf="!requestExpired && backendNotAvailable" style="color: red;">
+                    Sorry, there was an error contacting the backend. Please try again later.
+                </div>
+                <div *ngIf="!requestExpired && !backendNotAvailable" style="color: red;">
                     Sorry, your transaction could not be verified. Please reload the page and try again!
                 </div>
-                <div *ngIf="requestExpired" style="color: red;">
+                <div *ngIf="requestExpired && !backendNotAvailable" style="color: red;">
                     Sorry, your request has been expired. Please reload the page and try again!
                 </div>
                 <button mat-button pTooltip="Close" tooltipPosition="right" (click)="closed()" style="width: 120; height: 30;">
