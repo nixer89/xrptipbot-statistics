@@ -47,27 +47,18 @@ export class XummPaymentComponent {
         let xummPayload:any = {
             frontendId: frontendId,
             pushDisabled: !this.storage.get("pushAllowed"),
+            web: this.deviceDetector.isDesktop(),
             options: {
-                expire: 5,
-                return_url: {}
+                expire: 5
             },
 	        txjson: {
                 TransactionType: "Payment",
-                Destination: "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF",
                 Fee: "12"
             }
         }
 
         if(this.storage.get("xummFixAmount"))
             xummPayload.txjson.Amount="1000"
-
-        if(this.deviceDetector.isDesktop())
-            xummPayload.options.return_url.web = "https://xrptipbot-stats.com/ilp-pay?payloadId={id}"
-        else
-            xummPayload.options.return_url.app = "https://xrptipbot-stats.com/ilp-pay?payloadId={id}"
-
-        if(frontendId && this.storage.get("pushAllowed"))
-            xummPayload.frontendId = frontendId;
 
         console.log("sending xumm payload: " + JSON.stringify(xummPayload));
         let xummResponse = await this.xummApi.submitPayload(xummPayload);

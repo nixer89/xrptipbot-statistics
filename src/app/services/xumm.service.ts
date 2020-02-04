@@ -11,7 +11,7 @@ export class XummService {
 
     async submitPayload(payload:any): Promise<any> {
         try {
-            return this.app.post(this.xummBackendURL+"/payload", payload);
+            return this.app.post(this.xummBackendURL+"/api/v1/platform/payload", payload);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -20,7 +20,7 @@ export class XummService {
 
     async getPayloadInfo(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/payload/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -29,7 +29,7 @@ export class XummService {
 
     async checkPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/checkPayment/"+this.storage.get("frontendUserId")+"/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -38,7 +38,7 @@ export class XummService {
 
     async checkTimedPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/checkTimedPayment/"+this.storage.get("frontendUserId")+"/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -47,7 +47,7 @@ export class XummService {
 
     async checkSignIn(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/checkSignIn/"+this.storage.get("frontendUserId")+"/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/signin/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }

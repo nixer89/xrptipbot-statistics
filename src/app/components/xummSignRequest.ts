@@ -48,19 +48,14 @@ export class XummSignComponent {
         let xummPayload:any = {
             frontendId: frontendId,
             pushDisabled: true,
+            web: this.deviceDetector.isDesktop(),
             options: {
-                expire: 5,
-                return_url: {}
+                expire: 5
             },
 	        txjson: {
                 TransactionType: "SignIn"
             }
         }
-
-        if(this.deviceDetector.isDesktop())
-            xummPayload.options.return_url.web = "https://xrptipbot-stats.com/settings?payloadId={id}"
-        else
-            xummPayload.options.return_url.app = "https://xrptipbot-stats.com/settings?payloadId={id}"
 
         let xummResponse = await this.xummApi.submitPayload(xummPayload);
         console.log(JSON.stringify(xummResponse));
