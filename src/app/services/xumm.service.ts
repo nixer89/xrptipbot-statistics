@@ -27,9 +27,18 @@ export class XummService {
         }
     }
 
+    async deletePayload(payloadId:string): Promise<any> {
+        try {
+            return this.app.delete(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return { error: true }
+        }
+    }
+
     async checkPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+this.storage.get("frontendUserId")+"/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -38,7 +47,7 @@ export class XummService {
 
     async checkTimedPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/"+this.storage.get("frontendUserId")+"/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -47,7 +56,16 @@ export class XummService {
 
     async checkSignIn(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/signin/"+this.storage.get("frontendUserId")+"/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/signin/"+payloadId);
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return { error: true }
+        }
+    }
+
+    async signInToValidateTimedPayment(payloadId:any): Promise<any> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/special/signinToValidate/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }

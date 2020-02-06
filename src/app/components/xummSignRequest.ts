@@ -61,7 +61,7 @@ export class XummSignComponent {
         let xummResponse:any;
         try {
             console.log("sending xumm payload: " + JSON.stringify(xummPayload));
-            let xummResponse = await this.xummApi.submitPayload(xummPayload);
+            xummResponse = await this.xummApi.submitPayload(xummPayload);
             console.log(JSON.stringify(xummResponse)); 
         } catch (err) {
             console.log(JSON.stringify(err));
