@@ -32,27 +32,37 @@ export class ILPStatisticsPayComponent implements OnInit {
     this.route.queryParams.subscribe(async params => {
       this.isInit = true;
       let payloadIdReceived = params.payloadId;
-      let latestValidPayloadId = await this.getLastValidPayloadId(this.storage.get("lastValidPayloadId"), payloadIdReceived);
 
-      console.log("latestValidPayload: " + latestValidPayloadId);
-      if(latestValidPayloadId) {
-        //check if transaction was successfull and redirect user to stats page right away:
-          //show snackbar only on new payload
-          console.log("calculated latestValidPayloadId: " + latestValidPayloadId);
-          console.log("stored lastValidPayloadId: " + this.storage.get("lastValidPayloadId"));
-          if(latestValidPayloadId != this.storage.get("lastValidPayloadId"))
-            this.snackBar.open("Thank you for your donation!", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
-
-          this.storage.set("lastValidPayloadId",latestValidPayloadId);
-          this.userHasPaid = true;
-          this.isInit = false
+      if(payloadIdReceived && params.signinToValidate) {
+        //this is a sign in, handle differently!
+        console.log("check signin");
+        let isValid = await this.xummApi.signInToValidateTimedPayment(payloadIdReceived);
+        console.log("isValid: " + JSON.stringify(isValid));
+        this.userHasPaid = isValid.success;
+        this.isInit = false
       } else {
-        if(payloadIdReceived && payloadIdReceived != this.storage.get("lastValidPayloadId")) {
-          this.snackBar.open("Sorry, your transaction could not be verified. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
-          setTimeout(() => this.isInit = false, 5000);
+        let latestValidPayloadId = await this.getLastValidPayloadId(this.storage.get("lastValidPayloadId"), payloadIdReceived);
+
+        console.log("latestValidPayload: " + latestValidPayloadId);
+        if(latestValidPayloadId) {
+          //check if transaction was successfull and redirect user to stats page right away:
+            //show snackbar only on new payload
+            console.log("calculated latestValidPayloadId: " + latestValidPayloadId);
+            console.log("stored lastValidPayloadId: " + this.storage.get("lastValidPayloadId"));
+            if(latestValidPayloadId != this.storage.get("lastValidPayloadId"))
+              this.snackBar.open("Thank you for your donation!", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+
+            this.storage.set("lastValidPayloadId",latestValidPayloadId);
+            this.userHasPaid = true;
+            this.isInit = false
         } else {
-          this.storage.remove("lastValidPayloadId");
-          this.isInit = false;
+          if(payloadIdReceived && payloadIdReceived != this.storage.get("lastValidPayloadId")) {
+            this.snackBar.open("Sorry, your transaction could not be verified. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+            setTimeout(() => this.isInit = false, 5000);
+          } else {
+            this.storage.remove("lastValidPayloadId");
+            this.isInit = false;
+          }
         }
       }
     });

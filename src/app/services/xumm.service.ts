@@ -38,7 +38,7 @@ export class XummService {
 
     async checkPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -47,7 +47,7 @@ export class XummService {
 
     async checkTimedPayment(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
@@ -56,7 +56,7 @@ export class XummService {
 
     async checkSignIn(payloadId:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/signin/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/signin/"+this.storage.get("frontendUserId")+"/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }

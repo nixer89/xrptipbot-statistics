@@ -43,6 +43,7 @@ export class XummPaymentComponent {
         //setting up xumm payload and waiting for websocket
         let xummSignInPayload:any = {
             pushDisabled: !this.storage.get("pushAllowed"),
+            signinToValidate: true,
             web: this.deviceDetector.isDesktop(),
             options: {
                 expire: 1
@@ -196,7 +197,7 @@ export class XummPaymentComponent {
         if(this.websocket)
             this.websocket.unsubscribe();
 
-        if(!this.paymentReceived && !this.signedInAndValidated && !this.requestExpired) {
+        if(!this.paymentReceived && !this.signedInAndValidated && !this.requestExpired && this.showQR) {
             console.log("sending delete request")
             this.xummApi.deletePayload(this.payloadUUID);
         }
