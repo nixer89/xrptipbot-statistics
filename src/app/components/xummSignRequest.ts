@@ -120,12 +120,18 @@ export class XummSignComponent {
         this.showQR = true;
     }
 
-    closed() {
+    closeIt() {
+        this.showDialog = false;
+    }
+
+    closing() {
         console.log("close dialog");
         if(this.websocket)
             this.websocket.unsubscribe();
-            
-        this.userSigned.emit(false);
-        this.showDialog = false;
+
+        if(!this.transactionSigned && !this.requestExpired) {
+            console.log("sending delete request")
+            this.xummApi.deletePayload(this.payloadUUID);
+        }
     }
 }

@@ -196,7 +196,10 @@ export class XummPaymentComponent {
         if(this.websocket)
             this.websocket.unsubscribe();
 
-        this.xummApi.deletePayload(this.payloadUUID);
+        if(!this.paymentReceived && !this.signedInAndValidated && !this.requestExpired) {
+            console.log("sending delete request")
+            this.xummApi.deletePayload(this.payloadUUID);
+        }
     }
 
     resetAndPay() {
