@@ -4,6 +4,7 @@ import { Title, Meta } from '@angular/platform-browser';
 import { XummService } from '../services/xumm.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LocalStorageService } from 'angular-2-local-storage';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'ilpstatistics-pay',
@@ -20,7 +21,8 @@ export class ILPStatisticsPayComponent implements OnInit {
     private titleService: Title,
     private meta: Meta,
     private snackBar: MatSnackBar,
-    private storage: LocalStorageService) {
+    private storage: LocalStorageService,
+    private device: DeviceDetectorService) {
       this.isInit = true;
     }
 
@@ -35,8 +37,16 @@ export class ILPStatisticsPayComponent implements OnInit {
 
       if(payloadIdReceived && params.signinToValidate) {
         //this is a sign in, handle differently!
+        let refererURL:string = "";
+        if(!this.device.isDesktop()) {
+          if(document.URL.includes('?'))
+              refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+          else
+              refererURL = document.URL;
+        }
+        
         console.log("check signin");
-        let isValid = await this.xummApi.signInToValidateTimedPayment(payloadIdReceived);
+        let isValid = await this.xummApi.signInToValidateTimedPayment(payloadIdReceived, refererURL);
         console.log("isValid: " + JSON.stringify(isValid));
         this.userHasPaid = isValid.success;
         this.isInit = false

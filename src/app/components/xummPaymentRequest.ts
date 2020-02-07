@@ -53,6 +53,17 @@ export class XummPaymentComponent {
             }
         }
 
+        if(!this.deviceDetector.isDesktop()) {
+            let refererURL:string = "";
+            if(document.URL.includes('?'))
+                refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+            else
+                refererURL = document.URL;
+
+            xummSignInPayload.referer = refererURL;
+        }
+            
+
         let xummSignInResponse:any;
         let validateSignInResponse:any;
         try {
@@ -61,9 +72,11 @@ export class XummPaymentComponent {
             console.log(JSON.stringify(xummSignInResponse));
             this.directLink = xummSignInResponse.next.always;
 
-            if(!this.deviceDetector.isDesktop() && this.directLink)
+            if(!this.deviceDetector.isDesktop() && this.directLink) {
+                console.log("redirect user");
                 window.location.href = this.directLink;
-            else {
+            } else {
+                console.log("wait for validation");
                 //inform server about signin request
                 if(xummSignInResponse && xummSignInResponse.uuid) {
                     this.payloadUUID = xummSignInResponse.uuid;
@@ -116,6 +129,16 @@ export class XummPaymentComponent {
                 TransactionType: "Payment",
                 Fee: "12"
             }
+        }
+
+        if(!this.deviceDetector.isDesktop()) {
+            let refererURL:string = "";
+            if(document.URL.includes('?'))
+                refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+            else
+                refererURL = document.URL;
+
+            xummPayload.referer = refererURL;
         }
 
         if(this.storage.get("xummFixAmount"))

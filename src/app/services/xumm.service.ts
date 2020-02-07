@@ -63,9 +63,9 @@ export class XummService {
         }
     }
 
-    async signInToValidateTimedPayment(payloadId:any): Promise<any> {
+    async signInToValidateTimedPayment(payloadId:any, referer?:string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/special/signinToValidate/"+payloadId);
+            return this.app.get(this.xummBackendURL+"/api/v1/special/signinToValidate/"+payloadId+(referer ? "?referer="+referer:""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true }
