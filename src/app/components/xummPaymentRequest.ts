@@ -59,14 +59,20 @@ export class XummPaymentComponent {
             console.log("sending singin xumm payload: " + JSON.stringify(xummSignInPayload));
             xummSignInResponse = await this.xummApi.submitPayload(xummSignInPayload);
             console.log(JSON.stringify(xummSignInResponse));
-            //inform server about signin request
-            if(xummSignInResponse && xummSignInResponse.uuid) {
-                this.payloadUUID = xummSignInResponse.uuid;
-                this.qrLink = xummSignInResponse.refs.qr_png;
-                this.loading = false;
-                this.waitingForPayment = true;
-                validateSignInResponse = await this.xummApi.signInToValidateTimedPayment(xummSignInResponse.uuid);
-                this.waitingForPayment = false;
+            this.directLink = xummSignInResponse.next.always;
+
+            if(!this.deviceDetector.isDesktop() && this.directLink)
+                window.location.href = this.directLink;
+            else {
+                //inform server about signin request
+                if(xummSignInResponse && xummSignInResponse.uuid) {
+                    this.payloadUUID = xummSignInResponse.uuid;
+                    this.qrLink = xummSignInResponse.refs.qr_png;
+                    this.loading = false;
+                    this.waitingForPayment = true;
+                    validateSignInResponse = await this.xummApi.signInToValidateTimedPayment(xummSignInResponse.uuid);
+                    this.waitingForPayment = false;
+                }
             }
         } catch (err) {
             console.log(JSON.stringify(err));
