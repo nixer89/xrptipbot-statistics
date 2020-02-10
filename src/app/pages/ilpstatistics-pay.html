@@ -1,4 +1,10 @@
 <div class="ui-g ui-fluid">
+    <p-card class="floatcenter" *ngIf="isInit">
+        <div *ngIf="isInit">
+            Checking some things...
+            <p-progressSpinner [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+        </div>
+    </p-card>
     <xummPaymentRequest *ngIf="!userHasPaid && !isInit" (userSigned)="userSigned($event)"></xummPaymentRequest>
     <ilp *ngIf="userHasPaid && !isInit" [allowedToLoad]="userHasPaid"></ilp>
 </div>

@@ -160,9 +160,9 @@ export class XummPaymentComponent {
             //user signed payload. Handle it!
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 if(!isSignIn) {
-                    this.waitingForPayloadResolved = false;
                     let transactionResult = await this.xummApi.checkPayment(message.payload_uuidv4);
                     console.log(transactionResult);
+                    this.waitingForPayloadResolved = false;
 
                     if(transactionResult && transactionResult.success) {
                         this.paymentReceived = true;
@@ -194,6 +194,9 @@ export class XummPaymentComponent {
                 this.waitingForPayloadResolved = false;
                 this.requestExpired = true;
                 this.websocket.unsubscribe();
+            } else if(message.opened) {
+                this.showQR = false;
+                this.qrLink = null;
             }
         });
     }

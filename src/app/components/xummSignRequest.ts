@@ -89,14 +89,16 @@ export class XummSignComponent {
         this.websocket.asObservable().subscribe(async message => {
             console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
+                
                 let transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);
-                this.waitingForPayment = false;
                 console.log(transactionResult);
+                this.waitingForPayment = false;
                 if(transactionResult && transactionResult.success) {
                     this.transactionSigned = true;
-                    setTimeout(() => this.handleSuccessfullPayment(), 5000);
+                    setTimeout(() => this.handleSuccessfullSignIn(), 5000);
                 } else {
                     this.showError = true;
+                    setTimeout(() => this.handleFailedSignIn(), 5000);
                 }
 
                 this.websocket.unsubscribe();
@@ -105,12 +107,20 @@ export class XummSignComponent {
                 this.waitingForPayment = false;
                 this.requestExpired = true;
                 this.websocket.unsubscribe();
+            } else if(message.opened) {
+                this.showQR = false;
+                this.qrLink = null;
             }
         });
     }
     
-    handleSuccessfullPayment() {
+    handleSuccessfullSignIn() {
         this.userSigned.emit(true);
+        this.showDialog = false;
+    }
+
+    handleFailedSignIn() {
+        this.userSigned.emit(false);
         this.showDialog = false;
     }
 
@@ -127,9 +137,13 @@ export class XummSignComponent {
         if(this.websocket)
             this.websocket.unsubscribe();
 
-        if(!this.transactionSigned && !this.requestExpired) {
-            console.log("sending delete request")
-            this.xummApi.deletePayload(this.payloadUUID);
+        if(!this.transactionSigned) {
+            this.userSigned.emit(false);
+
+            if(!this.requestExpired) {
+                console.log("sending delete request")
+                this.xummApi.deletePayload(this.payloadUUID);
+            }
         }
     }
 }
