@@ -1,6 +1,6 @@
 {
   "name": "xrptipbot-statistics",
-  "version": "5.7.3",
+  "version": "5.8.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",

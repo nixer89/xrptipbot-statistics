@@ -35,40 +35,47 @@ export class ILPStatisticsPayComponent implements OnInit {
       this.isInit = true;
       let payloadIdReceived = params.payloadId;
 
+      let refererURL:string;
+
+        if(document.URL.includes('?')) {
+            refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+        } else {
+          refererURL = document.URL;
+        }
+
       if(payloadIdReceived && params.signinToValidate) {
         //this is a sign in, handle differently!
-        let refererURL:string = "";
-        if(!this.device.isDesktop()) {
-          if(document.URL.includes('?'))
-              refererURL = document.URL.substring(0, document.URL.indexOf('?'));
-          else
-              refererURL = document.URL;
-        }
         
         console.log("check signin");
         let isValid = await this.xummApi.signInToValidateTimedPayment(payloadIdReceived, refererURL);
         console.log("isValid: " + JSON.stringify(isValid));
         this.userHasPaid = isValid.success;
         this.isInit = false
-      } else {
-        let latestValidPayloadId = await this.getLastValidPayloadId(this.storage.get("lastValidPayloadId"), payloadIdReceived);
+        if(!this.userHasPaid)
+          this.snackBar.open("Sorry, no valid transaction could be found. Please purchase this statistics again!", null, {panelClass: 'snackbar-failed', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
 
-        console.log("latestValidPayload: " + latestValidPayloadId);
+      } else {
+        let latestValidPayloadId = await this.getLastValidPayloadId(this.storage.get("lastValidPayloadId"), payloadIdReceived, refererURL);
+
+        console.log("latestValidPayloadId: " + latestValidPayloadId);
         if(latestValidPayloadId) {
           //check if transaction was successfull and redirect user to stats page right away:
             //show snackbar only on new payload
             console.log("calculated latestValidPayloadId: " + latestValidPayloadId);
             console.log("stored lastValidPayloadId: " + this.storage.get("lastValidPayloadId"));
             if(latestValidPayloadId != this.storage.get("lastValidPayloadId"))
-              this.snackBar.open("Thank you for your donation!", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+              this.snackBar.open("Thank you for your donation!", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
 
-            this.storage.set("lastValidPayloadId",latestValidPayloadId);
+            if(this.storage.get("storeLastUsedPayment"))
+              this.storage.set("lastValidPayloadId",latestValidPayloadId);
+
             this.userHasPaid = true;
             this.isInit = false
         } else {
+          console.log("payload not valid");
           if(payloadIdReceived && payloadIdReceived != this.storage.get("lastValidPayloadId")) {
-            this.snackBar.open("Sorry, your transaction could not be verified. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
-            setTimeout(() => this.isInit = false, 5000);
+            this.snackBar.open("Sorry, your transaction could not be verified. Please try again!", null, {panelClass: 'snackbar-failed', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
+            setTimeout(() => this.isInit = false, 3000);
           } else {
             this.storage.remove("lastValidPayloadId");
             this.isInit = false;
@@ -83,14 +90,18 @@ export class ILPStatisticsPayComponent implements OnInit {
     this.userHasPaid = event;
   }
 
-  async getLastValidPayloadId(payloadIdStored: string, payloadIdReceived: string): Promise<string> {
+  async getLastValidPayloadId(payloadIdStored: string, payloadIdReceived: string, referer: string): Promise<string> {
     if(payloadIdStored === payloadIdReceived)
       payloadIdReceived = null;
 
     console.log("payloadIdStored: " + payloadIdStored);
     console.log("payloadIdReceived: " + payloadIdReceived);
-    let payloadStoredResult:any = (payloadIdStored ? await this.xummApi.checkTimedPayment(payloadIdStored) : null);
-    let payloadReceivedResult:any = (payloadIdReceived ? await this.xummApi.checkTimedPayment(payloadIdReceived) : null);
+    console.log("referer: " + referer);
+    let payloadStoredResult:any = (payloadIdStored ? await this.xummApi.checkTimedPayment(payloadIdStored, referer) : null);
+    let payloadReceivedResult:any = (payloadIdReceived ? await this.xummApi.checkTimedPayment(payloadIdReceived, referer) : null);
+
+    console.log("payloadStoredResult: " + payloadStoredResult);
+    console.log("payloadReceivedResult: " + payloadReceivedResult);
 
     if(payloadStoredResult && payloadStoredResult.success && payloadReceivedResult && payloadReceivedResult.success) {
       //calculate latest payload
@@ -106,7 +117,7 @@ export class ILPStatisticsPayComponent implements OnInit {
         return payloadIdReceived
       
     } else if(payloadStoredResult && payloadStoredResult.success) {
-        return payloadIdStored
+        return payloadIdStored;
     } else if(payloadReceivedResult && payloadReceivedResult.success) {
         return payloadIdReceived;
     } else {

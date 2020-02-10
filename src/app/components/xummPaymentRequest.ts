@@ -11,21 +11,20 @@ import { uuid } from 'uuidv4';
 })
 export class XummPaymentComponent {
 
-    directLink:string;
     qrLink:string;
 
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
     showDialog:boolean = true;
     showError: boolean = false;
-    waitingForPayment:boolean = false;
+    waitingForPayloadResolved:boolean = false;
     showQR:boolean = false;
     requestExpired:boolean = false;
     backendNotAvailable:boolean = false;
     loading:boolean = false;
     paymentReceived:boolean = false;
-    signedInAndValidated:boolean = false;
-    tryingToSignIn:boolean = false;
+    signInValidated:boolean = false;
+    isSignIn:boolean = false;
 
     @Output()
     userSigned: EventEmitter<any> = new EventEmitter();
@@ -38,8 +37,7 @@ export class XummPaymentComponent {
 
     async signinToValidate() {
         this.loading = true;
-        this.tryingToSignIn = true;
-
+        this.isSignIn = true;
         //setting up xumm payload and waiting for websocket
         let xummSignInPayload:any = {
             pushDisabled: !this.storage.get("pushAllowed"),
@@ -53,62 +51,43 @@ export class XummPaymentComponent {
             }
         }
 
-        if(!this.deviceDetector.isDesktop()) {
-            let refererURL:string = "";
-            if(document.URL.includes('?'))
-                refererURL = document.URL.substring(0, document.URL.indexOf('?'));
-            else
-                refererURL = document.URL;
+        let refererURL:string;
 
-            xummSignInPayload.referer = refererURL;
+        if(document.URL.includes('?')) {
+            refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+        } else {
+            refererURL = document.URL;
         }
-            
+
+        xummSignInPayload.referer = refererURL;
 
         let xummSignInResponse:any;
-        let validateSignInResponse:any;
         try {
             console.log("sending singin xumm payload: " + JSON.stringify(xummSignInPayload));
             xummSignInResponse = await this.xummApi.submitPayload(xummSignInPayload);
             console.log(JSON.stringify(xummSignInResponse));
-            this.directLink = xummSignInResponse.next.always;
 
-            if(!this.deviceDetector.isDesktop() && this.directLink) {
+            if(!this.deviceDetector.isDesktop() && xummSignInResponse.next.always) {
                 console.log("redirect user");
-                window.location.href = this.directLink;
+                window.location.href = xummSignInResponse.next.always;
             } else {
                 console.log("wait for validation");
-                //inform server about signin request
-                if(xummSignInResponse && xummSignInResponse.uuid) {
-                    this.payloadUUID = xummSignInResponse.uuid;
-                    this.qrLink = xummSignInResponse.refs.qr_png;
-                    this.loading = false;
-                    this.waitingForPayment = true;
-                    validateSignInResponse = await this.xummApi.signInToValidateTimedPayment(xummSignInResponse.uuid);
-                    this.waitingForPayment = false;
-                }
+                this.payloadUUID = xummSignInResponse.uuid;
+                this.qrLink = xummSignInResponse.refs.qr_png;
+                this.initSocket(xummSignInResponse.refs.websocket_status, refererURL, true);
             }
         } catch (err) {
             console.log(JSON.stringify(err));
             this.loading = false;
-            this.tryingToSignIn = false;
             this.backendNotAvailable = true;
             this.showError = true;
             return;
-        }
-
-        if(validateSignInResponse && validateSignInResponse.success) {
-            this.signedInAndValidated = true;
-            this.loading = false;
-
-            setTimeout(() => this.handleSuccessfullPayment(), 5000);
-        } else {
-            this.showError = true;
         }
     }
 
     async supportViaXumm() {
         this.loading = true;
-        this.tryingToSignIn = false;
+        this.isSignIn = false;
         let frontendId:string = this.storage.get("frontendUserId");
         if(!(frontendId= this.storage.get("frontendUserId"))) {
             console.log("genreate new frontendID");
@@ -130,16 +109,14 @@ export class XummPaymentComponent {
                 Fee: "12"
             }
         }
+        
+        let refererURL:string;
 
-        if(!this.deviceDetector.isDesktop()) {
-            let refererURL:string = "";
-            if(document.URL.includes('?'))
-                refererURL = document.URL.substring(0, document.URL.indexOf('?'));
-            else
-                refererURL = document.URL;
-
-            xummPayload.referer = refererURL;
+        if(document.URL.includes('?')) {
+            refererURL = document.URL.substring(0, document.URL.indexOf('?'));
         }
+
+        xummPayload.referer = (refererURL ? refererURL : document.URL);
 
         if(this.storage.get("xummFixAmount"))
             xummPayload.txjson.Amount="1000"
@@ -158,22 +135,21 @@ export class XummPaymentComponent {
         }
         
         this.payloadUUID = xummResponse.uuid;
-        this.directLink = xummResponse.next.always;
 
-        if(!this.deviceDetector.isDesktop() && this.directLink)
-            window.location.href = this.directLink;
+        if(!this.deviceDetector.isDesktop() && xummResponse.next.always)
+            window.location.href = xummResponse.next.always;
         else {
             this.qrLink = xummResponse.refs.qr_png;
-            this.initSocket(xummResponse.refs.websocket_status);
+            this.initSocket(xummResponse.refs.websocket_status, refererURL);
         }
     }
 
-    initSocket(url:string) {
+    initSocket(url:string, referer: string, isSignIn?: boolean) {
         // register socket for receiving data:
         console.log("connecting socket to: " + url);
         this.websocket = webSocket(url);
         this.loading = false;
-        this.waitingForPayment = true;
+        this.waitingForPayloadResolved = true;
         let userOpenedPayload:boolean = false;
         this.websocket.asObservable().subscribe(async message => {
             console.log("message received: " + JSON.stringify(message));
@@ -183,25 +159,39 @@ export class XummPaymentComponent {
 
             //user signed payload. Handle it!
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
-                let transactionResult = await this.xummApi.checkPayment(message.payload_uuidv4);
-                this.waitingForPayment = false;
-                console.log(transactionResult);
+                if(!isSignIn) {
+                    this.waitingForPayloadResolved = false;
+                    let transactionResult = await this.xummApi.checkPayment(message.payload_uuidv4);
+                    console.log(transactionResult);
 
-                if(transactionResult && transactionResult.success) {
-                    this.paymentReceived = true;
-                    
-                    if(this.storage.get("storeLastUsedPayment"))
-                        this.storage.set("lastValidPayloadId", message.payload_uuidv4);
+                    if(transactionResult && transactionResult.success) {
+                        this.paymentReceived = true;
+                        
+                        if(this.storage.get("storeLastUsedPayment"))
+                            this.storage.set("lastValidPayloadId", message.payload_uuidv4);
 
-                    setTimeout(() => this.handleSuccessfullPayment(), 5000);
+                        setTimeout(() => this.handleSuccessfullPayment(), 5000);
+                    } else {
+                        this.showError = true;
+                    }
                 } else {
-                    this.showError = true;
+                    console.log("using referer: " + referer);
+                    let validateSignInResponse = await this.xummApi.signInToValidateTimedPayment(message.payload_uuidv4, referer);
+                    console.log("validateSignInResponse: " + JSON.stringify(validateSignInResponse));
+                    this.signInValidated = validateSignInResponse && validateSignInResponse.success;
+                    if(!this.signInValidated)
+                        this.showError = true;
+                    else {
+                        setTimeout(() => this.handleSuccessfullPayment(), 5000);
+                    }
+
+                    this.waitingForPayloadResolved = false;
                 }
 
                 this.websocket.unsubscribe();
             } else if((message.expired || message.expires_in_seconds <= 0) && !userOpenedPayload) {
                 this.showError = true;
-                this.waitingForPayment = false;
+                this.waitingForPayloadResolved = false;
                 this.requestExpired = true;
                 this.websocket.unsubscribe();
             }
@@ -226,28 +216,26 @@ export class XummPaymentComponent {
         if(this.websocket)
             this.websocket.unsubscribe();
 
-        if(!this.paymentReceived && !this.signedInAndValidated && !this.requestExpired && this.showQR) {
+        if(!this.paymentReceived && !this.signInValidated && !this.requestExpired && this.showQR) {
             console.log("sending delete request")
             this.xummApi.deletePayload(this.payloadUUID);
         }
     }
 
     resetAndPay() {
-        this.directLink = null;
         this.qrLink = null;
 
         this.websocket = null;
         this.payloadUUID = null;
         this.showDialog = true;
         this.showError = false;
-        this.waitingForPayment = false;
+        this.waitingForPayloadResolved = false;
         this.showQR = false;
         this.requestExpired = false;
         this.backendNotAvailable = false;
         this.loading = false;
         this.paymentReceived = false;
-        this.signedInAndValidated = false;
-        this.tryingToSignIn = false;
+        this.signInValidated = false;
 
         this.supportViaXumm();
     }

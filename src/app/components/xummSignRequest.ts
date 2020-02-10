@@ -11,7 +11,6 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 })
 export class XummSignComponent {
 
-    directLink:string;
     qrLink:string;
 
     websocket: WebSocketSubject<any>;
@@ -72,10 +71,9 @@ export class XummSignComponent {
         }
 
         this.payloadUUID = xummResponse.uuid;
-        this.directLink = xummResponse.next.always;
 
-        if(!this.deviceDetector.isDesktop() && this.directLink)
-            window.location.href = this.directLink;
+        if(!this.deviceDetector.isDesktop() && xummResponse.next.always)
+            window.location.href = xummResponse.next.always;
         else {
             this.qrLink = xummResponse.refs.qr_png;
             this.initSocket(xummResponse.refs.websocket_status);
