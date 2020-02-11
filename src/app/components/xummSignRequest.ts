@@ -57,6 +57,16 @@ export class XummSignComponent {
             }
         }
 
+        let refererURL:string;
+
+        if(document.URL.includes('?')) {
+            refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+        } else {
+            refererURL = document.URL;
+        }
+
+        xummPayload.referer = refererURL;
+
         let xummResponse:any;
         try {
             console.log("sending xumm payload: " + JSON.stringify(xummPayload));

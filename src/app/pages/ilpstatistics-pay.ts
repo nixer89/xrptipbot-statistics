@@ -100,8 +100,8 @@ export class ILPStatisticsPayComponent implements OnInit {
     let payloadStoredResult:any = (payloadIdStored ? await this.xummApi.checkTimedPayment(payloadIdStored, referer) : null);
     let payloadReceivedResult:any = (payloadIdReceived ? await this.xummApi.checkTimedPayment(payloadIdReceived, referer) : null);
 
-    console.log("payloadStoredResult: " + payloadStoredResult);
-    console.log("payloadReceivedResult: " + payloadReceivedResult);
+    console.log("payloadStoredResult: " + JSON.stringify(payloadStoredResult));
+    console.log("payloadReceivedResult: " + JSON.stringify(payloadReceivedResult));
 
     if(payloadStoredResult && payloadStoredResult.success && payloadReceivedResult && payloadReceivedResult.success) {
       //calculate latest payload
