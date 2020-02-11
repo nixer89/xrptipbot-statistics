@@ -18,7 +18,6 @@ export const routes:Routes = [
     {path: 'userstatistics', component: UserStatisticsComponent},
     {path: 'ilp', component: ILPStatisticsComponent},
     {path: 'ilp-pay', component: ILPStatisticsPayComponent,},
-    {path: 'ilp-pay-2', component: ILPStatisticsPayComponent,},
     {path: 'info', component: InfoComponent},
     {path: 'terms', component: TermsComponent},
     {path: 'privacy', component: PrivacyComponent},
