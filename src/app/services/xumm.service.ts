@@ -36,6 +36,15 @@ export class XummService {
         }
     }
 
+    async validateTransaction(payloadId:string): Promise<any> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/xrpl/validatetx/"+payloadId);
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return { error: true }
+        }
+    }
+
     async checkPayment(payloadId:string): Promise<any> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+this.storage.get("frontendUserId")+"/"+payloadId);

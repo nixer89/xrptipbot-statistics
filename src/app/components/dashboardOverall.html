@@ -141,8 +141,10 @@
                 </div>
             </p-card>
         </div>
-        <div class="ui-g-12 center-screen" style="margin: 0 auto">
-            <p-chart type="bar" [data]="chartData" [options]="options" width="95vw" height="50vh"></p-chart>
+        <div class="ui-g-12 center-screen">
+            <p-chart (onDataSelect)="handleBarChartClick($event)" type="bar" [data]="chartData" [options]="options" width="95vw" height="50vh"></p-chart>
         </div>
     </div>
 </div>
+
+<transactionTableDialog *ngIf="openOverlayTable" [transactionFilter]="overlayUsedTransactionFilter" (closed)="closedAll()"></transactionTableDialog>

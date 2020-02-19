@@ -189,11 +189,13 @@ export class XummPaymentComponent {
                 }
 
                 this.websocket.unsubscribe();
+                this.websocket.complete();
             } else if((message.expired || message.expires_in_seconds <= 0) && !userOpenedPayload) {
                 this.showError = true;
                 this.waitingForPayloadResolved = false;
                 this.requestExpired = true;
                 this.websocket.unsubscribe();
+                this.websocket.complete();
             } else if(message.opened) {
                 this.showQR = false;
                 this.qrLink = null;
@@ -216,8 +218,10 @@ export class XummPaymentComponent {
 
     closing() {
         console.log("close dialog");
-        if(this.websocket)
+        if(this.websocket) {
             this.websocket.unsubscribe();
+            this.websocket.complete();
+        }
 
         if(!this.paymentReceived && !this.signInValidated && !this.requestExpired && this.showQR) {
             console.log("sending delete request")

@@ -112,11 +112,13 @@ export class XummSignComponent {
                 }
 
                 this.websocket.unsubscribe();
+                this.websocket.complete();
             } else if(message.expired || message.expires_in_seconds <= 0) {
                 this.showError = true;
                 this.waitingForPayment = false;
                 this.requestExpired = true;
                 this.websocket.unsubscribe();
+                this.websocket.complete();
             } else if(message.opened) {
                 this.showQR = false;
                 this.qrLink = null;
@@ -144,8 +146,10 @@ export class XummSignComponent {
 
     closing() {
         console.log("close dialog");
-        if(this.websocket)
+        if(this.websocket) {
             this.websocket.unsubscribe();
+            this.websocket.complete();
+        }
 
         if(!this.transactionSigned) {
             this.userSigned.emit(false);

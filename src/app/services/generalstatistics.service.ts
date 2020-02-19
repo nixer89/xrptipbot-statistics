@@ -74,7 +74,10 @@ export class GeneralStatisticsService {
                         getReceivedTips:boolean,
                         getReceivedXRP:boolean,
                         getDepositsCount: boolean,
-                        getDepositsXRP: boolean, userName?:string, excludeCoilSettlementChart?:boolean): Promise<any> {
+                        getDepositsXRP: boolean,
+                        userName?:string,
+                        userNetwork?:string,
+                        excludeCoilSettlementChart?:boolean): Promise<any> {
         
         let result:any = {
             sentTips: [],
@@ -86,8 +89,8 @@ export class GeneralStatisticsService {
             dateTimes: []
         };
 
-        let userFilter = userName ? "&user="+userName : "";
-        let toFilter = userName ? "&to="+userName : "";
+        let userFilter = userName ? "&user="+userName+"&user_network="+userNetwork : "";
+        let toFilter = userName ? "&to="+userName+"&to_network="+userNetwork : "";
 
         if(excludeCoilSettlementChart) {
             userFilter+="&excludeUser="+JSON.stringify(this.coilAccounts);

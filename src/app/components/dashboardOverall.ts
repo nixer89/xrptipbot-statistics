@@ -61,6 +61,9 @@ export class DashboardOverallComponent implements OnInit {
     topXRPSent:any[] = [];
     topXRPReceived:any[] = [];
 
+    openOverlayTable:string;
+    overlayUsedTransactionFilter:string;
+
     constructor(private overAllStatistics: OverallStatisticsService,
         private generalStats: GeneralStatisticsService,
         private route: ActivatedRoute,
@@ -203,7 +206,7 @@ export class DashboardOverallComponent implements OnInit {
 
     async refreshChart() {
         this.processingChart=true;
-        let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, true, true, false, false, false, false, null, this.excludeCoilSettlementChart);
+        let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, true, true, false, false, false, false, null, null, this.excludeCoilSettlementChart);
 
         let dataSet:any[] = [];
         dataSet.push(result.sentTips.reverse());
@@ -221,8 +224,6 @@ export class DashboardOverallComponent implements OnInit {
 
             if(this.selectedDayOrWeek==1)
                 labelsX.push(to.getDate()+"."+(to.getMonth()+1)+"."+to.getFullYear());
-            else if(this.selectedDayOrWeek==366)
-                labelsX.push(to.getFullYear());
             else
                 labelsX.push(from.getDate()+"."+(from.getMonth()+1)+"."+from.getFullYear() + " - \n" + to.getDate()+"."+(to.getMonth()+1)+"."+to.getFullYear());
         })
@@ -253,7 +254,9 @@ export class DashboardOverallComponent implements OnInit {
             },
             legend: {
                 position: 'top'
-            }
+            },
+            responsive: true,
+            maintainAspectRatio: false
         };
         this.processingChart=false;
         this.googleAnalytics.analyticsEventEmitter("refresh_chart", "overall", "overall_refresh_chart");
@@ -319,7 +322,7 @@ export class DashboardOverallComponent implements OnInit {
             },
             legend: {
                 position: 'top'
-            }
+            },
         };
     }
 
@@ -358,5 +361,40 @@ export class DashboardOverallComponent implements OnInit {
 
     dateToLocaleStringEuropeTime(date: Date): string {
         return formatUtil.dateToStringEuropeForLocale(date) + " GMT+1";
+    }
+
+    closedAll() {
+        this.overlayUsedTransactionFilter = "";
+        this.openOverlayTable = null;
+    }
+
+    handleBarChartClick(event:any) {
+        
+        //console.log(event.element);
+        //console.log(event.element._datasetIndex);
+        //console.log(event.element._index);
+        //console.log("chart labels: " +this.chartData.labels[event.element._index]);
+
+        let clickedBarLabel:string = this.chartData.labels[event.element._index];
+
+        let chartLabels:string[] = clickedBarLabel.split('-');
+
+        let startDateValues:string[] = chartLabels[0].trim().split('.');
+        let endDateValues:string[] = (chartLabels.length>1 ? chartLabels[1] : chartLabels[0]).trim().split('.');
+
+        let fromDateChart:Date = new Date(startDateValues[2]+'-'+startDateValues[1]+'-'+startDateValues[0]);        
+        let toDateChart:Date = new Date(endDateValues[2]+'-'+endDateValues[1]+'-'+endDateValues[0]);
+
+        //console.log("fromDateChart: " + fromDateChart);
+        //console.log("toDateChart: " + toDateChart);
+
+        fromDateChart = this.generalStats.setZeroTime(fromDateChart)
+        toDateChart = this.generalStats.setHigherTime(toDateChart);
+
+        this.overlayUsedTransactionFilter = "type=tip"+this.generalStats.constructOptionalFilter(fromDateChart, toDateChart, false, false, this.excludeCoilSettlementChart);
+
+        //console.log("overlayUsedTransactionFilter: " + this.overlayUsedTransactionFilter)
+
+        this.openOverlayTable = "true";
     }
 }

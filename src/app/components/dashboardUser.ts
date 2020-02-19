@@ -246,7 +246,7 @@ export class DashboardUserComponent implements OnInit {
             //console.log("include deposits? " + this.includeDeposits);
             //console.log("DropDownSelection: " + this.selectedDayOrWeek);
             console.time("callUserChartsApi")
-            let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.selectedUser.trim());
+            let result:any = await this.generalStats.getChartData(this.daysToReceive, this.selectedDayOrWeek, false, true, false, true, false, this.includeDeposits, this.selectedUser.trim(), this.selectedNetwork.trim());
             console.timeEnd("callUserChartsApi")
             
             
@@ -494,5 +494,37 @@ export class DashboardUserComponent implements OnInit {
 
     dateToLocaleStringEuropeTime(date: Date): string {
         return formatUtil.dateToStringEuropeForLocale(date) + " GMT+1";
+    }
+
+    handleBarChartClick(event:any) {
+        
+        //console.log(event.element);
+        //console.log(event.element._datasetIndex);
+        //console.log(event.element._index);
+        //console.log("chart labels: " +this.chartData.labels[event.element._index]);
+
+        let clickedBarLabel:string = this.chartData.labels[event.element._index];
+
+        let chartLabels:string[] = clickedBarLabel.split('-');
+
+        let startDateValues:string[] = chartLabels[0].trim().split('.');
+        let endDateValues:string[] = (chartLabels.length>1 ? chartLabels[1] : chartLabels[0]).trim().split('.');
+
+        let fromDateChart:Date = new Date(startDateValues[2]+'-'+startDateValues[1]+'-'+startDateValues[0]);        
+        let toDateChart:Date = new Date(endDateValues[2]+'-'+endDateValues[1]+'-'+endDateValues[0]);
+
+        //console.log("fromDateChart: " + fromDateChart);
+        //console.log("toDateChart: " + toDateChart);
+
+        fromDateChart = this.generalStats.setZeroTime(fromDateChart)
+        toDateChart = this.generalStats.setHigherTime(toDateChart);
+
+        let userFilter:string = event.element._datasetIndex == 0 ? "to="+this.selectedUser+"&to_network="+this.selectedNetwork : "user="+this.selectedUser+"&user_network="+this.selectedNetwork;
+
+        this.overlayUsedTransactionFilter = "type=tip&"+userFilter+this.generalStats.constructOptionalFilter(fromDateChart, toDateChart);
+
+        //console.log("overlayUsedTransactionFilter: " + this.overlayUsedTransactionFilter)
+
+        this.openOverlayTable = "true";
     }
 }
