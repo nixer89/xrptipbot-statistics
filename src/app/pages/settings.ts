@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import{ GoogleAnalyticsService } from '../services/google-analytics.service';
 import { XummService } from '../services/xumm.service';
 import { uuid } from 'uuidv4';
+import { TransactionValidation } from '../util/types';
 
 @Component({
     selector: "settings",
@@ -48,7 +49,7 @@ export class SettingsDialogComponent implements OnInit {
             let payloadId = params.payloadId;
             if(payloadId) {
               //check if transaction was successfull and redirect user to stats page right away:
-              let transactionResult = await this.xummApi.checkSignIn(payloadId);
+              let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
               console.log(transactionResult);
               if(transactionResult) {
                 if(transactionResult.success) {

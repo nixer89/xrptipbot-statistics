@@ -4,6 +4,8 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { uuid } from 'uuidv4';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { GenericBackendPostRequest, TransactionValidation } from '../util/types';
+import { XummPostPayloadBodyJson, XummPostPayloadResponse } from 'xumm-api';
 
 @Component({
     selector: "xummSignRequest",
@@ -45,16 +47,22 @@ export class XummSignComponent {
 
 
         //setting up xumm payload and waiting for websocket
-        let xummPayload:any = {
-            frontendId: frontendId,
-            pushDisabled: true,
-            web: this.deviceDetector.isDesktop(),
+        let xummPayload:XummPostPayloadBodyJson = {
             options: {
                 expire: 5
             },
 	        txjson: {
                 TransactionType: "SignIn"
             }
+        }
+
+        let genericXummBackendRequest:GenericBackendPostRequest = {
+            options: {
+                frontendId: frontendId,
+                pushDisabled: true,
+                web: this.deviceDetector.isDesktop(),
+            },
+            payload: xummPayload
         }
 
         let refererURL:string;
@@ -65,12 +73,12 @@ export class XummSignComponent {
             refererURL = document.URL;
         }
 
-        xummPayload.referer = refererURL;
+        genericXummBackendRequest.options.referer = refererURL;
 
-        let xummResponse:any;
+        let xummResponse:XummPostPayloadResponse;
         try {
-            console.log("sending xumm payload: " + JSON.stringify(xummPayload));
-            xummResponse = await this.xummApi.submitPayload(xummPayload);
+            console.log("sending xumm payload: " + JSON.stringify(genericXummBackendRequest));
+            xummResponse = await this.xummApi.submitPayload(genericXummBackendRequest);
             console.log(JSON.stringify(xummResponse)); 
         } catch (err) {
             console.log(JSON.stringify(err));
@@ -100,7 +108,7 @@ export class XummSignComponent {
             console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
-                let transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);
+                let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(message.payload_uuidv4);
                 console.log(transactionResult);
                 this.waitingForPayment = false;
                 if(transactionResult && transactionResult.success) {

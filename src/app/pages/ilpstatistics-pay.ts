@@ -5,6 +5,7 @@ import { XummService } from '../services/xumm.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { TransactionValidation } from '../util/types';
 
 @Component({
   selector: 'ilpstatistics-pay',
@@ -47,7 +48,7 @@ export class ILPStatisticsPayComponent implements OnInit {
         //this is a sign in, handle differently!
         
         console.log("check signin");
-        let isValid = await this.xummApi.signInToValidateTimedPayment(payloadIdReceived, refererURL);
+        let isValid:TransactionValidation = await this.xummApi.signInToValidateTimedPayment(payloadIdReceived, refererURL);
         console.log("isValid: " + JSON.stringify(isValid));
         this.userHasPaid = isValid.success;
         this.isInit = false
@@ -97,8 +98,8 @@ export class ILPStatisticsPayComponent implements OnInit {
     console.log("payloadIdStored: " + payloadIdStored);
     console.log("payloadIdReceived: " + payloadIdReceived);
     console.log("referer: " + referer);
-    let payloadStoredResult:any = (payloadIdStored ? await this.xummApi.checkTimedPayment(payloadIdStored, referer) : null);
-    let payloadReceivedResult:any = (payloadIdReceived ? await this.xummApi.checkTimedPayment(payloadIdReceived, referer) : null);
+    let payloadStoredResult:TransactionValidation = (payloadIdStored ? await this.xummApi.checkTimedPayment(payloadIdStored, referer) : null);
+    let payloadReceivedResult:TransactionValidation = (payloadIdReceived ? await this.xummApi.checkTimedPayment(payloadIdReceived, referer) : null);
 
     console.log("payloadStoredResult: " + JSON.stringify(payloadStoredResult));
     console.log("payloadReceivedResult: " + JSON.stringify(payloadReceivedResult));

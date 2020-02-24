@@ -4,6 +4,8 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { uuid } from 'uuidv4';
+import { GenericBackendPostRequest, TransactionValidation } from '../util/types';
+import { XummPostPayloadBodyJson, XummPostPayloadResponse } from 'xumm-api';
 
 @Component({
     selector: "xummPaymentRequest",
@@ -39,10 +41,15 @@ export class XummPaymentComponent {
         this.loading = true;
         this.isSignIn = true;
         //setting up xumm payload and waiting for websocket
-        let xummSignInPayload:any = {
-            pushDisabled: !this.storage.get("pushAllowed"),
-            signinToValidate: true,
-            web: this.deviceDetector.isDesktop(),
+        let genericXummBackendRequest:GenericBackendPostRequest = {
+            options: {
+                pushDisabled: !this.storage.get("pushAllowed"),
+                signinToValidate: true,
+                web: this.deviceDetector.isDesktop(),
+            },
+            payload: null
+        }
+        let xummSignInPayload:XummPostPayloadBodyJson = {
             options: {
                 expire: 1
             },
@@ -59,12 +66,14 @@ export class XummPaymentComponent {
             refererURL = document.URL;
         }
 
-        xummSignInPayload.referer = refererURL;
+        genericXummBackendRequest.options.referer = refererURL;
 
-        let xummSignInResponse:any;
+        genericXummBackendRequest.payload = xummSignInPayload;
+
+        let xummSignInResponse:XummPostPayloadResponse;
         try {
-            console.log("sending singin xumm payload: " + JSON.stringify(xummSignInPayload));
-            xummSignInResponse = await this.xummApi.submitPayload(xummSignInPayload);
+            console.log("sending singin xumm payload: " + JSON.stringify(genericXummBackendRequest));
+            xummSignInResponse = await this.xummApi.submitPayload(genericXummBackendRequest);
             console.log(JSON.stringify(xummSignInResponse));
 
             if(!this.deviceDetector.isDesktop() && xummSignInResponse.next.always) {
@@ -95,12 +104,9 @@ export class XummPaymentComponent {
             console.log("frontendID: " + frontendId);
             this.storage.set("frontendUserId", frontendId);
         }
-    
+
         //setting up xumm payload and waiting for websocket
-        let xummPayload:any = {
-            frontendId: frontendId,
-            pushDisabled: !this.storage.get("pushAllowed"),
-            web: this.deviceDetector.isDesktop(),
+        let xummPayload:XummPostPayloadBodyJson = {
             options: {
                 expire: 5
             },
@@ -109,6 +115,15 @@ export class XummPaymentComponent {
                 Fee: "12"
             }
         }
+    
+        let genericXummBackendRequest:GenericBackendPostRequest = {
+            options: {
+                frontendId: frontendId,
+                pushDisabled: !this.storage.get("pushAllowed"),
+                web: this.deviceDetector.isDesktop(),
+            },
+            payload: xummPayload
+        }
         
         let refererURL:string;
 
@@ -116,15 +131,15 @@ export class XummPaymentComponent {
             refererURL = document.URL.substring(0, document.URL.indexOf('?'));
         }
 
-        xummPayload.referer = (refererURL ? refererURL : document.URL);
+        genericXummBackendRequest.options.referer = (refererURL ? refererURL : document.URL);
 
         if(this.storage.get("xummFixAmount"))
             xummPayload.txjson.Amount="1000"
 
-        let xummResponse:any;
+        let xummResponse:XummPostPayloadResponse;
         try {
-            console.log("sending xumm payload: " + JSON.stringify(xummPayload));
-            xummResponse = await this.xummApi.submitPayload(xummPayload);
+            console.log("sending xumm payload: " + JSON.stringify(genericXummBackendRequest));
+            xummResponse = await this.xummApi.submitPayload(genericXummBackendRequest);
             console.log(JSON.stringify(xummResponse)); 
         } catch (err) {
             console.log(JSON.stringify(err));
@@ -160,7 +175,7 @@ export class XummPaymentComponent {
             //user signed payload. Handle it!
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 if(!isSignIn) {
-                    let transactionResult = await this.xummApi.checkPayment(message.payload_uuidv4);
+                    let transactionResult:TransactionValidation = await this.xummApi.checkPayment(message.payload_uuidv4);
                     console.log(transactionResult);
                     this.waitingForPayloadResolved = false;
 
@@ -176,7 +191,7 @@ export class XummPaymentComponent {
                     }
                 } else {
                     console.log("using referer: " + referer);
-                    let validateSignInResponse = await this.xummApi.signInToValidateTimedPayment(message.payload_uuidv4, referer);
+                    let validateSignInResponse:TransactionValidation = await this.xummApi.signInToValidateTimedPayment(message.payload_uuidv4, referer);
                     console.log("validateSignInResponse: " + JSON.stringify(validateSignInResponse));
                     this.signInValidated = validateSignInResponse && validateSignInResponse.success;
                     if(!this.signInValidated)
