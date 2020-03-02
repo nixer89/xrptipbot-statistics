@@ -22,6 +22,7 @@ export const routes:Routes = [
     {path: 'terms', component: TermsComponent},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'settings', component: SettingsDialogComponent},
+    {path: '**', redirectTo: ''}
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
