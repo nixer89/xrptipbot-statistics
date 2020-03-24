@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, Inject, Input, OnDestroy } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
@@ -6,12 +6,14 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { uuid } from 'uuidv4';
 import { GenericBackendPostRequest, TransactionValidation } from '../util/types';
 import { XummPostPayloadBodyJson, XummPostPayloadResponse } from 'xumm-api';
+import { DOCUMENT } from '@angular/common';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
     selector: "xummPaymentRequest",
     templateUrl: "xummPaymentRequest.html"
 })
-export class XummPaymentComponent {
+export class XummPaymentComponent implements OnInit, OnDestroy {
 
     qrLink:string;
 
@@ -27,14 +29,52 @@ export class XummPaymentComponent {
     paymentReceived:boolean = false;
     signInValidated:boolean = false;
     isSignIn:boolean = false;
+    waitingForCoil:boolean = false;
+    isInit:boolean = true;
 
+    @Input()
+    userHasPaid: Observable<any>;
+
+    private userHasPaidSubscription: Subscription;
+    
     @Output()
     userSigned: EventEmitter<any> = new EventEmitter();
 
     constructor(
         private xummApi: XummService,
-        private storage: LocalStorageService,
-        private deviceDetector: DeviceDetectorService) {
+        public storage: LocalStorageService,
+        private deviceDetector: DeviceDetectorService,
+        @Inject(DOCUMENT) private document: Document) {
+    }
+
+    ngOnInit() {
+        this.userHasPaidSubscription = this.userHasPaid.subscribe(userHasPaid => {
+            //console.log("account info changed received: " + JSON.stringify(accountData));
+            this.showDialog = userHasPaid;
+        });
+
+        this.isInit = true;
+        //check if coil extension is installed
+        if(this.document['monetization']) {
+            console.log("adding event listener")
+            this.waitingForCoil = true;
+            this.document['monetization'].addEventListener('monetizationprogress', () => {
+                this.handleSuccessfullPayment();
+            });
+
+            //wait 10 seconds for Coil monetization. If not started, show payment options
+            setTimeout(() => {
+                this.waitingForCoil = false;
+                this.isInit = false;
+            }, 10000);
+        } else {
+            this.isInit = false;
+        }
+    }
+
+    ngOnDestroy() {
+        if(this.userHasPaidSubscription)
+            this.userHasPaidSubscription.unsubscribe();
     }
 
     async signinToValidate() {
@@ -133,9 +173,6 @@ export class XummPaymentComponent {
 
         genericXummBackendRequest.options.referer = (refererURL ? refererURL : document.URL);
 
-        if(this.storage.get("xummFixAmount"))
-            xummPayload.txjson.Amount="1000"
-
         let xummResponse:XummPostPayloadResponse;
         try {
             console.log("sending xumm payload: " + JSON.stringify(genericXummBackendRequest));
@@ -179,7 +216,7 @@ export class XummPaymentComponent {
                     console.log(transactionResult);
                     this.waitingForPayloadResolved = false;
 
-                    if(transactionResult && transactionResult.success) {
+                    if(transactionResult && transactionResult.success && !transactionResult.testnet) {
                         this.paymentReceived = true;
                         
                         if(this.storage.get("storeLastUsedPayment"))
@@ -238,7 +275,7 @@ export class XummPaymentComponent {
             this.websocket.complete();
         }
 
-        if(!this.paymentReceived && !this.signInValidated && !this.requestExpired && this.showQR) {
+        if(!this.paymentReceived && !this.signInValidated && !this.requestExpired && this.showQR && this.payloadUUID) {
             console.log("sending delete request")
             this.xummApi.deletePayload(this.payloadUUID);
         }

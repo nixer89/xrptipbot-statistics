@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 import { XummService } from '../services/xumm.service';
@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { TransactionValidation } from '../util/types';
+import { DOCUMENT } from '@angular/common';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'ilpstatistics-pay',
@@ -15,6 +17,9 @@ export class ILPStatisticsPayComponent implements OnInit {
 
   userHasPaid:boolean;
   isInit:boolean;
+  monetizationTimeout:NodeJS.Timeout = null;
+
+  userHasPaidChanged: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private xummApi: XummService,
@@ -23,7 +28,7 @@ export class ILPStatisticsPayComponent implements OnInit {
     private meta: Meta,
     private snackBar: MatSnackBar,
     private storage: LocalStorageService,
-    private device: DeviceDetectorService) {
+    @Inject(DOCUMENT) private document: Document) {
       this.isInit = true;
     }
 
@@ -31,6 +36,11 @@ export class ILPStatisticsPayComponent implements OnInit {
     this.titleService.setTitle("XRPTipBot ILP Stats");
     this.meta.updateTag({name: 'twitter:title', content: 'XRPTipBot ILP Stats'});
     this.meta.updateTag({name: 'twitter:image', content: 'https://xrptipbot-stats.com/assets/XRPTipBotStats_ILPStats.png'});
+
+    if(this.document['monetization']) {
+      console.log("adding event listener")
+      this.document['monetization'].addEventListener('monetizationprogress', () => this.handleMonetization());
+    }
 
     this.route.queryParams.subscribe(async params => {
       this.isInit = true;
@@ -86,9 +96,25 @@ export class ILPStatisticsPayComponent implements OnInit {
     });
   }
 
+  handleMonetization() {
+    //reset
+    if(this.monetizationTimeout) {
+      clearTimeout(this.monetizationTimeout);
+    }
+
+    //hide ilp stats when no payment came within the last 15 seconds.
+    this.monetizationTimeout = setTimeout(() => {
+      console.log("payments have dryed out...");
+      this.userHasPaid = false;
+      this.userHasPaidChanged.next(false);
+    },15000);
+  }
+
   userSigned(event:any) {
     console.log("user has signed the transaction: " + event);
+    this.snackBar.open("Thank you for supporting this project through Coil or Xumm!", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
     this.userHasPaid = event;
+    this.userHasPaidChanged.next(event);
   }
 
   async getLastValidPayloadId(payloadIdStored: string, payloadIdReceived: string, referer: string): Promise<string> {

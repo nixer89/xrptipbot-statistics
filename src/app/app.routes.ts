@@ -7,7 +7,6 @@ import {PrivacyComponent} from './pages/privacy';
 import {UserStatisticsComponent} from './pages/userstatistics';
 import {OverallStatisticsComponent} from './pages/overallstatistics';
 import {FeedComponent} from './pages/feed';
-import {ILPStatisticsComponent} from './pages/ilpstatistics'
 import {ILPStatisticsPayComponent} from './pages/ilpstatistics-pay'
 import {SettingsDialogComponent} from './pages/settings';
 
@@ -16,8 +15,7 @@ export const routes:Routes = [
     {path: 'feed', component: FeedComponent},
     {path: 'overallstatistics', component: OverallStatisticsComponent},
     {path: 'userstatistics', component: UserStatisticsComponent},
-    {path: 'ilp', component: ILPStatisticsComponent},
-    {path: 'ilp-pay', component: ILPStatisticsPayComponent,},
+    {path: 'ilp', component: ILPStatisticsPayComponent,},
     {path: 'info', component: InfoComponent},
     {path: 'terms', component: TermsComponent},
     {path: 'privacy', component: PrivacyComponent},

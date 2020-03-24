@@ -18,7 +18,7 @@
             <tr>
                 <td>
                     <div class="floatleft">
-                        <a *ngIf="!hideLinks && data.network" style="vertical-align: middle" [routerLink]="['/userstatistics']" [queryParams]="{user: data.userName, network: data.network, from_date: from_date, to_date: to_date}" (click)="closeFullList()">{{getUserName(data)}}&nbsp;</a>
+                        <a *ngIf="!hideLinks && data.network" style="vertical-align: middle" [routerLink]="['/userstatistics']" [queryParams]="{user: data.userName, network: data.network}" (click)="closeFullList()">{{getUserName(data)}}&nbsp;</a>
                         <label *ngIf="hideLinks || !data.network" style="vertical-align: middle">{{getUserName(data)}}&nbsp;</label>
                     </div>
                     <div *ngIf="!hideLinks && data.network" class="floatright">

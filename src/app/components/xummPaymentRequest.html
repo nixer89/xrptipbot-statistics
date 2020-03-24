@@ -1,13 +1,27 @@
 <p-dialog [style]="{width: '70%', height: '70%'}" [visible]="showDialog" [closable]="false" (onHide)="closing()">
-    <p-header style="color: orange">
-        This is just a Proof of Concept! #Xumm is still in beta and not available for everyone!
+    <p-header class="account-since">
+        <div *ngIf="!waitingForCoil">Please support via Coil or XUMM</div>
+        <div *ngIf="waitingForCoil">Waiting for Coil to start streaming.</div>
     </p-header>
     <div class="ui-g-12">
         <p-card>
-            <div *ngIf="!showError && !waitingForPayloadResolved && !loading && !paymentReceived && !signInValidated" class="floatcenter">
+            <div *ngIf="isInit && waitingForCoil" class="floatcenter">
+                <div>
+                    Waiting 10 seconds for your Coil extension to start streaming...
+                </div>
+                <p-progressSpinner [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
+            </div>
+            <div *ngIf="!isInit && !waitingForCoil && !showError && !waitingForPayloadResolved && !loading && !paymentReceived && !signInValidated" class="floatcenter">
                 <div>
                     <div class="floatcenter">
-                        <h3>Hello there!<br/><br/>To view the underlying ILP statistics page, please support this project with a small tip via #Xumm<br/><br/></h3>
+                        <h2>Hello there!</h2>
+                        <h3><label class="current-balance">To view the underlying ILP statistics page, please support this project via <b>Coil</b> or with a tip of 0.5 XRP via <b>XUMM</b></label></h3>
+                        <p-card>
+                            <label class="account-since">Your Payment will be valid for the next 7 days.</label>After 7 days you have to purchase again.<br/>
+                            You can use the 'SignIn' if you have purchased already within the last 7 days.<br/>
+                            <label>You can also save your last payment info in the <a routerLink="/settings">Settings</a> so you don't have to use SignIn.</label><br/><br/>
+                            <label>Learn more about XUMM <a href="https://xumm.dev" target="_blank">here</a>.</label>
+                        </p-card><br/><br/>
                     </div>
                     <div class="floatleft" style="width: 48%;">
                         <div class="floatright">
@@ -69,7 +83,7 @@
                     Sorry, there was an error contacting the backend. Please try again later.
                 </div>
                 <div *ngIf="!requestExpired && !backendNotAvailable && !isSignIn" style="color: red;">
-                    Sorry, your transaction could not be verified. Please reload the page and try again!
+                    Sorry, your transaction could not be verified on the live net. Please reload the page and try again!
                 </div>
                 <div *ngIf="requestExpired && !backendNotAvailable" style="color: red;">
                     Sorry, your request has been expired. Please reload the page and try again!

@@ -20,7 +20,6 @@ export class SettingsDialogComponent implements OnInit {
     darkMode: boolean;
     pushAllowed: boolean;
     storeLastUsedPayment: boolean;
-    xummFixAmount: boolean;
     openSignRequest:boolean = false;
 
 
@@ -43,7 +42,6 @@ export class SettingsDialogComponent implements OnInit {
         this.darkMode = this.localStorage.get("darkMode") === null || this.localStorage.get("darkMode") === true;
         this.pushAllowed = this.localStorage.get("pushAllowed") || false;
         this.storeLastUsedPayment = this.localStorage.get("storeLastUsedPayment") || false;
-        this.xummFixAmount = this.localStorage.get("xummFixAmount") || false;
 
         this.route.queryParams.subscribe(async params => {
             let payloadId = params.payloadId;
@@ -114,11 +112,6 @@ export class SettingsDialogComponent implements OnInit {
         }
 
         this.googleAnalytics.analyticsEventEmitter("toogleStoreLastUsedPayment", "settings", "settings_toogleStoreLastUsedPayment");
-    }
-
-    toogleXummFixAmount(e:any) {
-        this.localStorage.set("xummFixAmount", e.checked);
-        this.googleAnalytics.analyticsEventEmitter("toogleXummFixAmount", "settings", "settings_toogleXummFixAmount");
     }
 
     userSigned(event:any) {

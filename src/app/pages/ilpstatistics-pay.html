@@ -5,7 +5,7 @@
             <p-progressSpinner [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
         </div>
     </p-card>
-    <xummPaymentRequest *ngIf="!userHasPaid && !isInit" (userSigned)="userSigned($event)"></xummPaymentRequest>
-    <ilp *ngIf="userHasPaid && !isInit" [allowedToLoad]="userHasPaid"></ilp>
+    <xummPaymentRequest *ngIf="!userHasPaid && !isInit" [userHasPaid]="userHasPaidChanged.asObservable()" (userSigned)="userSigned($event)"></xummPaymentRequest>
+    <ilp *ngIf="userHasPaid && !isInit" [userHasPaid]="userHasPaidChanged.asObservable()"></ilp>
 </div>
 

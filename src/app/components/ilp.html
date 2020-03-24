@@ -79,18 +79,18 @@
                                 <userTable showAllButton="true" transactionTableFilter="" isILP="true" [data]="topIlpReceived" headline="Most received (Overall)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
                             </div>
                             <div class="floatleft" style="width: 50%">
-                                <userTable showAllButton="true" transactionTableFilter="network=coil" isILP="true" [data]="topIlpReceivedCoil" headline="Most received (Coil)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
+                                <userTable showAllButton="true" transactionTableFilter="network=coil{{getOptionalDateFilter()}}" isILP="true" [data]="topIlpReceivedCoil" headline="Most received (Coil)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
                             </div>
                         </div>
                         <div class="ui-g-12">
                             <div class="floatleft" style="width: 33%">
-                                <userTable showAllButton="true" transactionTableFilter="network=twitter" isILP="true" [data]="topIlpReceivedTwitter" headline="Most received (Twitter)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
+                                <userTable showAllButton="true" transactionTableFilter="network=twitter{{getOptionalDateFilter()}}" isILP="true" [data]="topIlpReceivedTwitter" headline="Most received (Twitter)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
                             </div>
                             <div class="floatleft" style="width: 33%">
-                                <userTable showAllButton="true" transactionTableFilter="network=reddit" isILP="true" [data]="topIlpReceivedReddit" headline="Most received (Reddit)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
+                                <userTable showAllButton="true" transactionTableFilter="network=reddit{{getOptionalDateFilter()}}" isILP="true" [data]="topIlpReceivedReddit" headline="Most received (Reddit)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
                             </div>
                             <div class="floatleft" style="width: 33%">
-                                <userTable showAllButton="true" transactionTableFilter="network=discord" isILP="true" [data]="topIlpReceivedDiscord" headline="Most received (Discord)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
+                                <userTable showAllButton="true" transactionTableFilter="network=discord{{getOptionalDateFilter()}}" isILP="true" [data]="topIlpReceivedDiscord" headline="Most received (Discord)" columnName1="User" columnName2="XRP" columnField2="amount"></userTable>
                             </div>
                         </div>
                     </p-card>

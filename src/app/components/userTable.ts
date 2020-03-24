@@ -98,7 +98,7 @@ export class UserTableComponent {
         else if('reddit'===tipper.network)
             return 'berta';
         else if('coil'===tipper.network) {
-            if(this.localStorage.get("darkMode"))
+            if(this.localStorage.get("darkMode") != false)
                 return 'coil_reversed';
             else
                 return 'coil';
@@ -106,7 +106,7 @@ export class UserTableComponent {
         else if('twitter'===tipper.network)
             return 'emil';
         else if('internal'===tipper.network) {
-            if(this.localStorage.get("darkMode"))
+            if(this.localStorage.get("darkMode") != false)
                 return 'paper_reversed';
             else
                 return 'paper';

@@ -91,7 +91,7 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
         else if('reddit'===network)
             return 'berta';
         else if('coil'===network) {
-            if(this.localStorage.get("darkMode"))
+            if(this.localStorage.get("darkMode") != false)
                 return 'coil_reversed';
             else
                 return 'coil';
@@ -99,7 +99,7 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
         else if('twitter'===network)
             return 'emil';
         else if('internal'===network) {
-            if(this.localStorage.get("darkMode"))
+            if(this.localStorage.get("darkMode") != false)
                 return 'paper_reversed';
             else
                 return 'paper';
