@@ -220,3 +220,15 @@ label.xrpraised {
     text-align: center;
     padding-top: 8px;
 }
+
+body .snackbar-success {
+    color: green !important;
+    display: flex;
+    justify-content: center;
+}
+  
+body .snackbar-failed {
+    color: #EB0000 !important;
+    display: flex;
+    justify-content: center;
+}
