@@ -1,4 +1,4 @@
-<p-dialog [(visible)]="data" [modal]="true" (onHide)="onHide()" [style]="{'min-width':'25%','max-width':'40%'}">
+<p-dialog [(visible)]="data" [modal]="true" (onHide)="onHide()" [style]="{'min-width':'25%','max-width':'40%', overflow: 'auto'}">
     <p-header>
         <b>{{foundUser ? foundUser.name : ''}}</b>
     </p-header>
