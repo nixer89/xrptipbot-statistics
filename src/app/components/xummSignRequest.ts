@@ -162,7 +162,7 @@ export class XummSignComponent {
         if(!this.transactionSigned) {
             this.userSigned.emit(false);
 
-            if(!this.requestExpired) {
+            if(this.payloadUUID && !this.requestExpired) {
                 console.log("sending delete request")
                 this.xummApi.deletePayload(this.payloadUUID);
             }
