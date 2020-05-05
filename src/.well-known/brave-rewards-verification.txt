@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: xrptipbot-stats.com
+Token: c77afd30cba4693637819622dcdf2bac7987f52adda9e757c78635c16065fe82
