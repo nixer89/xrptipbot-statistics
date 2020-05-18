@@ -1,11 +1,12 @@
 import { Injectable, Inject, LOCALE_ID } from '@angular/core';
 import { ApiService } from './api.service';
 import * as formatUtil from '../util/formattingUtil';
+import { DeviceDetectorService } from 'ngx-device-detector'
 
 @Injectable()
 export class GeneralStatisticsService {
 
-    constructor(private api: ApiService, @Inject(LOCALE_ID) public locale: string) {}
+    constructor(private api: ApiService, @Inject(LOCALE_ID) public locale: string, private device: DeviceDetectorService) {}
 
     coilAccounts:string[] = ['COIL_SETTLED_ILP_BALANCE', 'COIL_SETTLEMENT_ACCOUNT'];
     bots:string[] = ['1059563470952247296', '1088476019399577602', '1077305457268658177', '1131106826819444736', '1082115799840632832', '1106106412713889792','52249814', '1027600504304619522', '1172963893322440704'];
@@ -56,7 +57,7 @@ export class GeneralStatisticsService {
             delete numbersResult[k]['_id'];
             
             if(numbersResult[k]['xrp']) {
-                if(userName)
+                if(userName && this.device.isDesktop())
                     numbersResult[k]['xrp'] = numbersResult[k]['xrp'].toFixed(6);
                 else
                     numbersResult[k]['xrp'] = numbersResult[k]['xrp'].toFixed(2);
@@ -197,8 +198,12 @@ export class GeneralStatisticsService {
     }
 
     private roundToSixDecimals(array:any[]): any[] {
-        for(let i = 0; i < array.length;i++)
-            array[i] = Number(array[i].toFixed(6));
+        for(let i = 0; i < array.length;i++) {
+            if(this.device.isDesktop())
+                array[i] = Number(array[i].toFixed(6));
+            else
+                array[i] = Number(array[i].toFixed(2));
+        }
 
         return array;
     }

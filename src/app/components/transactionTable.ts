@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy ,Output, EventEmitter } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy ,Output, EventEmitter, ContentChild } from "@angular/core";
 import { LocalStorageService } from 'angular-2-local-storage';
 import { ApiService } from '../services/api.service';
 import * as formatUtil from '../util/formattingUtil';
@@ -109,6 +109,12 @@ export class TransactionTableComponent implements OnInit, OnDestroy {
 
     formatStringDate(date:string) {
         return formatUtil.dateToStringEuropeForLocale(new Date(date));
+    }
+
+    removeAPIPart(context:string) {
+        if(context && context.includes("// API"))
+            return context.substring(0, context.indexOf("// API")).trim();
+        else return context;
     }
 
     shortenContext(network:string, context: string) {
